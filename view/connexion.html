@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Inscription - Kernel</title>
+
+  <!-- Fonts et Bootstrap -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Ton fichier CSS -->
+  <link rel="stylesheet" href="connexion.css">
+</head>
+
+<body>
+  <div class="register-container">
+    <div class="logo">
+      <i class="bi bi-hexagon-fill"></i> Kernel
+    </div>
+
+    <h3 class="register-title">Créer un compte</h3>
+    <p class="register-subtitle">Rejoignez la communauté des innovateurs</p>
+
+    <div class="social-register">
+      <button class="btn-social"><i class="bi bi-google"></i> Google</button>
+      <button class="btn-social"><i class="bi bi-github"></i> GitHub</button>
+      <button class="btn-social"><i class="bi bi-linkedin"></i> LinkedIn</button>
+    </div>
+
+    <div class="divider"><span>ou avec email</span></div>
+
+    <form id="registerForm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Prénom</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control" placeholder="Jean" required>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Nom</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control" placeholder="Dupont" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Adresse Email</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+          <input type="email" class="form-control" placeholder="votre@email.com" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Téléphone</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+          <input type="tel" class="form-control" placeholder="+216 XX XXX XXX" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Type de profil</label>
+        <select class="form-select" required>
+          <option value="">Choisissez votre profil</option>
+          <option value="innovateur">Innovateur / Créateur de projet</option>
+          <option value="investisseur">Investisseur</option>
+          <option value="developpeur">Développeur / Tech</option>
+          <option value="designer">Designer</option>
+          <option value="entrepreneur">Entrepreneur</option>
+          <option value="etudiant">Étudiant</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Domaine d'expertise</label>
+        <select class="form-select" required>
+          <option value="">Sélectionnez votre domaine</option>
+          <option value="ia">Intelligence Artificielle</option>
+          <option value="iot">Internet des Objets (IoT)</option>
+          <option value="blockchain">Blockchain</option>
+          <option value="web">Développement Web</option>
+          <option value="mobile">Applications Mobiles</option>
+          <option value="data">Data Science</option>
+          <option value="cybersec">Cybersécurité</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Mot de passe</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control" placeholder="••••••••" required id="password" oninput="checkPasswordStrength()">
+          <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('password', 'toggleIcon1')">
+            <i class="bi bi-eye" id="toggleIcon1"></i>
+          </span>
+        </div>
+        <div class="password-strength">
+          <div class="password-strength-bar" id="strengthBar"></div>
+        </div>
+        <div class="password-hint" id="strengthText">Le mot de passe doit contenir au moins 8 caractères</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Confirmer le mot de passe</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control" placeholder="••••••••" required id="confirmPassword">
+          <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
+            <i class="bi bi-eye" id="toggleIcon2"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="terms" required>
+        <label class="form-check-label" for="terms">
+          J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a>
+        </label>
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="newsletter">
+        <label class="form-check-label" for="newsletter">
+          Je souhaite recevoir les actualités et événements Kernel
+        </label>
+      </div>
+
+      <button type="submit" class="btn-register">
+        <i class="bi bi-person-plus me-2"></i> Créer mon compte
+      </button>
+    </form>
+
+    <div class="login-link">
+      Vous avez déjà un compte ? <a href="login.html">Se connecter</a>
+    </div>
+  </div>
+
+  <!-- Script externe -->
+  <script src="connexion.js"></script>
+</body>
+</html>
