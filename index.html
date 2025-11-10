@@ -1,669 +1,292 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mindie - Plateforme de Défis Gamifiée</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mindie — Time Management Dashboard</title>
+<style>
+:root{
+  --bg:#f2f6f9;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent:#1573ff;
+  --accent-2:#2fb6ff;
+  --glass: rgba(10,18,30,0.03);
+  --radius:14px;
+  --shadow: 0 6px 20px rgba(11,22,37,0.06);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);-webkit-font-smoothing:antialiased}
+.app{max-width:1300px;margin:18px auto;padding:18px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 6px;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
+.brand-text .title{font-weight:700;font-size:1.1rem}
+.brand-text .subtitle{font-size:0.8rem;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.muted{color:var(--muted);font-size:0.95rem}
+.banner{display:flex;align-items:center;padding:22px}
+.banner-content{display:flex;justify-content:space-between;width:100%;align-items:center}
+.small{font-weight:600;color:var(--muted)}
+.big{font-weight:800;font-size:2.4rem;color:var(--accent)}
+.banner-ico{font-size:40px;opacity:0.15}
+.mini-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+.mini{padding:12px}
+.mini-title{font-weight:700}
+.mini-big{font-size:1.2rem;color:#2b6cb0}
+.tasks-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-bar{height:10px;background:linear-gradient(180deg,#f0f3f6,#eef3f8);border-radius:999px;overflow:hidden;margin-bottom:12px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0;transition:width 300ms ease}
+.task-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.task-item{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;border:1px solid rgba(11,22,37,0.06)}
+.task-left{display:flex;align-items:center;gap:12px}
+.checkbox{width:18px;height:18px;border-radius:50%;border:2px solid #d1dbe8;display:grid;place-items:center;cursor:pointer}
+.checkbox.checked{background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;color:white}
+.task-title{font-weight:600}
+.task-meta{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:0.9rem}
+.timer-btn{padding:6px 10px;border-radius:8px;border:none;background:#eef6ff;color:var(--accent);cursor:pointer;font-weight:700}
+.add-row{display:flex;margin-top:14px;border-radius:10px;overflow:hidden;border:1px solid rgba(11,22,37,0.06)}
+.add-row input{flex:1;padding:12px;border:0;outline:none}
+.add-row .add-btn{width:46px;background:var(--accent);color:white;border:0;font-weight:800}
+.col-right .analytics .stats-row{display:flex;flex-direction:column;gap:12px}
+.stat{padding:8px;border-radius:10px;background:var(--glass)}
+.stat-label{font-size:0.85rem;color:var(--muted)}
+.stat-big{font-weight:800}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tab{flex:1;padding:8px;border-radius:999px;background:#f3f6f9;border:1px solid rgba(11,22,37,0.02);cursor:pointer}
+.tab.active{background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:inset 0 -2px 0 rgba(11,22,37,0.03)}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge{padding:10px;border-radius:10px;border:1px solid #fde68a;background:linear-gradient(180deg,#fff8e6,#fff);text-align:center;font-weight:700}
+.leaderboard-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.leaderboard-list li{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:#f7fbff;border:1px solid rgba(11,22,37,0.03)}
+.leaderboard-list li.you{background:#e8f4ff}
+.foot{text-align:center;color:var(--muted);margin-top:18px}
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-    <!-- ============ HEADER ============ -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">🎯</div>
-                <div class="logo-text">Mindie</div>
-            </div>
-            <nav class="nav-tabs">
-                <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
-                <button class="nav-tab" onclick="showPage('challenges')">Mes Défis</button>
-                <button class="nav-tab" onclick="showPage('leaderboard')">Leaderboard</button>
-                <button class="nav-tab" onclick="showPage('profile')">Profil</button>
-                <button class="nav-tab" onclick="showPage('badges')">Badges</button>
-                <button class="nav-tab" onclick="showPage('stats')">Statistiques</button>
-            </nav>
-            <div class="user-menu">
-                <div class="user-avatar">JD</div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ============ MAIN CONTENT ============ -->
-    <div class="main-container">
-
-        <!-- ============ DASHBOARD PAGE ============ -->
-        <div id="dashboard" class="page active">
-            <div class="section-title">Vue d'ensemble</div>
-            <div class="dashboard-grid">
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <h3>Points Totaux</h3>
-                        <div class="stat-value">2,450</div>
-                    </div>
-                    <div class="stat-icon blue">⭐</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <h3>Défis Complétés</h3>
-                        <div class="stat-value">24</div>
-                    </div>
-                    <div class="stat-icon green">✓</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <h3>Badges Débloqués</h3>
-                        <div class="stat-value">12</div>
-                    </div>
-                    <div class="stat-icon orange">🏆</div>
-                </div>
-            </div>
-
-            <div style="margin-top: 40px;">
-                <div class="section-title">Défis en cours</div>
-                <div class="challenges-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
-                    <div class="challenge-card">
-                        <div class="challenge-header">
-                            <span class="challenge-level easy">Facile</span>
-                            <div class="challenge-title">Premiers Pas</div>
-                            <div class="challenge-description">Complétez votre première tâche</div>
-                        </div>
-                        <div class="challenge-body">
-                            <div class="challenge-points">
-                                <span class="points-label">Récompense</span>
-                                <span class="points-value">+50 pts</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%;"></div>
-                            </div>
-                            <div class="progress-text">75% complété</div>
-                        </div>
-                    </div>
-                    <div class="challenge-card">
-                        <div class="challenge-header">
-                            <span class="challenge-level medium">Moyen</span>
-                            <div class="challenge-title">Grimpeur</div>
-                            <div class="challenge-description">Atteignez 500 points</div>
-                        </div>
-                        <div class="challenge-body">
-                            <div class="challenge-points">
-                                <span class="points-label">Récompense</span>
-                                <span class="points-value">+150 pts</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 45%;"></div>
-                            </div>
-                            <div class="progress-text">45% complété</div>
-                        </div>
-                    </div>
-                    <div class="challenge-card">
-                        <div class="challenge-header">
-                            <span class="challenge-level hard">Difficile</span>
-                            <div class="challenge-title">Maître</div>
-                            <div class="challenge-description">Débloquez 20 badges</div>
-                        </div>
-                        <div class="challenge-body">
-                            <div class="challenge-points">
-                                <span class="points-label">Récompense</span>
-                                <span class="points-value">+300 pts</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 60%;"></div>
-                            </div>
-                            <div class="progress-text">60% complété</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============ CHALLENGES PAGE ============ -->
-        <div id="challenges" class="page">
-            <div class="section-title">Mes Défis</div>
-            <div class="challenges-grid">
-                <div class="challenge-card">
-                    <div class="challenge-header">
-                        <span class="challenge-level easy">Facile</span>
-                        <div class="challenge-title">Premiers Pas</div>
-                        <div class="challenge-description">Complétez votre première tâche</div>
-                    </div>
-                    <div class="challenge-body">
-                        <div class="challenge-points">
-                            <span class="points-label">Récompense</span>
-                            <span class="points-value">+50 pts</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 75%;"></div>
-                        </div>
-                        <div class="progress-text">75% complété</div>
-                        <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Continuer</button>
-                    </div>
-                </div>
-
-                <div class="challenge-card">
-                    <div class="challenge-header">
-                        <span class="challenge-level easy">Facile</span>
-                        <div class="challenge-title">Première Victoire</div>
-                        <div class="challenge-description">Gagnez votre premier défi</div>
-                    </div>
-                    <div class="challenge-body">
-                        <div class="challenge-points">
-                            <span class="points-label">Récompense</span>
-                            <span class="points-value">+75 pts</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 100%;"></div>
-                        </div>
-                        <div class="progress-text">100% complété</div>
-                        <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Réclamer</button>
-                    </div>
-                </div>
-
-                <div class="challenge-card">
-                    <div class="challenge-header">
-                        <span class="challenge-level medium">Moyen</span>
-                        <div class="challenge-title">Grimpeur</div>
-                        <div class="challenge-description">Atteignez 500 points</div>
-                    </div>
-                    <div class="challenge-body">
-                        <div class="challenge-points">
-                            <span class="points-label">Récompense</span>
-                            <span class="points-value">+150 pts</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 45%;"></div>
-                        </div>
-                        <div class="progress-text">45% complété</div>
-                        <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Continuer</button>
-                    </div>
-                </div>
-
-                <div class="challenge-card">
-                    <div class="challenge-header">
-                        <span class="challenge-level medium">Moyen</span>
-                        <div class="challenge-title">Collecteur</div>
-                        <div class="challenge-description">Débloquez 5 badges</div>
-                    </div>
-                    <div class="challenge-body">
-                        <div class="challenge-points">
-                            <span class="points-label">Récompense</span>
-                            <span class="points-value">+120 pts</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 80%;"></div>
-                        </div>
-                        <div class="progress-text">80% complété</div>
-                        <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Continuer</button>
-                    </div>
-                </div>
-
-                <div class="challenge-card">
-                    <div class="challenge-header">
-                        <span class="challenge-level hard">Difficile</span>
-                        <div class="challenge-title">Maître</div>
-                        <div class="challenge-description">Débloquez 20 badges</div>
-                    </div>
-                    <div class="challenge-body">
-                        <div class="challenge-points">
-                            <span class="points-label">Récompense</span>
-                            <span class="points-value">+300 pts</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 60%;"></div>
-                        </div>
-                        <div class="progress-text">60% complété</div>
-                        <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Continuer</button>
-                    </div>
-                </div>
-
-                <div class="challenge-card">
-                    <div class="challenge-header">
-                        <span class="challenge-level hard">Difficile</span>
-                        <div class="challenge-title">Champion</div>
-                        <div class="challenge-description">Restez #1 pendant 7 jours</div>
-                    </div>
-                    <div class="challenge-body">
-                        <div class="challenge-points">
-                            <span class="points-label">Récompense</span>
-                            <span class="points-value">+500 pts</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%;"></div>
-                        </div>
-                        <div class="progress-text">0% complété</div>
-                        <button class="btn btn-secondary" style="margin-top: 12px; width: 100%;">Verrouillé</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============ LEADERBOARD PAGE ============ -->
-        <div id="leaderboard" class="page">
-            <div class="section-title">Leaderboard Global</div>
-            <div class="leaderboard-container">
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%;">Rang</th>
-                            <th style="width: 35%;">Joueur</th>
-                            <th style="width: 15%;">Défis</th>
-                            <th style="width: 20%;">Points</th>
-                            <th style="width: 25%;">Badges</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="rank-badge top1">🥇</span></td>
-                            <td>
-                                <div class="player-info">
-                                    <div class="player-avatar">AP</div>
-                                    <div class="player-details">
-                                        <h4>Alex Pena</h4>
-                                        <p>@lexicon</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>45</td>
-                            <td><span class="score-badge">5,200 pts</span></td>
-                            <td>🏆🌟✨💎🎖️</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge top2">🥈</span></td>
-                            <td>
-                                <div class="player-info">
-                                    <div class="player-avatar" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">SM</div>
-                                    <div class="player-details">
-                                        <h4>Sarah Martinez</h4>
-                                        <p>@smartinez</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>42</td>
-                            <td><span class="score-badge">4,850 pts</span></td>
-                            <td>🏆🌟✨💎</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge top3">🥉</span></td>
-                            <td>
-                                <div class="player-info">
-                                    <div class="player-avatar" style="background: linear-gradient(135deg, #4ade80, #16a34a);">JC</div>
-                                    <div class="player-details">
-                                        <h4>Jordan Chen</h4>
-                                        <p>@jchen2024</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>38</td>
-                            <td><span class="score-badge">4,560 pts</span></td>
-                            <td>🏆🌟✨</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge">4</span></td>
-                            <td>
-                                <div class="player-info">
-                                    <div class="player-avatar" style="background: linear-gradient(135deg, #a855f7, #6b21a8);">ER</div>
-                                    <div class="player-details">
-                                        <h4>Emily Rodriguez</h4>
-                                        <p>@emily_r</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>35</td>
-                            <td><span class="score-badge">4,120 pts</span></td>
-                            <td>🏆🌟✨</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge">5</span></td>
-                            <td>
-                                <div class="player-info">
-                                    <div class="player-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">MK</div>
-                                    <div class="player-details">
-                                        <h4>Marcus King</h4>
-                                        <p>@mking</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>32</td>
-                            <td><span class="score-badge">3,890 pts</span></td>
-                            <td>🏆🌟</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge">6</span></td>
-                            <td>
-                                <div class="player-info">
-                                    <div class="player-avatar" style="background: linear-gradient(135deg, #ec4899, #be185d);">LT</div>
-                                    <div class="player-details">
-                                        <h4>Lisa Thompson</h4>
-                                        <p>@lisathompson</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>29</td>
-                            <td><span class="score-badge">3,450 pts</span></td>
-                            <td>🏆🌟</td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge">7</span></td>
-                            <td>
-                                <div class="player-info">
-                                    <div class="player-avatar" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">DW</div>
-                                    <div class="player-details">
-                                        <h4>David Wilson</h4>
-                                        <p>@davidw</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>26</td>
-                            <td><span class="score-badge">3,120 pts</span></td>
-                            <td>🏆</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ============ PROFILE PAGE ============ -->
-        <div id="profile" class="page">
-            <div class="profile-header">
-                <div class="profile-avatar">JD</div>
-                <div class="profile-name">John Doe</div>
-                <div class="profile-username">@johndoe</div>
-                <div class="profile-stats-mini">
-                    <div>
-                        <div class="value">2,450</div>
-                        <div>Points</div>
-                    </div>
-                    <div>
-                        <div class="value">24</div>
-                        <div>Défis</div>
-                    </div>
-                    <div>
-                        <div class="value">12</div>
-                        <div>Badges</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-content">
-                <div class="profile-section">
-                    <h3>🏆 Accomplissements Récents</h3>
-                    <div class="achievement-item">
-                        <div class="achievement-icon">⭐</div>
-                        <div class="achievement-content">
-                            <h4>Première Victoire</h4>
-                            <p>Il y a 2 jours</p>
-                        </div>
-                    </div>
-                    <div class="achievement-item">
-                        <div class="achievement-icon">🌟</div>
-                        <div class="achievement-content">
-                            <h4>Grimpeur</h4>
-                            <p>Il y a 1 semaine</p>
-                        </div>
-                    </div>
-                    <div class="achievement-item">
-                        <div class="achievement-icon">🎖️</div>
-                        <div class="achievement-content">
-                            <h4>Collecteur de Badges</h4>
-                            <p>Il y a 2 semaines</p>
-                        </div>
-                    </div>
-                    <div class="achievement-item">
-                        <div class="achievement-icon">💎</div>
-                        <div class="achievement-content">
-                            <h4>Maître des Défis</h4>
-                            <p>Il y a 3 semaines</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="profile-section">
-                    <h3>📊 Statistiques</h3>
-                    <div class="achievement-item">
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span>Taux de réussite</span>
-                                <strong style="color: var(--primary-color);">85%</strong>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 85%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="achievement-item">
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span>Défis Complétés</span>
-                                <strong style="color: var(--primary-color);">24/30</strong>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 80%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="achievement-item">
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span>Badges Débloqués</span>
-                                <strong style="color: var(--primary-color);">12/25</strong>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 48%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============ BADGES PAGE ============ -->
-        <div id="badges" class="page">
-            <div class="section-title">Badges & Récompenses</div>
-            <div class="badges-grid">
-                <div class="badge-item">
-                    <div class="badge-icon">🚀</div>
-                    <div class="badge-name">Premiers Pas</div>
-                    <div class="badge-rarity common">Common</div>
-                    <div class="badge-unlock-date">Débloqué il y a 30 jours</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">⭐</div>
-                    <div class="badge-name">Champion</div>
-                    <div class="badge-rarity rare">Rare</div>
-                    <div class="badge-unlock-date">Débloqué il y a 20 jours</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">🌟</div>
-                    <div class="badge-name">Brillant</div>
-                    <div class="badge-rarity rare">Rare</div>
-                    <div class="badge-unlock-date">Débloqué il y a 15 jours</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">💎</div>
-                    <div class="badge-name">Légendaire</div>
-                    <div class="badge-rarity legendary">Légendaire</div>
-                    <div class="badge-unlock-date">Débloqué il y a 7 jours</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">🏆</div>
-                    <div class="badge-name">Vainqueur</div>
-                    <div class="badge-rarity epic">Épique</div>
-                    <div class="badge-unlock-date">Débloqué il y a 3 jours</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">🎯</div>
-                    <div class="badge-name">Précision</div>
-                    <div class="badge-rarity rare">Rare</div>
-                    <div class="badge-unlock-date">Débloqué il y a 1 jour</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">⚡</div>
-                    <div class="badge-name">Éclair</div>
-                    <div class="badge-rarity epic">Épique</div>
-                    <div class="badge-unlock-date">Débloqué aujourd'hui</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">🔥</div>
-                    <div class="badge-name">Sur le Feu</div>
-                    <div class="badge-rarity common">Common</div>
-                    <div class="badge-unlock-date">Débloqué aujourd'hui</div>
-                </div>
-
-                <div class="badge-item">
-                    <div class="badge-icon">🎪</div>
-                    <div class="badge-name">Joyeux</div>
-                    <div class="badge-rarity common">Common</div>
-                    <div class="badge-unlock-date">Non débloqué</div>
-                </div>
-
-                <div class="badge-item locked">
-                    <div class="badge-icon">👑</div>
-                    <div class="badge-name">Roi</div>
-                    <div class="badge-rarity legendary">Légendaire</div>
-                    <div class="badge-unlock-date">À débloquer</div>
-                </div>
-
-                <div class="badge-item locked">
-                    <div class="badge-icon">🧙</div>
-                    <div class="badge-name">Magicien</div>
-                    <div class="badge-rarity legendary">Légendaire</div>
-                    <div class="badge-unlock-date">À débloquer</div>
-                </div>
-
-                <div class="badge-item locked">
-                    <div class="badge-icon">🚁</div>
-                    <div class="badge-name">Hélicoptère</div>
-                    <div class="badge-rarity epic">Épique</div>
-                    <div class="badge-unlock-date">À débloquer</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============ STATS PAGE ============ -->
-        <div id="stats" class="page">
-            <div class="section-title">Statistiques Détaillées</div>
-            <div class="stats-grid">
-                <div class="stat-chart">
-                    <h3>Points par Catégorie</h3>
-                    <div class="chart-bar">
-                        <div class="chart-bar-label">
-                            <span>Défis</span>
-                            <span class="chart-bar-value">1,200 pts</span>
-                        </div>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width: 70%;"></div>
-                        </div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-label">
-                            <span>Badges</span>
-                            <span class="chart-bar-value">800 pts</span>
-                        </div>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width: 55%;"></div>
-                        </div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-label">
-                            <span>Leaderboard</span>
-                            <span class="chart-bar-value">450 pts</span>
-                        </div>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width: 40%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-chart">
-                    <h3>Activité Hebdomadaire</h3>
-                    <div class="chart-bar">
-                        <div class="chart-bar-label">
-                            <span>Lundi</span>
-                            <span class="chart-bar-value">320 pts</span>
-                        </div>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width: 65%;"></div>
-                        </div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-label">
-                            <span>Mardi</span>
-                            <span class="chart-bar-value">280 pts</span>
-                        </div>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width: 55%;"></div>
-                        </div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-label">
-                            <span>Mercredi</span>
-                            <span class="chart-bar-value">410 pts</span>
-                        </div>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width: 80%;"></div>
-                        </div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="chart-bar-label">
-                            <span>Jeudi</span>
-                            <span class="chart-bar-value">350 pts</span>
-                        </div>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width: 70%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-chart">
-                    <h3>Récapitulatif</h3>
-                    <div class="activity-item">
-                        <span class="activity-type">Total Points</span>
-                        <span class="activity-points">2,450 pts</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-type">Défis Complétés</span>
-                        <span class="activity-points">24/30</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-type">Badges Débloqués</span>
-                        <span class="activity-points">12/25</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-type">Rang Actuel</span>
-                        <span class="activity-points">#8</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-type">Séquence Actuelle</span>
-                        <span class="activity-points">7 jours</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="app">
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">M</div>
+    <div class="brand-text">
+      <div class="title">Mindie</div>
+      <div class="subtitle">Time Management Dashboard</div>
     </div>
+  </div>
+  <div class="date">Aujourd'hui — <span id="dateNow"></span></div>
+</header>
 
-    <!-- ============ JAVASCRIPT ============ -->
-    <script>
-        function showPage(pageId) {
-            // Hide all pages
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => page.classList.remove('active'));
+<main class="grid">
+<section class="col-left">
+  <div class="banner card">
+    <div class="banner-content">
+      <div>
+        <div class="small">Score de Productivité</div>
+        <div id="prodScore" class="big">0%</div>
+        <div class="muted" id="prodMsg">Commencez vos tâches pour calculer.</div>
+      </div>
+      <div class="banner-ico">⚡</div>
+    </div>
+  </div>
 
-            // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.nav-tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
+  <div class="mini-cards">
+    <div class="mini card">
+      <div class="mini-title">Prédictions IA</div>
+      <div class="mini-big">14h–16h</div>
+      <div class="muted">Votre pic de productivité</div>
+    </div>
+    <div class="mini card">
+      <div class="mini-title">Temps de travail</div>
+      <div id="totalTime" class="mini-big">0h 0m</div>
+      <div class="muted">Aujourd'hui</div>
+    </div>
+    <div class="mini card">
+      <div class="mini-title">Analytics rapide</div>
+      <div class="mini-big" id="trend">+0%</div>
+      <div class="muted">Tendance hebdo</div>
+    </div>
+  </div>
 
-            // Show selected page
-            document.getElementById(pageId).classList.add('active');
+  <div class="tasks card">
+    <div class="tasks-header">
+      <h3>Tâches du jour</h3>
+      <div class="progress-info"><span id="completedCount">0</span> / <span id="totalCount">0</span> complétées</div>
+    </div>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    <ul id="taskList" class="task-list"></ul>
+    <form id="addForm" class="add-row">
+      <input id="taskInput" placeholder="Créer une tâche..." autocomplete="off" />
+      <button type="submit" class="add-btn">+</button>
+    </form>
+  </div>
+</section>
 
-            // Add active class to clicked tab
-            event.target.classList.add('active');
-        }
-    </script>
+<aside class="col-right">
+  <div class="card analytics">
+    <h4>Analytics</h4>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Heures productives</div><div id="productiveRange" class="stat-big">14h-16h</div></div>
+      <div class="stat"><div class="stat-label">Principal</div><div id="mainDistr" class="stat-big red">Notifications</div></div>
+    </div>
+  </div>
+
+  <div class="card badges">
+    <div class="tabs">
+      <button class="tab active">Badges</button>
+      <button class="tab">Défis</button>
+    </div>
+    <div class="badge-grid" id="badgeGrid"></div>
+  </div>
+
+  <div class="card leaderboard">
+    <h4>Classement</h4>
+    <ol id="leaderboardList" class="leaderboard-list">
+      <li><strong>🏆 Alice</strong> <span class="points">2,450 pts</span></li>
+      <li><strong>🥈 Bob</strong> <span class="points">2,180 pts</span></li>
+      <li class="you"><strong>🥉 Vous</strong> <span class="points">#42</span></li>
+    </ol>
+  </div>
+</aside>
+</main>
+
+<footer class="foot">Built for time management — Mindie demo</footer>
+</div>
+
+<script>
+const storageKey = 'mindie-dashboard-v1';
+const dateNow = document.getElementById('dateNow');
+dateNow.textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+let state = {
+  tasks:[
+    {id:genId(),title:"Réunion d'équipe",estimateMin:60,timeSec:0,running:false,done:false},
+    {id:genId(),title:"Rédiger rapport mensuel",estimateMin:120,timeSec:0,running:false,done:false},
+    {id:genId(),title:"Vérifier emails",estimateMin:30,timeSec:0,running:false,done:true},
+    {id:genId(),title:"Planifier sprint",estimateMin:90,timeSec:0,running:false,done:false},
+    {id:genId(),title:"Pause café",estimateMin:15,timeSec:0,running:false,done:false}
+  ],
+  badges:[]
+};
+const saved=localStorage.getItem(storageKey);
+if(saved){try{state=JSON.parse(saved);}catch(e){}}
+const taskListEl=document.getElementById('taskList');
+const totalCountEl=document.getElementById('totalCount');
+const completedCountEl=document.getElementById('completedCount');
+const progressFill=document.getElementById('progressFill');
+const prodScoreEl=document.getElementById('prodScore');
+const prodMsgEl=document.getElementById('prodMsg');
+const totalTimeEl=document.getElementById('totalTime');
+const badgeGrid=document.getElementById('badgeGrid');
+let timers={};
+renderTasks();renderBadges();updateAll();
+document.getElementById('addForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const input=document.getElementById('taskInput');
+ const text=input.value.trim();if(!text)return;
+ const t={id:genId(),title:text,estimateMin:30,timeSec:0,running:false,done:false};
+ state.tasks.unshift(t);input.value='';persist();renderTasks();updateAll();
+});
+function genId(){return Math.random().toString(36).slice(2,9);}
+function persist(){localStorage.setItem(storageKey,JSON.stringify(state));}
+function renderTasks(){
+ taskListEl.innerHTML='';
+ state.tasks.forEach(task=>{
+   const li=document.createElement('li');li.className='task-item';li.dataset.id=task.id;
+   const left=document.createElement('div');left.className='task-left';
+   const cb=document.createElement('div');cb.className='checkbox'+(task.done?' checked':'');
+   cb.addEventListener('click',()=>toggleDone(task.id));
+   const title=document.createElement('div');title.className='task-title';title.textContent=task.title;
+   if(task.done)title.style.textDecoration='line-through';
+   left.appendChild(cb);left.appendChild(title);
+   const right=document.createElement('div');right.style.display='flex';right.style.gap='8px';
+   const timerLabel=document.createElement('div');timerLabel.className='muted';timerLabel.textContent=formatTime(task.timeSec);timerLabel.id='t_'+task.id;
+   const timerBtn=document.createElement('button');timerBtn.className='timer-btn';timerBtn.textContent=task.running?'■':'▶';
+   timerBtn.addEventListener('click',()=>toggleTimer(task.id,timerBtn,timerLabel));
+   right.appendChild(timerLabel);right.appendChild(timerBtn);
+   li.appendChild(left);li.appendChild(right);taskListEl.appendChild(li);
+ });
+ totalCountEl.textContent=state.tasks.length;
+ const completed=state.tasks.filter(t=>t.done).length;
+ completedCountEl.textContent=completed;
+}
+function toggleDone(id){
+ const t=state.tasks.find(x=>x.id===id);if(!t)return;
+ t.done=!t.done;if(t.done&&t.running)stopTimer(id);
+ persist();renderTasks();updateAll();
+}
+function toggleTimer(id){
+ const t=state.tasks.find(x=>x.id===id);if(!t)return;
+ if(t.running)stopTimer(id);else startTimer(id);
+ renderTasks();updateAll();
+}
+function startTimer(id){
+ const task=state.tasks.find(x=>x.id===id);if(!task)return;
+ state.tasks.forEach(t=>{if(t.running){t.running=false;if(timers[t.id]){clearInterval(timers[t.id]);delete timers[t.id];}}});
+ task.running=true;
+ timers[id]=setInterval(()=>{
+   const tk=state.tasks.find(x=>x.id===id);if(!tk)return;
+   tk.timeSec+=1;document.getElementById('t_'+id).textContent=formatTime(tk.timeSec);
+   updateAll(false);
+ },1000);
+ persist();
+}
+function stopTimer(id){
+ const t=state.tasks.find(x=>x.id===id);if(!t)return;
+ t.running=false;if(timers[id]){clearInterval(timers[id]);delete timers[id];}
+ persist();renderTasks();updateAll();
+}
+function updateAll(save=true){
+ const totalSec=state.tasks.reduce((s,t)=>s+(t.timeSec||0),0);
+ totalTimeEl.textContent=`${Math.floor(totalSec/3600)}h ${Math.floor((totalSec%3600)/60)}m`;
+ const total=state.tasks.length||1;
+ const completed=state.tasks.filter(t=>t.done).length;
+ const percent=Math.round((completed/total)*100);
+ progressFill.style.width=percent+'%';
+ completedCountEl.textContent=completed;totalCountEl.textContent=total;
+ const completionFactor=completed/total;
+ const targetSec=8*3600;const timeFactor=Math.min(totalSec/Math.max(targetSec,1),1);
+ const score=Math.round((completionFactor*0.6+timeFactor*0.4)*100);
+ prodScoreEl.textContent=(isNaN(score)?'0%':score+'%');
+ if(score>=85)prodMsgEl.textContent='Excellent ! Vous êtes en forme 💪';
+ else if(score>=60)prodMsgEl.textContent='Bon travail. Concentrez-vous encore un peu.';
+ else prodMsgEl.textContent='Commencez à travailler - attaquez 1 tâche maintenant.';
+ evaluateBadges();if(save)persist();
+}
+function formatTime(s){
+ const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+ if(h>0)return`${h}h ${m}m`;if(m>0)return`${m}m ${sec}s`;return`${sec}s`;
+}
+function evaluateBadges(){
+ const totalSec=state.tasks.reduce((s,t)=>s+(t.timeSec||0),0);
+ const completed=state.tasks.filter(t=>t.done).length;
+ const newBadges=[];
+ if(totalSec>=7200)newBadges.push({id:'productif',name:'Productif',icon:'🚀'});
+ if(completed>=3)newBadges.push({id:'focalise',name:'Focalisé',icon:'🎯'});
+ newBadges.push({id:'matinal',name:'Matinal',icon:'🌅'});
+ state.badges=newBadges;renderBadges();persist();
+}
+function renderBadges(){
+ badgeGrid.innerHTML='';
+ const list=state.badges.length?state.badges:[
+   {id:'placeholder1',name:'Productif',icon:'🚀'},
+   {id:'placeholder2',name:'Matinal',icon:'🌅'},
+   {id:'placeholder3',name:'Focalisé',icon:'🎯'}
+ ];
+ list.forEach(b=>{
+   const el=document.createElement('div');el.className='badge';
+   el.innerHTML=`<div style="font-size:20px">${b.icon}</div><div style="margin-top:6px">${b.name}</div>`;
+   badgeGrid.appendChild(el);
+ });
+}
+function resumeTimersOnLoad(){
+ state.tasks.forEach(t=>{if(t.running)startTimer(t.id);});
+}
+resumeTimersOnLoad();updateAll(true);renderTasks();renderBadges();
+</script>
 </body>
 </html>
