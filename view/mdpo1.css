@@ -16,48 +16,47 @@ body {
   padding: 20px;
 }
 
-.login-container {
+.reset-container {
   background: white;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   overflow: hidden;
   max-width: 900px;
   width: 100%;
+  animation: fadeIn 0.5s ease;
 }
 
-.login-left {
+.reset-left {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   padding: 60px 40px;
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-.login-left h2 {
+.reset-left h2 {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 20px;
   font-family: 'Raleway', sans-serif;
 }
 
-.login-left p {
+.reset-left p {
   font-size: 16px;
   opacity: 0.9;
   line-height: 1.6;
+  margin-bottom: 30px;
 }
 
-.login-illustration {
-  margin-top: 40px;
-  text-align: center;
-}
-
-.login-illustration svg {
+.reset-illustration svg {
   width: 100%;
-  max-width: 300px;
+  max-width: 280px;
 }
 
-.login-right {
+.reset-right {
   padding: 60px 40px;
 }
 
@@ -72,16 +71,17 @@ body {
   font-family: 'Raleway', sans-serif;
 }
 
-.login-title {
+.reset-title {
   font-size: 28px;
   font-weight: 600;
   color: var(--dark-color);
   margin-bottom: 10px;
 }
 
-.login-subtitle {
+.reset-subtitle {
   color: #6B7280;
   margin-bottom: 30px;
+  line-height: 1.6;
 }
 
 .form-label {
@@ -114,7 +114,7 @@ body {
   border-radius: 0 10px 10px 0;
 }
 
-.btn-login {
+.btn-reset {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
   padding: 12px 30px;
@@ -126,90 +126,121 @@ body {
   margin-top: 20px;
 }
 
-.btn-login:hover {
+.btn-reset:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
 }
 
-.divider {
-  text-align: center;
-  margin: 25px 0;
-  position: relative;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 45%;
-  height: 1px;
-  background: #E5E7EB;
-}
-
-.divider::before { left: 0; }
-.divider::after { right: 0; }
-
-.divider span {
-  color: #6B7280;
-  background: white;
-  padding: 0 10px;
-}
-
-.social-login {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.btn-social {
-  flex: 1;
-  padding: 12px;
-  border: 2px solid #E5E7EB;
-  border-radius: 10px;
-  background: white;
-  color: var(--dark-color);
-  font-weight: 500;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-social:hover {
-  border-color: var(--primary-color);
-  background: #F3F4F6;
-}
-
-.register-link {
+.back-link {
   text-align: center;
   margin-top: 25px;
   color: #6B7280;
 }
 
-.register-link a {
+.back-link a {
   color: var(--primary-color);
   text-decoration: none;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.register-link a:hover {
+.back-link a:hover {
   color: var(--secondary-color);
 }
 
-.forgot-password {
+.info-box {
+  background: #EFF6FF;
+  border-left: 4px solid var(--primary-color);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.info-box i {
   color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 500;
+  margin-right: 8px;
 }
 
-.forgot-password:hover {
-  color: var(--secondary-color);
+.info-box p {
+  margin: 0;
+  font-size: 14px;
+  color: #4B5563;
+}
+
+.steps-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.steps-indicator::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #E5E7EB;
+  z-index: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  background: white;
+  padding: 0 10px;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E5E7EB;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: all 0.3s;
+}
+
+.step.active .step-circle {
+  background: var(--primary-color);
+  color: white;
+}
+
+.step.completed .step-circle {
+  background: #10B981;
+  color: white;
+}
+
+.step-label {
+  font-size: 11px;
+  color: #6B7280;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 768px) {
-  .login-left {
+  .reset-left {
     display: none;
   }
 }
