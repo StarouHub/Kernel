@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Projets Innovants - Kernel</title>
+  
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #2563EB;
+      --secondary-color: #7C3AED;
+      --accent-color: #F59E0B;
+      --dark-color: #1F2937;
+      --light-bg: #F9FAFB;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--light-bg);
+      padding-top: 80px;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 15px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      font-family: 'Raleway', sans-serif;
+    }
+    
+    .navmenu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+    
+    .navmenu a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .navmenu a:hover {
+      color: var(--accent-color);
+    }
+    
+    .btn-getstarted {
+      background: var(--accent-color);
+      color: white;
+      padding: 10px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .page-header {
+      background: white;
+      padding: 40px 0;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .page-header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--dark-color);
+      margin-bottom: 10px;
+      font-family: 'Raleway', sans-serif;
+    }
+    
+    .search-bar {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .search-input {
+      position: relative;
+      flex: 1;
+    }
+    
+    .search-input input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border: 2px solid #E5E7EB;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    
+    .search-input input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .search-input i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6B7280;
+    }
+    
+    .btn-new-project {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.3s;
+    }
+    
+    .btn-new-project:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    
+    .filters-sidebar {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      position: sticky;
+      top: 100px;
+    }
+    
+    .filter-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .filter-section {
+      margin-bottom: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .filter-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .filter-label {
+      font-weight: 500;
+      color: var(--dark-color);
+      margin-bottom: 12px;
+      display: block;
+    }
+    
+    .form-check {
+      margin-bottom: 10px;
+    }
+    
+    .form-check-input:checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    .form-range::-webkit-slider-thumb {
+      background: var(--primary-color);
+    }
+    
+    .form-range::-moz-range-thumb {
+      background: var(--primary-color);
+    }
+    
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-tab {
+      padding: 8px 20px;
+      border: 2px solid #E5E7EB;
+      border-radius: 20px;
+      background: white;
+      color: #6B7280;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .filter-tab:hover, .filter-tab.active {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .project-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+    
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .project-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      position: relative;
+    }
+    
+    .project-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--accent-color);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .project-content {
+      padding: 25px;
+    }
+    
+    .project-category {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--light-bg);
+      color: var(--primary-color);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    
+    .project-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .project-description {
+      color: #6B7280;
+      font-size: 14px;
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .project-creator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .creator-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .project-funding {
+      margin-bottom: 15px;
+    }
+    
+    .funding-progress {
+      height: 8px;
+      background: #E5E7EB;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .funding-bar {
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 10px;
+    }
+    
+    .funding-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #6B7280;
+    }
+    
+    .funding-amount {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .project-stats {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #6B7280;
+      font-size: 13px;
+    }
+    
+    .stat-item i {
+      color: var(--primary-color);
+    }
+    
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .results-count {
+      color: #6B7280;
+      font-size: 14px;
+    }
+    
+    .sort-select {
+      padding: 8px 15px;
+      border: 2px solid #E5E7EB;
+      border-radius: 8px;
+      background: white;
+      color: var(--dark-color);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 40px;
+    }
+    
+    .page-link {
+      padding: 10px 18px;
+      border: 2px solid #E5E7EB;
+      border-radius: 8px;
+      color: var(--dark-color);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    
+    .page-link:hover, .page-link.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+    }
+    
+    @media (max-width: 991px) {
+      .navmenu { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo">
+        <i class="bi bi-hexagon-fill"></i> Kernel
+      </a>
+
+      <nav class="navmenu">
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="projets-list.html" style="color: var(--accent-color);">Projets</a></li>
+          <li><a href="evenements-list.html">Événements</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="profil-utilisateur.html">Profil</a></li>
+        </ul>
+      </nav>
+
+      <a class="btn-getstarted" href="login.html">Connexion</a>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <h1><i class="bi bi-lightbulb"></i> Projets Innovants</h1>
+      <p>Découvrez et soutenez les projets technologiques de demain</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="search-bar">
+      <div class="row align-items-center">
+        <div class="col-lg-9 mb-3 mb-lg-0">
+          <div class="search-input">
+            <input type="text" placeholder="Rechercher un projet, une technologie, un créateur...">
+            <i class="bi bi-search"></i>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <button class="btn-new-project w-100" onclick="window.location.href='ajouter-projet.html'">
+            <i class="bi bi-plus-circle me-2"></i> Nouveau Projet
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-tabs">
+      <button class="filter-tab active">Tous les projets</button>
+      <button class="filter-tab">Nouveaux</button>
+      <button class="filter-tab">Tendances</button>
+      <button class="filter-tab">Bientôt financés</button>
+      <button class="filter-tab">En cours</button>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="filters-sidebar">
+          <div class="filter-title">
+            <i class="bi bi-funnel"></i> Filtres
+          </div>
+
+          <div class="filter-section">
+            <span class="filter-label">Catégories</span>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="cat1">
+              <label class="form-check-label" for="cat1">Intelligence Artificielle</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="cat2">
+              <label class="form-check-label" for="cat2">IoT & Robotique</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="cat3">
+              <label class="form-check-label" for="cat3">Blockchain</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="cat4">
+              <label class="form-check-label" for="cat4">Dev Web/Mobile</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="cat5">
+              <label class="form-check-label" for="cat5">Data Science</label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <span class="filter-label">Budget Recherché</span>
+            <input type="range" class="form-range" min="0" max="200000" value="100000" id="budgetRange">
+            <div class="d-flex justify-content-between">
+              <small>0 TND</small>
+              <small id="budgetValue">100,000 TND</small>
+              <small>200K+</small>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <span class="filter-label">Statut du Projet</span>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="status1">
+              <label class="form-check-label" for="status1">Idée / Concept</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="status2">
+              <label class="form-check-label" for="status2">Prototype</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="status3">
+              <label class="form-check-label" for="status3">MVP</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="status4">
+              <label class="form-check-label" for="status4">En production</label>
+            </div>
+          </div>
+
+          <button class="btn-new-project w-100" style="background: white; color: var(--primary-color); border: 2px solid var(--primary-color);">
+            <i class="bi bi-x-circle me-2"></i> Réinitialiser
+          </button>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <div class="results-header">
+          <div class="results-count">
+            <strong>247</strong> projets trouvés
+          </div>
+          <select class="sort-select">
+            <option>Plus récents</option>
+            <option>Plus populaires</option>
+            <option>Presque financés</option>
+            <option>Budget croissant</option>
+            <option>Budget décroissant</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="project-card" onclick="window.location.href='projet-details.html'">
+              <div style="position: relative;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220' viewBox='0 0 400 220'%3E%3Crect fill='%232563EB' width='400' height='220'/%3E%3Ctext x='50%25' y='50%25' font-size='30' fill='white' text-anchor='middle' dy='.3em'%3EIA Assistant%3C/text%3E%3C/svg%3E" alt="Project" class="project-image">
+                <span class="project-badge" style="position: absolute;">🔥 Tendance</span>
+              </div>
+              <div class="project-content">
+                <span class="project-category">Intelligence Artificielle</span>
+                <h3 class="project-title">Assistant IA Intelligent pour PME</h3>
+                <p class="project-description">Assistant virtuel basé sur l'IA pour automatiser les tâches quotidiennes des petites et moyennes entreprises.</p>
+                
+                <div class="project-creator">
+                  <div class="creator-avatar">AM</div>
+                  <div>
+                    <div style="font-weight: 500; font-size: 14px;">Ahmed Mejri</div>
+                    <div style="font-size: 12px; color: #6B7280;">Entrepreneur Tech</div>
+                  </div>
+                </div>
+                
+                <div class="project-funding">
+                  <div class="funding-progress">
+                    <div class="funding-bar" style="width: 53%;"></div>
+                  </div>
+                  <div class="funding-info">
+                    <span class="funding-amount">42,500 TND</span>
+                    <span>sur 80,000 TND (53%)</span>
+                  </div>
+                </div>
+                
+                <div class="project-stats">
+                  <span class="stat-item"><i class="bi bi-people"></i> 87 investisseurs</span>
+                  <span class="stat-item"><i class="bi bi-clock"></i> 23 jours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="project-card">
+              <div style="position: relative;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220' viewBox='0 0 400 220'%3E%3Crect fill='%237C3AED' width='400' height='220'/%3E%3Ctext x='50%25' y='50%25' font-size='30' fill='white' text-anchor='middle' dy='.3em'%3EIoT Home%3C/text%3E%3C/svg%3E" alt="Project" class="project-image">
+                <span class="project-badge" style="position: absolute; background: #10B981;">✓ Financé</span>
+              </div>
+              <div class="project-content">
+                <span class="project-category">IoT & Robotique</span>
+                <h3 class="project-title">Maison Connectée Écologique</h3>
+                <p class="project-description">Système domotique intelligent pour optimiser la consommation énergétique et réduire l'empreinte carbone.</p>
+                
+                <div class="project-creator">
+                  <div class="creator-avatar" style="background: linear-gradient(135deg, #7C3AED, #F59E0B);">SK</div>
+                  <div>
+                    <div style="font-weight: 500; font-size: 14px;">Sara Khalil</div>
+                    <div style="font-size: 12px; color: #6B7280;">Ingénieur IoT</div>
+                  </div>
+                </div>
+                
+                <div class="project-funding">
+                  <div class="funding-progress">
+                    <div class="funding-bar" style="width: 100%; background: #10B981;"></div>
+                  </div>
+                  <div class="funding-info">
+                    <span class="funding-amount">65,000 TND</span>
+                    <span>sur 60,000 TND (108%)</span>
+                  </div>
+                </div>
+                
+                <div class="project-stats">
+                  <span class="stat-item"><i class="bi bi-people"></i> 124 investisseurs</span>
+                  <span class="stat-item"><i class="bi bi-check-circle"></i> Financé</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="project-card">
+              <div style="position: relative;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220' viewBox='0 0 400 220'%3E%3Crect fill='%23F59E0B' width='400' height='220'/%3E%3Ctext x='50%25' y='50%25' font-size='30' fill='white' text-anchor='middle' dy='.3em'%3ENFT Art%3C/text%3E%3C/svg%3E" alt="Project" class="project-image">
+              </div>
+              <div class="project-content">
+                <span class="project-category">Blockchain</span>
+                <h3 class="project-title">Plateforme NFT pour Artistes</h3>
+                <p class="project-description">Marketplace décentralisée permettant aux artistes tunisiens de créer et vendre leurs NFTs facilement.</p>
+                
+                <div class="project-creator">
+                  <div class="creator-avatar" style="background: linear-gradient(135deg, #F59E0B, #EF4444);">MB</div>
+                  <div>
+                    <div style="font-weight: 500; font-size: 14px;">Mohamed Ben Ali</div>
+                    <div style="font-size: 12px; color: #6B7280;">Dev Blockchain</div>
+                  </div>
+                </div>
+                
+                <div class="project-funding">
+                  <div class="funding-progress">
+                    <div class="funding-bar" style="width: 28%;"></div>
+                  </div>
+                  <div class="funding-info">
+                    <span class="funding-amount">21,000 TND</span>
+                    <span>sur 75,000 TND (28%)</span>
+                  </div>
+                </div>
+                
+                <div class="project-stats">
+                  <span class="stat-item"><i class="bi bi-people"></i> 45 investisseurs</span>
+                  <span class="stat-item"><i class="bi bi-clock"></i> 42 jours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="project-card">
+              <div style="position: relative;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220' viewBox='0 0 400 220'%3E%3Crect fill='%2310B981' width='400' height='220'/%3E%3Ctext x='50%25' y='50%25' font-size='30' fill='white' text-anchor='middle' dy='.3em'%3EHealthApp%3C/text%3E%3C/svg%3E" alt="Project" class="project-image">
+                <span class="project-badge" style="position: absolute;">⭐ Nouveau</span>
+              </div>
+              <div class="project-content">
+                <span class="project-category">Dev Web/Mobile</span>
+                <h3 class="project-title">Application Mobile de Santé Connectée</h3>
+                <p class="project-description">App mobile pour le suivi médical et la prise de rendez-vous avec téléconsultation intégrée.</p>
+                
+                <div class="project-creator">
+                  <div class="creator-avatar" style="background: linear-gradient(135deg, #10B981, #06B6D4);">LB</div>
+                  <div>
+                    <div style="font-weight: 500; font-size: 14px;">Leila Ben Salah</div>
+                    <div style="font-size: 12px; color: #6B7280;">Dev Mobile</div>
+                  </div>
+                </div>
+                
+                <div class="project-funding">
+                  <div class="funding-progress">
+                    <div class="funding-bar" style="width: 15%;"></div>
+                  </div>
+                  <div class="funding-info">
+                    <span class="funding-amount">9,000 TND</span>
+                    <span>sur 60,000 TND (15%)</span>
+                  </div>
+                </div>
+                
+                <div class="project-stats">
+                  <span class="stat-item"><i class="bi bi-people"></i> 23 investisseurs</span>
+                  <span class="stat-item"><i class="bi bi-clock"></i> 55 jours</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="project-card">
+              <div style="position: relative;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220' viewBox='0 0 400 220'%3E%3Crect fill='%2306B6D4' width='400' height='220'/%3E%3Ctext x='50%25' y='50%25' font-size='30' fill='white' text-anchor='middle' dy='.3em'%3EAgroTech%3C/text%3E%3C/svg%3E" alt="Project" class="project-image">
+              </div>
+              <div class="project-content">
+                <span class="project-category">IoT & Robotique</span>
+                <h3 class="project-title">Solution AgriTech pour Agriculture Durable</h3>
+                <p class="project-description">Capteurs IoT et IA pour optimiser l'irrigation et surveiller la santé des cultures en temps réel.</p>
+                
+                <div class="project-creator">
+                  <div class="creator-avatar" style="background: linear-gradient(135deg, #06B6D4, #3B82F6);">YM</div>
+                  <div>
+                    <div style="font-weight: 500; font-size: 14px;">Youssef Mansour</div>
+                    <div style="font-size: 12px; color: #6B7280;">Ingénieur Agro</div>
+                  </div>
+                </div>
+                
+                <div class="project-funding">
+                  <div class="funding-progress">
+                    <div class="funding-bar" style="width: 72%;"></div>
+                  </div>
+                  <div class="funding-info">
+                    <span class="funding-amount">64,800 TND</span>
