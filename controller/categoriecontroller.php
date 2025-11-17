@@ -1,6 +1,6 @@
 <?php
-include(__DIR__ . '/../config.php');
-include(__DIR__ . '/../model/categorie.php');
+include_once(__DIR__ . '/../config.php');
+include_once(__DIR__ . '/../model/categorie.php');
 
 class CategorieController {
 
