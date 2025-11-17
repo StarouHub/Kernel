@@ -1,6 +1,6 @@
 <?php
-include(__DIR__ . '/../config.php');
-include(__DIR__ . '/../model/projet.php');
+include_once(__DIR__ . '/../config.php');
+include_once(__DIR__ . '/../model/projet.php');
 
 class ProjetController {
 
@@ -19,13 +19,13 @@ class ProjetController {
     }
 
     public function deleteProjet($id) {
-        $sql = "DELETE FROM Projet WHERE id = :id";
+        $sql = "DELETE FROM projet WHERE id = :id";
         $db = config::getConnexion();
         $req = $db->prepare($sql);
         $req->bindValue(':id', $id);
         try {
             // Supprimer d'abord les catégories associées
-            $sqlCat = "DELETE FROM Projet_Categorie WHERE projet_id = :id";
+            $sqlCat = "DELETE FROM projet_categorie WHERE projet_id = :id";
             $reqCat = $db->prepare($sqlCat);
             $reqCat->bindValue(':id', $id);
             $reqCat->execute();
@@ -37,8 +37,9 @@ class ProjetController {
         }
     }
 
-    public function addProjet(Projet $projet) {
-        $sql = "INSERT INTO Projet (titre, description, budget_requis, budget_actuel, statut, date_creation, user_id) 
+    // MÉTHODE CORRIGÉE : accepte maintenant le tableau de catégories
+    public function addProjet(Projet $projet, $selectedCategories = []) {
+        $sql = "INSERT INTO projet (titre, description, budget_requis, budget_actuel, statut, date_creation, user_id) 
                 VALUES (:titre, :description, :budget_requis, :budget_actuel, :statut, :date_creation, :user_id)";
         $db = config::getConnexion();
         try {
@@ -53,8 +54,17 @@ class ProjetController {
                 'user_id' => $projet->getUserId()
             ]);
             
-            // Retourner l'ID du projet créé
-            return $db->lastInsertId();
+            // Récupérer l'ID du projet créé
+            $projet_id = $db->lastInsertId();
+            
+            // Ajouter les catégories associées
+            if (!empty($selectedCategories)) {
+                foreach ($selectedCategories as $categorie_id) {
+                    $this->addProjetCategorie($projet_id, $categorie_id);
+                }
+            }
+            
+            return $projet_id;
         } catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
             return false;
@@ -65,7 +75,7 @@ class ProjetController {
         try {
             $db = config::getConnexion();
             $query = $db->prepare(
-                'UPDATE Projet SET 
+                'UPDATE projet SET 
                     titre = :titre,
                     description = :description,
                     budget_requis = :budget_requis,
@@ -91,7 +101,7 @@ class ProjetController {
     }
 
     public function showProjet($id) {
-        $sql = "SELECT * FROM Projet WHERE id = :id";
+        $sql = "SELECT * FROM projet WHERE id = :id";
         $db = config::getConnexion();
         $query = $db->prepare($sql);
         $query->bindValue(':id', $id);
@@ -106,7 +116,7 @@ class ProjetController {
     }
 
     public function addProjetCategorie($projet_id, $categorie_id) {
-        $sql = "INSERT INTO Projet_Categorie (projet_id, categorie_id) VALUES (:projet_id, :categorie_id)";
+        $sql = "INSERT INTO projet_categorie (projet_id, categorie_id) VALUES (:projet_id, :categorie_id)";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
@@ -122,8 +132,8 @@ class ProjetController {
     }
 
     public function getProjetCategories($projet_id) {
-        $sql = "SELECT c.* FROM Categorie c 
-                INNER JOIN Projet_Categorie pc ON c.id = pc.categorie_id 
+        $sql = "SELECT c.* FROM categorie c 
+                INNER JOIN projet_categorie pc ON c.id = pc.categorie_id 
                 WHERE pc.projet_id = :projet_id";
         $db = config::getConnexion();
         try {
@@ -137,7 +147,7 @@ class ProjetController {
     }
 
     public function searchProjets($keyword) {
-        $sql = "SELECT p.* FROM Projet p 
+        $sql = "SELECT p.* FROM projet p 
                 WHERE p.titre LIKE :keyword 
                 OR p.description LIKE :keyword 
                 ORDER BY p.date_creation DESC";
@@ -152,7 +162,7 @@ class ProjetController {
     }
 
     public function getProjetsByStatut($statut) {
-        $sql = "SELECT * FROM Projet WHERE statut = :statut ORDER BY date_creation DESC";
+        $sql = "SELECT * FROM projet WHERE statut = :statut ORDER BY date_creation DESC";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
@@ -164,7 +174,7 @@ class ProjetController {
     }
 
     public function countProjets() {
-        $sql = "SELECT COUNT(*) as total FROM Projet";
+        $sql = "SELECT COUNT(*) as total FROM projet";
         $db = config::getConnexion();
         try {
             $result = $db->query($sql);
