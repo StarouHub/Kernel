@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Forum - Kernel</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../frontoffice/css/forum.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo">
+        <i class="bi bi-hexagon-fill"></i> Kernel
+      </a>
+      <nav class="navmenu">
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="projets-list.html">Projets</a></li>
+          <li><a href="evenements-list.html">Événements</a></li>
+          <li><a href="forum.html" style="color: var(--accent-color);">Forum</a></li>
+          <li><a href="profil-utilisateur.html">Profil</a></li>
+        </ul>
+      </nav>
+      <a class="btn-getstarted" href="login.html">Connexion</a>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1><i class="bi bi-chat-dots"></i> Forum Communautaire</h1>
+      <p>Échangez avec la communauté des innovateurs, posez vos questions et partagez vos connaissances</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-lg-3">
+        <div class="forum-sidebar" id="sidebar-categories">
+          <button class="btn-new-topic" onclick="window.location.href='ajout-sujet.html'">
+            <i class="bi bi-plus-circle me-2"></i> Nouveau Sujet
+          </button>
+          <h5 class="sidebar-title">
+            <i class="bi bi-filter"></i> Catégories
+          </h5>
+          <div id="category-list">
+            <!-- Categories and 'Toutes' will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <div id="topics-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="../frontoffice/js/forum.js"></script>
+</body>
+</html>
