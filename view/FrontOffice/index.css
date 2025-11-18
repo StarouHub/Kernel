@@ -1,0 +1,34 @@
+:root {
+  --primary: #2563EB;
+  --secondary: #7C3AED;
+  --warning: #F59E0B;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f8fafc;
+}
+
+h1.h3 { font-family: 'Raleway', sans-serif; }
+
+.bg-purple { background: #7C3AED !important; }
+
+.badge.bg-info { background: #DBEAFE !important; color: #1E40AF !important; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+}
+
+.card {
+  border-radius: 16px;
+  transition: all 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}

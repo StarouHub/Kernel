@@ -1,0 +1,20 @@
+:root {
+  --primary: #2563EB;
+  --secondary: #7C3AED;
+  --purple: #7C3AED;
+}
+
+body { font-family: 'Roboto', sans-serif; background: #f8fafc; }
+h1.h3, h5 { font-family: 'Raleway', sans-serif; }
+
+.bg-purple { background: var(--purple) !important; }
+.bg-gradient-purple { background: linear-gradient(135deg, #7C3AED, #6d28d9); }
+
+.card {
+  border-radius: 16px;
+  transition: all 0.3s;
+}
+.card:hover { box-shadow: 0 15px 35px rgba(0,0,0,0.12) !important; }
+
+.form-select { border-radius: 50px; }
+.btn { border-radius: 12px; font-weight: 600; }
