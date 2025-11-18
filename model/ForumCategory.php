@@ -1,15 +1,9 @@
 <?php
-class ForumCategory {
-    public $id;
-    public $name;
+class ForumCategorie {
+    public $id, $name, $created_at;
 
-    public function __construct($id = null, $name = null) {
-        $this->id = $id;
-        $this->name = $name;
-    }
-
-    public static function getAll($pdo) {
-        $stmt = $pdo->query("SELECT * FROM forum_categories");
+    public static function all($pdo) {
+        $stmt = $pdo->query("SELECT * FROM forum_categories ORDER BY id DESC");
         return $stmt->fetchAll(PDO::FETCH_CLASS, self::class);
     }
 
@@ -19,7 +13,7 @@ class ForumCategory {
     }
 
     public static function delete($pdo, $id) {
-        $stmt = $pdo->prepare("DELETE FROM forum_categories WHERE id=?");
+        $stmt = $pdo->prepare("DELETE FROM forum_categories WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }

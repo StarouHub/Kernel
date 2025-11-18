@@ -1,32 +1,40 @@
 <?php
 class ForumTopic {
     public $id;
-    public $title;
-    public $category_id;
-    public $user_id;
-    public $created_at;
+    public $titre;
+    public $contenu;
+    public $date_creation;
+    public $categorie_id;
 
-    public function __construct($id = null, $title = null, $category_id = null, $user_id = null, $created_at = null) {
-        $this->id = $id;
-        $this->title = $title;
-        $this->category_id = $category_id;
-        $this->user_id = $user_id;
-        $this->created_at = $created_at;
-    }
-
-    public static function getByCategory($pdo, $category_id) {
-        $stmt = $pdo->prepare("SELECT * FROM forum_topics WHERE category_id = ?");
-        $stmt->execute([$category_id]);
+    // Fetch all topics
+    public static function all($pdo) {
+        $stmt = $pdo->query("SELECT * FROM sujet ORDER BY date_creation DESC");
         return $stmt->fetchAll(PDO::FETCH_CLASS, self::class);
     }
 
-    public static function create($pdo, $title, $category_id, $user_id) {
-        $stmt = $pdo->prepare("INSERT INTO forum_topics (title, category_id, user_id, created_at) VALUES (?, ?, ?, NOW())");
-        return $stmt->execute([$title, $category_id, $user_id]);
+    // Fetch all topics for a given category
+    public static function getByCategorie($pdo, $categorie_id) {
+        $stmt = $pdo->prepare("SELECT * FROM sujet WHERE categorie_id = ? ORDER BY date_creation DESC");
+        $stmt->execute([$categorie_id]);
+        return $stmt->fetchAll(PDO::FETCH_CLASS, self::class);
     }
 
+    // Fetch a single topic by its ID
+    public static function getById($pdo, $id) {
+        $stmt = $pdo->prepare("SELECT * FROM sujet WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetchObject(self::class);
+    }
+
+    // Create a new topic (sujet)
+    public static function create($pdo, $titre, $contenu, $categorie_id) {
+        $stmt = $pdo->prepare("INSERT INTO sujet (titre, contenu, date_creation, categorie_id) VALUES (?, ?, NOW(), ?)");
+        return $stmt->execute([$titre, $contenu, $categorie_id]);
+    }
+
+    // Delete a topic by ID
     public static function delete($pdo, $id) {
-        $stmt = $pdo->prepare("DELETE FROM forum_topics WHERE id=?");
+        $stmt = $pdo->prepare("DELETE FROM sujet WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }
