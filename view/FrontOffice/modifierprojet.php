@@ -2,15 +2,37 @@
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/categoriecontroller.php');
 
+// Récupérer l'ID du projet depuis l'URL
+$projet_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($projet_id === 0) {
+    header('Location: listeprojet.php?error=invalid_id');
+    exit;
+}
+
+$projetController = new ProjetController();
+$categorieController = new CategorieController();
+
+// Récupérer le projet existant
+$projetData = $projetController->showProjet($projet_id);
+
+if (!$projetData) {
+    header('Location: listeprojet.php?error=not_found');
+    exit;
+}
+
+// Récupérer les catégories du projet
+$projetCategories = $projetController->getProjetCategories($projet_id);
+$selectedCategoryId = !empty($projetCategories) ? $projetCategories[0]['id'] : '';
+
 // Initialiser les variables pour conserver les valeurs
 $formData = [
-    'projectTitle' => '',
-    'projectStatus' => '',
-    'shortDescription' => '',
-    'detailedDescription' => '',
-    'category' => '',
-    'budget' => '',
-    'duration' => ''
+    'projectTitle' => $projetData['titre'],
+    'projectStatus' => $projetData['statut'],
+    'shortDescription' => substr($projetData['description'], 0, 150),
+    'detailedDescription' => $projetData['description'],
+    'category' => $selectedCategoryId,
+    'budget' => $projetData['budget_requis']
 ];
 
 // Initialiser les erreurs
@@ -26,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formData['detailedDescription'] = trim($_POST['detailedDescription'] ?? '');
     $formData['category'] = $_POST['category'] ?? '';
     $formData['budget'] = $_POST['budget'] ?? '';
-    $formData['duration'] = $_POST['duration'] ?? '';
     
     // Validation côté serveur
     
@@ -70,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    // Si pas d'erreurs, enregistrer le projet
+    // Si pas d'erreurs, mettre à jour le projet
     if (empty($errors)) {
         try {
             // Créer l'objet Projet
@@ -79,26 +100,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $formData['projectTitle'],
                 $formData['detailedDescription'],
                 !empty($formData['budget']) ? floatval($formData['budget']) : 0,
-                0, // budget_actuel
+                $projetData['budget_actuel'], // Conserver le budget actuel
                 $formData['projectStatus'],
-                new DateTime(),
-                1 // user_id temporaire
+                new DateTime($projetData['date_creation']),
+                $projetData['user_id']
             );
             
-            // Ajouter le projet
-            $projetController = new ProjetController();
-            $selectedCategories = !empty($formData['category']) ? [$formData['category']] : [];
-            $projet_id = $projetController->addProjet($projet, $selectedCategories);
+            // Mettre à jour le projet
+            $success = $projetController->updateProjet($projet, $projet_id);
             
-            if ($projet_id) {
-                $message = '✓ Projet créé avec succès ! Redirection en cours...';
+            if ($success) {
+                // Mettre à jour les catégories
+                // Supprimer les anciennes catégories
+                $db = config::getConnexion();
+                $sqlDelete = "DELETE FROM projet_categorie WHERE projet_id = :projet_id";
+                $reqDelete = $db->prepare($sqlDelete);
+                $reqDelete->execute(['projet_id' => $projet_id]);
+                
+                // Ajouter la nouvelle catégorie si sélectionnée
+                if (!empty($formData['category'])) {
+                    $projetController->addProjetCategorie($projet_id, $formData['category']);
+                }
+                
+                $message = '✓ Projet modifié avec succès ! Redirection en cours...';
                 $messageType = 'success';
-                // Rediriger vers la liste après 2 secondes
-                header("refresh:2;url=listeprojet.php");
-                // Vider les données du formulaire après succès
-                $formData = array_fill_keys(array_keys($formData), '');
+                // Rediriger vers la page de détails après 2 secondes
+                header("refresh:2;url=detailsprojet.php?id=" . $projet_id);
             } else {
-                $message = '✗ Erreur lors de la création du projet.';
+                $message = '✗ Erreur lors de la modification du projet.';
                 $messageType = 'error';
             }
         } catch (Exception $e) {
@@ -111,8 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Récupérer les catégories pour l'affichage
-$categorieController = new CategorieController();
+// Récupérer toutes les catégories pour l'affichage
 $categories = $categorieController->listCategories();
 ?>
 <!DOCTYPE html>
@@ -120,7 +148,7 @@ $categories = $categorieController->listCategories();
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Ajouter un Projet - Kernel</title>
+  <title>Modifier le Projet - Kernel</title>
   
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -319,8 +347,8 @@ $categories = $categorieController->listCategories();
 
   <div class="page-header">
     <div class="container">
-      <h1><i class="bi bi-lightbulb"></i> Créer un Nouveau Projet</h1>
-      <p>Partagez votre innovation avec la communauté Kernel</p>
+      <h1><i class="bi bi-pencil-square"></i> Modifier le Projet</h1>
+      <p>Mettez à jour les informations de votre projet</p>
     </div>
   </div>
 
@@ -405,25 +433,19 @@ $categories = $categorieController->listCategories();
           <span id="budget_error" class="error-message"><?php echo $errors['budget'] ?? ''; ?></span>
         </div>
         <div class="col-md-6">
-          <label class="form-label">Durée du Projet</label>
-          <select name="duration" id="duration" class="form-select">
-            <option value="">Sélectionner...</option>
-            <option value="1-3" <?php echo $formData['duration'] === '1-3' ? 'selected' : ''; ?>>1-3 mois</option>
-            <option value="3-6" <?php echo $formData['duration'] === '3-6' ? 'selected' : ''; ?>>3-6 mois</option>
-            <option value="6-12" <?php echo $formData['duration'] === '6-12' ? 'selected' : ''; ?>>6-12 mois</option>
-            <option value="12+" <?php echo $formData['duration'] === '12+' ? 'selected' : ''; ?>>Plus de 12 mois</option>
-          </select>
-          <span id="duration_error" class="error-message"></span>
+          <label class="form-label">Budget Actuel (en TND)</label>
+          <input type="number" class="form-control" value="<?php echo htmlspecialchars($projetData['budget_actuel']); ?>" disabled>
+          <small class="text-muted">Le budget actuel ne peut pas être modifié ici</small>
         </div>
       </div>
 
       <!-- Buttons -->
       <div class="d-flex gap-3 justify-content-end mt-5">
-        <a href="listeprojet.php" class="btn btn-secondary">
-          <i class="bi bi-arrow-left me-2"></i> Retour à la liste
+        <a href="detailsprojet.php?id=<?php echo $projet_id; ?>" class="btn btn-secondary">
+          <i class="bi bi-x-circle me-2"></i> Annuler
         </a>
         <button type="submit" id="submitBtn" class="btn-submit">
-          <i class="bi bi-check-circle me-2"></i> Publier le Projet
+          <i class="bi bi-check-circle me-2"></i> Enregistrer les modifications
         </button>
       </div>
     </form>

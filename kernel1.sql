@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 16 nov. 2025 à 20:19
+-- Généré le : mer. 19 nov. 2025 à 22:52
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -18,8 +18,39 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `kernel`
+-- Base de données : `kernel1`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `actualite`
+--
+
+CREATE TABLE `actualite` (
+  `id` int(11) NOT NULL,
+  `titre` varchar(200) NOT NULL,
+  `contenu` text NOT NULL,
+  `date_publication` datetime DEFAULT current_timestamp(),
+  `type` enum('milestone','update','announcement') DEFAULT 'update',
+  `projet_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `actualite`
+--
+
+INSERT INTO `actualite` (`id`, `titre`, `contenu`, `date_publication`, `type`, `projet_id`) VALUES
+(1, 'Lancement de la version Beta', 'Nous sommes heureux d\'annoncer le lancement de notre version Beta ! Les premiers tests sont très prometteurs et nous avons reçu d\'excellents retours de nos beta-testeurs. La version finale est prévue pour le mois prochain.', '2025-11-15 10:30:00', 'milestone', 1),
+(2, 'Mise à jour de sécurité v1.2', 'Nous avons déployé une mise à jour importante qui corrige plusieurs failles de sécurité et améliore significativement les performances. Le temps de réponse a été réduit de 40%.', '2025-11-18 14:15:00', 'update', 1),
+(3, 'Nouveau partenariat stratégique', 'Nous avons signé un partenariat avec une grande entreprise du secteur technologique. Ce partenariat nous permettra d\'accélérer notre développement et d\'atteindre de nouveaux marchés.', '2025-11-19 09:00:00', 'announcement', 1),
+(4, 'Installation du premier prototype', 'Le premier prototype de notre système domotique a été installé avec succès dans une maison témoin. Les résultats préliminaires montrent une réduction de 35% de la consommation énergétique.', '2025-11-10 11:00:00', 'milestone', 2),
+(5, 'Ajout de nouveaux capteurs IoT', 'Nous avons intégré de nouveaux capteurs de température et d\'humidité pour un contrôle encore plus précis de l\'environnement intérieur.', '2025-11-17 16:45:00', 'update', 2),
+(6, 'Lancement de la marketplace', 'Notre marketplace NFT est maintenant en ligne ! Les artistes tunisiens peuvent dès maintenant créer et vendre leurs œuvres numériques. Plus de 50 artistes se sont déjà inscrits.', '2025-11-12 13:20:00', 'milestone', 3),
+(7, 'Réduction des frais de transaction', 'Grâce à notre nouvelle infrastructure, nous avons pu réduire les frais de transaction de 60%. Créer un NFT coûte maintenant moins de 1 TND.', '2025-11-19 10:30:00', 'announcement', 3),
+(8, 'Lancement de la téléconsultation', 'La fonctionnalité de téléconsultation est maintenant disponible ! Les patients peuvent consulter leur médecin directement depuis l\'application via vidéo.', '2025-11-14 08:00:00', 'milestone', 4),
+(9, 'Déploiement dans 10 fermes pilotes', 'Notre solution AgriTech a été déployée dans 10 fermes pilotes à travers la Tunisie. Les premiers résultats montrent une économie d\'eau de 45% et une augmentation des rendements de 25%.', '2025-11-16 15:00:00', 'milestone', 5),
+(10, 'Nouvelle fonctionnalité : Prévisions météo', 'Nous avons intégré un système de prévisions météo avancé qui permet aux agriculteurs d\'anticiper les conditions climatiques et d\'optimiser leurs interventions.', '2025-11-19 12:00:00', 'update', 5);
 
 -- --------------------------------------------------------
 
@@ -33,6 +64,18 @@ CREATE TABLE `categorie` (
   `icon` varchar(50) DEFAULT NULL,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `categorie`
+--
+
+INSERT INTO `categorie` (`id`, `nom`, `icon`, `description`) VALUES
+(1, 'AI', 'bi-robot', 'Intelligence Artificielle et Machine Learning'),
+(2, 'IoT', 'bi-cpu', 'Internet des Objets et Robotique'),
+(3, 'Blockchain', 'bi-diagram-3', 'Technologies Blockchain et Cryptomonnaies'),
+(4, 'Web', 'bi-code-slash', 'Développement Web et Mobile'),
+(5, 'Data', 'bi-database', 'Data Science et Big Data'),
+(6, 'Security', 'bi-shield-check', 'Cybersécurité et Protection des Données');
 
 -- --------------------------------------------------------
 
@@ -109,10 +152,21 @@ CREATE TABLE `projet` (
   `description` text DEFAULT NULL,
   `budget_requis` decimal(10,2) DEFAULT NULL,
   `budget_actuel` decimal(10,2) DEFAULT NULL,
-  `statut` enum('en_cours','termine','annule') DEFAULT NULL,
+  `statut` enum('idee','prototype','mvp','production') DEFAULT 'idee',
   `date_creation` datetime DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `projet`
+--
+
+INSERT INTO `projet` (`id`, `titre`, `description`, `budget_requis`, `budget_actuel`, `statut`, `date_creation`, `user_id`) VALUES
+(1, 'Assistant IA Intelligent pour PME', 'Assistant virtuel basé sur l\'IA pour automatiser les tâches quotidiennes des petites et moyennes entreprises. Utilise le traitement du langage naturel pour comprendre et répondre aux demandes, gérer les emails, planifier les réunions et analyser les données.', 80000.00, 42500.00, 'prototype', '2025-11-19 20:44:50', 1),
+(2, 'Maison Connectée Écologique', 'Système domotique intelligent pour optimiser la consommation énergétique et réduire l\'empreinte carbone. Intègre des capteurs IoT, l\'apprentissage automatique et une interface mobile intuitive.', 60000.00, 65000.00, 'mvp', '2025-11-19 20:44:50', 1),
+(3, 'Plateforme NFT pour Artistes', 'Marketplace décentralisée permettant aux artistes tunisiens de créer et vendre leurs NFTs facilement. Basée sur la blockchain Ethereum avec des frais réduits.', 75000.00, 21000.00, 'idee', '2025-11-19 20:44:50', 1),
+(4, 'Application Mobile de Santé Connectée', 'App mobile pour le suivi médical et la prise de rendez-vous avec téléconsultation intégrée. Permet aux patients de gérer leur santé et de communiquer avec leurs médecins.', 60000.00, 9000.00, 'prototype', '2025-11-19 20:44:50', 1),
+(5, 'Solution AgriTech pour Agriculture Durable', 'Capteurs IoT et IA pour optimiser l\'irrigation et surveiller la santé des cultures en temps réel. Aide les agriculteurs à réduire la consommation d\'eau et augmenter les rendements.', 90000.00, 64800.00, 'mvp', '2025-11-19 20:44:50', 1);
 
 -- --------------------------------------------------------
 
@@ -125,6 +179,17 @@ CREATE TABLE `projet_categorie` (
   `projet_id` int(11) DEFAULT NULL,
   `categorie_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `projet_categorie`
+--
+
+INSERT INTO `projet_categorie` (`id`, `projet_id`, `categorie_id`) VALUES
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3),
+(4, 4, 4),
+(5, 5, 2);
 
 -- --------------------------------------------------------
 
@@ -220,8 +285,22 @@ CREATE TABLE `utilisateur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `nom`, `prenom`, `email`, `password`, `telephone`, `role`, `date_inscription`) VALUES
+(1, 'Test', 'User', 'test@kernel.tn', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+216 12 345 678', 'innovateur', '2025-11-19 20:44:50');
+
+--
 -- Index pour les tables déchargées
 --
+
+--
+-- Index pour la table `actualite`
+--
+ALTER TABLE `actualite`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `projet_id` (`projet_id`);
 
 --
 -- Index pour la table `categorie`
@@ -319,8 +398,48 @@ ALTER TABLE `utilisateur`
   ADD PRIMARY KEY (`id`);
 
 --
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `actualite`
+--
+ALTER TABLE `actualite`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pour la table `categorie`
+--
+ALTER TABLE `categorie`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `projet`
+--
+ALTER TABLE `projet`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `projet_categorie`
+--
+ALTER TABLE `projet_categorie`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `actualite`
+--
+ALTER TABLE `actualite`
+  ADD CONSTRAINT `actualite_ibfk_1` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `evenement`

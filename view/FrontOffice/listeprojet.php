@@ -1,17 +1,29 @@
 <?php
-include '../../Controller/ProjetController.php';
-$projetC = new ProjetController();
+include_once(__DIR__ . '/../../controller/projetcontroller.php');
+include_once(__DIR__ . '/../../controller/categoriecontroller.php');
 
-// Gestion de la recherche et des filtres
-$keyword = isset($_GET['search']) ? $_GET['search'] : '';
-$statut = isset($_GET['statut']) ? $_GET['statut'] : '';
+$projetController = new ProjetController();
+$categorieController = new CategorieController();
 
-if ($keyword) {
-    $list = $projetC->searchProjets($keyword);
-} elseif ($statut) {
-    $list = $projetC->getProjetsByStatut($statut);
-} else {
-    $list = $projetC->listProjets();
+// Récupérer tous les projets
+$projets = $projetController->listProjets();
+$categories = $categorieController->listCategories();
+
+// Fonction pour calculer le pourcentage de financement
+function calculatePercentage($actuel, $requis) {
+    if ($requis == 0) return 0;
+    return min(100, round(($actuel / $requis) * 100));
+}
+
+// Fonction pour obtenir le badge du statut
+function getStatusBadge($statut) {
+    $badges = [
+        'idee' => ['text' => '💡 Idée', 'color' => '#F59E0B'],
+        'prototype' => ['text' => '🔧 Prototype', 'color' => '#2563EB'],
+        'mvp' => ['text' => '🚀 MVP', 'color' => '#7C3AED'],
+        'production' => ['text' => '✓ Production', 'color' => '#10B981']
+    ];
+    return $badges[$statut] ?? ['text' => '⭐ Nouveau', 'color' => '#F59E0B'];
 }
 ?>
 <!DOCTYPE html>
@@ -106,6 +118,72 @@ if ($keyword) {
       font-family: 'Raleway', sans-serif;
     }
     
+    .search-bar {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .search-input {
+      position: relative;
+      flex: 1;
+    }
+    
+    .search-input input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border: 2px solid #E5E7EB;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    
+    .search-input input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .search-input i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6B7280;
+    }
+    
+    .btn-new-project {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-new-project:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+      color: white;
+    }
+    
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .results-count {
+      color: #6B7280;
+      font-size: 14px;
+    }
+    
     .project-card {
       background: white;
       border-radius: 15px;
@@ -114,6 +192,9 @@ if ($keyword) {
       transition: all 0.3s;
       margin-bottom: 20px;
       cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
     
     .project-card:hover {
@@ -132,11 +213,34 @@ if ($keyword) {
       justify-content: center;
       color: white;
       font-size: 24px;
-      font-weight: bold;
+      font-weight: 700;
+    }
+    
+    .project-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--accent-color);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
     }
     
     .project-content {
       padding: 25px;
+    }
+    
+    .project-category {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--light-bg);
+      color: var(--primary-color);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 12px;
     }
     
     .project-title {
@@ -158,6 +262,10 @@ if ($keyword) {
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+    
+    .project-funding {
+      margin-bottom: 15px;
     }
     
     .funding-progress {
@@ -185,6 +293,27 @@ if ($keyword) {
       font-weight: 600;
       color: var(--primary-color);
     }
+    
+    .project-stats {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #6B7280;
+      font-size: 13px;
+    }
+    
+    .stat-item i {
+      color: var(--primary-color);
+    }
+    
+    @media (max-width: 991px) {
+      .navmenu { display: none; }
+    }
   </style>
 </head>
 
@@ -198,7 +327,7 @@ if ($keyword) {
       <nav class="navmenu">
         <ul>
           <li><a href="index.html">Accueil</a></li>
-          <li><a href="projetsList.php" style="color: var(--accent-color);">Projets</a></li>
+          <li><a href="listeprojet.php" style="color: var(--accent-color);">Projets</a></li>
           <li><a href="evenements-list.html">Événements</a></li>
           <li><a href="forum.html">Forum</a></li>
           <li><a href="profil-utilisateur.html">Profil</a></li>
@@ -217,74 +346,90 @@ if ($keyword) {
   </div>
 
   <div class="container">
-    <div class="row">
-      <div class="col-lg-12 mb-4">
-        <form method="GET" action="" class="d-flex gap-2">
-          <input type="text" name="search" class="form-control" 
-                 placeholder="Rechercher un projet..." 
-                 value="<?php echo htmlspecialchars($keyword); ?>">
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-search"></i> Rechercher
-          </button>
-        </form>
+    <div class="search-bar">
+      <div class="row align-items-center">
+        <div class="col-lg-9 mb-3 mb-lg-0">
+          <div class="search-input">
+            <input type="text" id="searchInput" placeholder="Rechercher un projet, une technologie, un créateur...">
+            <i class="bi bi-search"></i>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <a href="ajoutprojet.php" class="btn-new-project w-100">
+            <i class="bi bi-plus-circle me-2"></i> Nouveau Projet
+          </a>
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <?php 
-      if (count($list) > 0) {
-        foreach($list as $projet) {
-          $percentage = $projet['budget_requis'] > 0 
-            ? ($projet['budget_actuel'] / $projet['budget_requis']) * 100 
-            : 0;
-      ?>
-      <div class="col-md-6 col-lg-4">
-        <div class="project-card" onclick="window.location.href='projetDetails.php?id=<?php echo $projet['id']; ?>'">
-          <div class="project-image">
-            <?php echo substr(htmlspecialchars($projet['titre']), 0, 30); ?>
-          </div>
-          <div class="project-content">
-            <h3 class="project-title"><?php echo htmlspecialchars($projet['titre']); ?></h3>
-            <p class="project-description">
-              <?php echo htmlspecialchars(substr($projet['description'], 0, 120)) . '...'; ?>
-            </p>
-            
-            <div class="funding-progress">
-              <div class="funding-bar" style="width: <?php echo min($percentage, 100); ?>%;"></div>
-            </div>
-            <div class="funding-info">
-              <span class="funding-amount">
-                <?php echo number_format($projet['budget_actuel'], 0); ?> TND
-              </span>
-              <span>
-                sur <?php echo number_format($projet['budget_requis'], 0); ?> TND 
-                (<?php echo round($percentage); ?>%)
-              </span>
-            </div>
-            
-            <div class="mt-3">
-              <span class="badge bg-<?php 
-                echo $projet['statut'] == 'en_cours' ? 'warning' : 
-                     ($projet['statut'] == 'termine' ? 'success' : 'danger'); 
-              ?>">
-                <?php 
-                  echo $projet['statut'] == 'en_cours' ? 'En cours' : 
-                       ($projet['statut'] == 'termine' ? 'Terminé' : 'Annulé'); 
-                ?>
-              </span>
-            </div>
+    <div class="results-header">
+      <div class="results-count">
+        <strong><?php echo count($projets); ?></strong> projets trouvés
+      </div>
+    </div>
+
+    <div class="row" id="projectsContainer">
+      <?php if (empty($projets)): ?>
+        <div class="col-12">
+          <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle me-2"></i>
+            Aucun projet disponible pour le moment. <a href="ajoutprojet.php">Créez le premier projet !</a>
           </div>
         </div>
-      </div>
-      <?php 
-        }
-      } else {
-        echo '<div class="col-12"><div class="alert alert-info">Aucun projet trouvé.</div></div>';
-      }
-      ?>
+      <?php else: ?>
+        <?php foreach ($projets as $projet): 
+          $percentage = calculatePercentage($projet['budget_actuel'], $projet['budget_requis']);
+          $badge = getStatusBadge($projet['statut']);
+          
+          // Récupérer les catégories du projet
+          $projetCategories = $projetController->getProjetCategories($projet['id']);
+          $categoryName = !empty($projetCategories) ? $projetCategories[0]['nom'] : 'Non catégorisé';
+        ?>
+          <div class="col-md-6 col-lg-4">
+            <a href="detailsprojet.php?id=<?php echo $projet['id']; ?>" class="project-card">
+              <div style="position: relative;">
+                <div class="project-image">
+                  <?php echo htmlspecialchars(substr($projet['titre'], 0, 20)); ?>
+                </div>
+                <span class="project-badge" style="position: absolute; background: <?php echo $badge['color']; ?>;">
+                  <?php echo $badge['text']; ?>
+                </span>
+              </div>
+              <div class="project-content">
+                <span class="project-category"><?php echo htmlspecialchars($categoryName); ?></span>
+                <h3 class="project-title"><?php echo htmlspecialchars($projet['titre']); ?></h3>
+                <p class="project-description"><?php echo htmlspecialchars(substr($projet['description'], 0, 150)) . '...'; ?></p>
+                
+                <?php if ($projet['budget_requis'] > 0): ?>
+                <div class="project-funding">
+                  <div class="funding-progress">
+                    <div class="funding-bar" style="width: <?php echo $percentage; ?>%;"></div>
+                  </div>
+                  <div class="funding-info">
+                    <span class="funding-amount"><?php echo number_format($projet['budget_actuel'], 0, ',', ' '); ?> TND</span>
+                    <span>sur <?php echo number_format($projet['budget_requis'], 0, ',', ' '); ?> TND (<?php echo $percentage; ?>%)</span>
+                  </div>
+                </div>
+                <?php endif; ?>
+                
+                <div class="project-stats">
+                  <span class="stat-item">
+                    <i class="bi bi-calendar"></i> 
+                    <?php echo date('d/m/Y', strtotime($projet['date_creation'])); ?>
+                  </span>
+                  <span class="stat-item">
+                    <i class="bi bi-eye"></i> Voir détails
+                  </span>
+                </div>
+              </div>
+            </a>
+          </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="recherche.js"></script>
 </body>
 </html>

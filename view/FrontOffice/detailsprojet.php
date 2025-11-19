@@ -1,18 +1,45 @@
 <?php
-include '../../controller/projetcontroller.php';
-$projetC = new ProjetController();
+include_once(__DIR__ . '/../../controller/projetcontroller.php');
 
-if(isset($_GET['id'])) {
-    $projet = $projetC->showProjet($_GET['id']);
-    $categories = $projetC->getProjetCategories($_GET['id']);
-} else {
-    header('Location: projetsList.php');
-    exit();
+$projetController = new ProjetController();
+
+// Récupérer l'ID du projet depuis l'URL
+$projet_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($projet_id === 0) {
+    header('Location: listeprojet.php');
+    exit;
 }
 
-$percentage = $projet['budget_requis'] > 0 
-    ? ($projet['budget_actuel'] / $projet['budget_requis']) * 100 
-    : 0;
+// Récupérer les détails du projet
+$projet = $projetController->showProjet($projet_id);
+
+if (!$projet) {
+    header('Location: listeprojet.php');
+    exit;
+}
+
+// Récupérer les catégories du projet
+$categories = $projetController->getProjetCategories($projet_id);
+
+// Fonction pour calculer le pourcentage
+function calculatePercentage($actuel, $requis) {
+    if ($requis == 0) return 0;
+    return min(100, round(($actuel / $requis) * 100));
+}
+
+$percentage = calculatePercentage($projet['budget_actuel'], $projet['budget_requis']);
+
+// Fonction pour obtenir le badge du statut
+function getStatusLabel($statut) {
+    $labels = [
+        'idee' => 'Idée / Concept',
+        'prototype' => 'Prototype',
+        'mvp' => 'MVP',
+        'production' => 'En production'
+    ];
+    return $labels[$statut] ?? 'Non défini';
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -61,6 +88,30 @@ $percentage = $projet['budget_requis'] > 0
       font-family: 'Raleway', sans-serif;
     }
     
+    .navmenu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+    
+    .navmenu a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .btn-getstarted {
+      background: var(--accent-color);
+      color: white;
+      padding: 10px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
     .project-hero {
       background: white;
       padding: 40px 0;
@@ -70,22 +121,59 @@ $percentage = $projet['budget_requis'] > 0
     .project-cover {
       width: 100%;
       height: 400px;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-size: 48px;
-      font-weight: bold;
+      font-weight: 700;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .project-header {
+      margin-top: 30px;
     }
     
     .project-title {
       font-size: 36px;
       font-weight: 700;
       color: var(--dark-color);
-      margin: 30px 0 15px;
+      margin-bottom: 15px;
       font-family: 'Raleway', sans-serif;
+    }
+    
+    .project-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      color: #6B7280;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .meta-item i {
+      color: var(--primary-color);
+    }
+    
+    .tag {
+      display: inline-block;
+      padding: 5px 15px;
+      background: var(--light-bg);
+      color: var(--primary-color);
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-right: 8px;
+      margin-bottom: 8px;
     }
     
     .content-section {
@@ -94,6 +182,16 @@ $percentage = $projet['budget_requis'] > 0
       padding: 30px;
       margin-bottom: 20px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
     .funding-card {
@@ -112,6 +210,12 @@ $percentage = $projet['budget_requis'] > 0
       margin-bottom: 10px;
     }
     
+    .funding-goal {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+    
     .progress-bar-custom {
       height: 15px;
       background: rgba(255,255,255,0.3);
@@ -125,6 +229,29 @@ $percentage = $projet['budget_requis'] > 0
       background: var(--accent-color);
       border-radius: 10px;
       transition: width 1s ease;
+    }
+    
+    .funding-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      display: block;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.8;
     }
     
     .btn-invest {
@@ -144,6 +271,84 @@ $percentage = $projet['budget_requis'] > 0
       background: #E68A00;
       transform: translateY(-2px);
     }
+    
+    .btn-follow {
+      background: white;
+      color: var(--primary-color);
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.3s;
+    }
+
+    .btn-back {
+      background: white;
+      color: var(--primary-color);
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 2px solid var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-back:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-edit {
+      background: var(--accent-color);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-edit:hover {
+      background: #E68A00;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .btn-delete {
+      background: #DC2626;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .btn-delete:hover {
+      background: #B91C1C;
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 991px) {
+      .navmenu { display: none; }
+    }
   </style>
 </head>
 
@@ -157,7 +362,7 @@ $percentage = $projet['budget_requis'] > 0
       <nav class="navmenu">
         <ul>
           <li><a href="index.html">Accueil</a></li>
-          <li><a href="projetsList.php" style="color: var(--accent-color);">Projets</a></li>
+          <li><a href="listeprojet.php" style="color: var(--accent-color);">Projets</a></li>
           <li><a href="evenements-list.html">Événements</a></li>
           <li><a href="forum.html">Forum</a></li>
           <li><a href="profil-utilisateur.html">Profil</a></li>
@@ -171,7 +376,7 @@ $percentage = $projet['budget_requis'] > 0
   <div class="project-hero">
     <div class="container">
       <div class="project-cover">
-        <?php echo substr(htmlspecialchars($projet['titre']), 0, 20); ?>
+        <?php echo htmlspecialchars($projet['titre']); ?>
       </div>
     </div>
   </div>
@@ -179,74 +384,144 @@ $percentage = $projet['budget_requis'] > 0
   <div class="container">
     <div class="row">
       <div class="col-lg-8">
-        <h1 class="project-title"><?php echo htmlspecialchars($projet['titre']); ?></h1>
-        
-        <div class="project-meta mb-4">
-          <span class="badge bg-<?php 
-            echo $projet['statut'] == 'en_cours' ? 'warning' : 
-                 ($projet['statut'] == 'termine' ? 'success' : 'danger'); 
-          ?>">
-            <?php 
-              echo $projet['statut'] == 'en_cours' ? 'En cours' : 
-                   ($projet['statut'] == 'termine' ? 'Terminé' : 'Annulé'); 
-            ?>
-          </span>
-          <span class="text-muted ms-3">
-            <i class="bi bi-calendar"></i> 
-            Publié le <?php echo date('d/m/Y', strtotime($projet['date_creation'])); ?>
-          </span>
-        </div>
+        <div class="project-header">
+          <a href="listeprojet.php" class="btn-back mb-3">
+            <i class="bi bi-arrow-left me-2"></i> Retour à la liste
+          </a>
+          
+          <h1 class="project-title"><?php echo htmlspecialchars($projet['titre']); ?></h1>
+          
+          <div class="project-meta">
+            <div class="meta-item">
+              <i class="bi bi-calendar"></i>
+              <span>Publié le <?php echo date('d M Y', strtotime($projet['date_creation'])); ?></span>
+            </div>
+            <div class="meta-item">
+              <i class="bi bi-tag"></i>
+              <span><?php echo getStatusLabel($projet['statut']); ?></span>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <?php foreach ($categories as $cat): ?>
+              <span class="tag"><?php echo htmlspecialchars($cat['nom']); ?></span>
+            <?php endforeach; ?>
+          </div>
 
-        <?php if(!empty($categories)): ?>
-        <div class="mb-3">
-          <?php foreach($categories as $cat): ?>
-            <span class="badge bg-primary me-2"><?php echo htmlspecialchars($cat['nom']); ?></span>
-          <?php endforeach; ?>
+          <div class="action-buttons">
+            <a href="modifierprojet.php?id=<?php echo $projet['id']; ?>" class="btn-edit">
+              <i class="bi bi-pencil-square"></i> Modifier le projet
+            </a>
+            <button onclick="confirmDelete(<?php echo $projet['id']; ?>)" class="btn-delete">
+              <i class="bi bi-trash"></i> Supprimer le projet
+            </button>
+          </div>
         </div>
-        <?php endif; ?>
 
         <div class="content-section">
-          <h3><i class="bi bi-file-text"></i> Description du Projet</h3>
-          <p><?php echo nl2br(htmlspecialchars($projet['description'])); ?></p>
+          <div class="section-title">
+            <i class="bi bi-file-text"></i> Description du Projet
+          </div>
+          <p style="white-space: pre-wrap;"><?php echo htmlspecialchars($projet['description']); ?></p>
         </div>
+
+        <?php if ($projet['budget_requis'] > 0): ?>
+        <div class="content-section">
+          <div class="section-title">
+            <i class="bi bi-cash-coin"></i> Informations Financières
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Budget Recherché</h5>
+              <p class="h3 text-primary"><?php echo number_format($projet['budget_requis'], 0, ',', ' '); ?> TND</p>
+            </div>
+            <div class="col-md-6">
+              <h5>Budget Actuel</h5>
+              <p class="h3 text-success"><?php echo number_format($projet['budget_actuel'], 0, ',', ' '); ?> TND</p>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="progress" style="height: 25px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo $percentage; ?>%;" aria-valuenow="<?php echo $percentage; ?>" aria-valuemin="0" aria-valuemax="100">
+                <?php echo $percentage; ?>%
+              </div>
+            </div>
+          </div>
+        </div>
+        <?php endif; ?>
       </div>
 
       <div class="col-lg-4">
+        <?php if ($projet['budget_requis'] > 0): ?>
         <div class="funding-card">
-          <div class="funding-amount"><?php echo number_format($projet['budget_actuel'], 0); ?> TND</div>
-          <div class="funding-goal">sur <?php echo number_format($projet['budget_requis'], 0); ?> TND</div>
+          <div class="funding-amount"><?php echo number_format($projet['budget_actuel'], 0, ',', ' '); ?> TND</div>
+          <div class="funding-goal">sur <?php echo number_format($projet['budget_requis'], 0, ',', ' '); ?> TND</div>
           
           <div class="progress-bar-custom">
-            <div class="progress-fill" style="width: <?php echo min($percentage, 100); ?>%;"></div>
+            <div class="progress-fill" style="width: <?php echo $percentage; ?>%;"></div>
           </div>
           
-          <div class="funding-stats mb-4">
-            <div class="d-flex justify-content-between text-white">
-              <div class="text-center">
-                <div class="fs-4 fw-bold"><?php echo round($percentage); ?>%</div>
-                <small>Financé</small>
-              </div>
-              <div class="text-center">
-                <div class="fs-4 fw-bold">
-                  <?php echo round(($projet['budget_actuel'] / 500)); ?>
-                </div>
-                <small>Investisseurs</small>
-              </div>
+          <div class="funding-stats">
+            <div class="stat">
+              <span class="stat-number"><?php echo $percentage; ?>%</span>
+              <span class="stat-label">Financé</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">0</span>
+              <span class="stat-label">Investisseurs</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">--</span>
+              <span class="stat-label">Jours restants</span>
             </div>
           </div>
           
           <button class="btn-invest">
             <i class="bi bi-cash-coin me-2"></i> Investir dans ce projet
           </button>
-          <button class="btn btn-light w-100">
+          <button class="btn-follow">
             <i class="bi bi-bookmark me-2"></i> Suivre le projet
           </button>
+        </div>
+        <?php endif; ?>
+
+        <div class="content-section">
+          <div class="section-title" style="font-size: 18px;">
+            <i class="bi bi-info-circle"></i> Informations
+          </div>
+          <div class="mb-3">
+            <strong>Statut:</strong><br>
+            <?php echo getStatusLabel($projet['statut']); ?>
+          </div>
+          <div class="mb-3">
+            <strong>Date de création:</strong><br>
+            <?php echo date('d/m/Y à H:i', strtotime($projet['date_creation'])); ?>
+          </div>
+          <div class="mb-3">
+            <strong>Catégories:</strong><br>
+            <?php 
+            if (!empty($categories)) {
+              echo implode(', ', array_map(function($cat) {
+                return htmlspecialchars($cat['nom']);
+              }, $categories));
+            } else {
+              echo 'Non catégorisé';
+            }
+            ?>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
   <script src="details.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function confirmDelete(projetId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.')) {
+        window.location.href = 'supprimerprojet.php?id=' + projetId;
+      }
+    }
+  </script>
 </body>
 </html>
