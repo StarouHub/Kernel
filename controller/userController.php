@@ -1,8 +1,8 @@
 <?php
 // projetweb/controllers/userController.php
 
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../models/user.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../model/user.php';
 
 class userController
 {

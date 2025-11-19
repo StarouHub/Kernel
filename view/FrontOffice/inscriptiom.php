@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../../config/config.php';
-require_once '../../controllers/userController.php';
+require_once '../../config.php';
+require_once '../../controller/userController.php';
 
 $controller = new userController();
 $message = '';

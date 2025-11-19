@@ -1,7 +1,9 @@
 <?php
 session_start();
-require_once '../../config/config.php';
-require_once '../../controllers/userController.php';
+require_once '../../config.php';
+  
+require_once 'C:/xampp/htdocs/projetweb/Kernel/controller/userController.php';
+
 
 $controller = new userController();
 $error = '';
