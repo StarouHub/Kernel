@@ -1,5 +1,4 @@
 // Variables globales
-let selectedCategory = null;
 let tags = [];
 
 // Fonction pour afficher les messages d'erreur ou de succès
@@ -34,39 +33,27 @@ function clearAllErrors() {
     });
 }
 
-// Gestion des catégories
-document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', function() {
-        // Retirer la sélection précédente
-        document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
-        
-        // Ajouter la nouvelle sélection
-        this.classList.add('selected');
-        selectedCategory = this.getAttribute('data-category');
-        
-        // Effacer le message d'erreur
-        displayMessage('category', '', false);
-    });
-});
-
-// Gestion des tags
+// Gestion des tags (optionnel - si les éléments existent)
 const tagInput = document.getElementById('tagInput');
 const tagContainer = document.getElementById('tagContainer');
 
-tagInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        const tagValue = this.value.trim();
-        
-        if (tagValue !== '' && !tags.includes(tagValue)) {
-            tags.push(tagValue);
-            addTagToUI(tagValue);
-            this.value = '';
+if (tagInput && tagContainer) {
+    tagInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const tagValue = this.value.trim();
+            
+            if (tagValue !== '' && !tags.includes(tagValue)) {
+                tags.push(tagValue);
+                addTagToUI(tagValue);
+                this.value = '';
+            }
         }
-    }
-});
+    });
+}
 
 function addTagToUI(tagValue) {
+    if (!tagContainer) return;
     const tagElement = document.createElement('div');
     tagElement.className = 'tag-item';
     tagElement.innerHTML = `
@@ -81,32 +68,49 @@ function removeTag(tagValue, element) {
     element.parentElement.remove();
 }
 
-// Gestion de l'upload de l'image de couverture
-document.getElementById('coverImage').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        // Vérifier la taille (5MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            displayMessage('coverImage', 'L\'image ne doit pas dépasser 5MB', true);
-            this.value = '';
-            return;
+// Gestion de l'upload de l'image de couverture (optionnel - si l'élément existe)
+const coverImageInput = document.getElementById('coverImage');
+if (coverImageInput) {
+    coverImageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Vérifier la taille (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                displayMessage('coverImage', 'L\'image ne doit pas dépasser 5MB', true);
+                this.value = '';
+                return;
+            }
+            
+            // Vérifier le type
+            if (!file.type.startsWith('image/')) {
+                displayMessage('coverImage', 'Veuillez sélectionner une image valide', true);
+                this.value = '';
+                return;
+            }
+            
+            displayMessage('coverImage', '✓ Image téléchargée avec succès', false);
+            const coverImageZone = document.getElementById('coverImageZone');
+            if (coverImageZone) {
+                coverImageZone.classList.remove('error');
+            }
         }
-        
-        // Vérifier le type
-        if (!file.type.startsWith('image/')) {
-            displayMessage('coverImage', 'Veuillez sélectionner une image valide', true);
-            this.value = '';
-            return;
-        }
-        
-        displayMessage('coverImage', '✓ Image téléchargée avec succès', false);
-        document.getElementById('coverImageZone').classList.remove('error');
-    }
-});
+    });
+}
 
 // Validation du formulaire lors de la soumission
-document.getElementById('submitBtn').addEventListener('click', function(event) {
-    event.preventDefault();
+const projectForm = document.getElementById('projectForm');
+if (projectForm) {
+    projectForm.addEventListener('submit', function(event) {
+        // Valider avant la soumission
+        if (!validateForm()) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    });
+}
+
+function validateForm() {
     
     // Effacer les erreurs précédentes
     clearAllErrors();
@@ -151,7 +155,8 @@ document.getElementById('submitBtn').addEventListener('click', function(event) {
     }
     
     // 5. Validation de la catégorie
-    if (!selectedCategory) {
+    const category = document.getElementById('category');
+    if (category && category.value === '') {
         displayMessage('category', 'Veuillez sélectionner une catégorie', true);
         isValid = false;
     }
@@ -163,44 +168,32 @@ document.getElementById('submitBtn').addEventListener('click', function(event) {
         isValid = false;
     }
     
-    // 7. Validation des liens (optionnels mais si renseignés doivent être valides)
+    // 7. Validation des liens (optionnels - si les éléments existent)
     const videoLink = document.getElementById('videoLink');
-    if (videoLink.value !== '' && !isValidURL(videoLink.value)) {
+    if (videoLink && videoLink.value !== '' && !isValidURL(videoLink.value)) {
         displayMessage('videoLink', 'Veuillez entrer une URL valide', true);
         isValid = false;
     }
     
     const websiteLink = document.getElementById('websiteLink');
-    if (websiteLink.value !== '' && !isValidURL(websiteLink.value)) {
+    if (websiteLink && websiteLink.value !== '' && !isValidURL(websiteLink.value)) {
         displayMessage('websiteLink', 'Veuillez entrer une URL valide', true);
         isValid = false;
     }
     
-    // 8. Validation de l'image de couverture
+    // 8. Validation de l'image de couverture (optionnel - si l'élément existe)
     const coverImage = document.getElementById('coverImage');
-    if (!coverImage.files || coverImage.files.length === 0) {
+    if (coverImage && (!coverImage.files || coverImage.files.length === 0)) {
         displayMessage('coverImage', 'L\'image de couverture est obligatoire', true);
-        document.getElementById('coverImageZone').classList.add('error');
+        const coverImageZone = document.getElementById('coverImageZone');
+        if (coverImageZone) {
+            coverImageZone.classList.add('error');
+        }
         isValid = false;
     }
     
-    // Si tout est valide, soumettre le formulaire
-    if (isValid) {
-        alert('✓ Formulaire valide ! Le projet sera publié.');
-        // Ici vous pouvez ajouter le code pour envoyer les données au serveur
-        // document.getElementById('projectForm').submit();
-        console.log({
-            title: projectTitle.value,
-            status: projectStatus.value,
-            shortDesc: shortDescription.value,
-            detailedDesc: detailedDescription.value,
-            category: selectedCategory,
-            tags: tags,
-            budget: budget.value,
-            videoLink: videoLink.value,
-            websiteLink: websiteLink.value
-        });
-    } else {
+    // Si tout est valide, retourner true pour soumettre le formulaire
+    if (!isValid) {
         alert('❌ Veuillez corriger les erreurs dans le formulaire');
         // Scroll vers la première erreur
         const firstError = document.querySelector('.error');
@@ -208,7 +201,9 @@ document.getElementById('submitBtn').addEventListener('click', function(event) {
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
-});
+    
+    return isValid;
+}
 
 // Fonction de validation d'URL
 function isValidURL(string) {
@@ -220,35 +215,43 @@ function isValidURL(string) {
     }
 }
 
-// Bouton "Sauvegarder comme brouillon"
-document.getElementById('draftBtn').addEventListener('click', function() {
-    const projectTitle = document.getElementById('projectTitle');
-    
-    if (projectTitle.value.trim().length === 0) {
-        alert('⚠️ Veuillez au moins donner un titre à votre projet avant de le sauvegarder comme brouillon');
-        return;
-    }
-    
-    alert('💾 Projet sauvegardé comme brouillon !');
-    console.log('Brouillon sauvegardé');
-});
+// Bouton "Sauvegarder comme brouillon" (optionnel - si l'élément existe)
+const draftBtn = document.getElementById('draftBtn');
+if (draftBtn) {
+    draftBtn.addEventListener('click', function() {
+        const projectTitle = document.getElementById('projectTitle');
+        
+        if (projectTitle && projectTitle.value.trim().length === 0) {
+            alert('⚠️ Veuillez au moins donner un titre à votre projet avant de le sauvegarder comme brouillon');
+            return;
+        }
+        
+        alert('💾 Projet sauvegardé comme brouillon !');
+        console.log('Brouillon sauvegardé');
+    });
+}
 
 // Validation en temps réel pour certains champs
-document.getElementById('shortDescription').addEventListener('input', function() {
-    const charCount = this.value.length;
-    if (charCount > 150) {
-        this.value = this.value.substring(0, 150);
-        displayMessage('shortDescription', 'Limite de 150 caractères atteinte', true);
-    } else if (charCount > 130) {
-        displayMessage('shortDescription', `${150 - charCount} caractères restants`, false);
-    } else {
-        displayMessage('shortDescription', '', false);
-    }
-});
+const shortDescription = document.getElementById('shortDescription');
+if (shortDescription) {
+    shortDescription.addEventListener('input', function() {
+        const charCount = this.value.length;
+        if (charCount > 150) {
+            this.value = this.value.substring(0, 150);
+            displayMessage('shortDescription', 'Limite de 150 caractères atteinte', true);
+        } else if (charCount > 130) {
+            displayMessage('shortDescription', `${150 - charCount} caractères restants`, false);
+        } else {
+            displayMessage('shortDescription', '', false);
+        }
+    });
+}
 
 // Empêcher la soumission du formulaire avec la touche Entrée (sauf pour les tags)
-document.getElementById('projectForm').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && e.target.id !== 'tagInput') {
-        e.preventDefault();
-    }
-});
+if (projectForm) {
+    projectForm.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && e.target.id !== 'tagInput') {
+            e.preventDefault();
+        }
+    });
+}

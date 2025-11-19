@@ -12,7 +12,7 @@ class ProjetController {
         $db = config::getConnexion();
         try {
             $list = $db->query($sql);
-            return $list;
+            return $list->fetchAll();
         } catch (Exception $e) {
             die('Error:' . $e->getMessage());
         }
