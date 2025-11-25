@@ -350,7 +350,7 @@ function getStatusBadge($statut) {
       <div class="row align-items-center">
         <div class="col-lg-9 mb-3 mb-lg-0">
           <div class="search-input">
-            <input type="text" id="searchInput" placeholder="Rechercher un projet, une technologie, un créateur...">
+            <input type="text" placeholder="Rechercher un projet, une technologie, un créateur...">
             <i class="bi bi-search"></i>
           </div>
         </div>
@@ -368,7 +368,7 @@ function getStatusBadge($statut) {
       </div>
     </div>
 
-    <div class="row" id="projectsContainer">
+    <div class="row">
       <?php if (empty($projets)): ?>
         <div class="col-12">
           <div class="alert alert-info text-center">
@@ -429,7 +429,7 @@ function getStatusBadge($statut) {
     </div>
   </div>
 
+  <script src="liste.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-  <script src="recherche.js"></script>
 </body>
 </html>

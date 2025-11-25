@@ -79,12 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['detailedDescription'] = 'La description détaillée doit contenir au moins 50 caractères';
     }
     
-    // 5. Validation de la catégorie
-    if (empty($formData['category'])) {
-        $errors['category'] = 'Veuillez sélectionner une catégorie';
-    }
-    
-    // 6. Validation du budget (optionnel mais doit être valide si renseigné)
+    // 5. Validation du budget (optionnel mais doit être valide si renseigné)
     if (!empty($formData['budget'])) {
         if (!is_numeric($formData['budget']) || floatval($formData['budget']) <= 0) {
             $errors['budget'] = 'Le budget doit être un nombre positif';
@@ -284,6 +279,38 @@ $categories = $categorieController->listCategories();
       color: #10B981;
     }
     
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .category-card {
+      border: 2px solid #E5E7EB;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .category-card:hover {
+      border-color: var(--primary-color);
+      background: rgba(37, 99, 235, 0.05);
+    }
+    
+    .category-card.selected {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .category-card i {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    
     .btn-submit {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
@@ -402,24 +429,44 @@ $categories = $categorieController->listCategories();
         <i class="bi bi-grid"></i> Catégorie
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Catégorie du Projet *</label>
-        <select name="category" id="category" class="form-select <?php echo isset($errors['category']) ? 'error' : ''; ?>" required>
-          <option value="">Sélectionner une catégorie...</option>
-          <?php
-          if ($categories):
-            foreach ($categories as $cat):
-          ?>
-            <option value="<?php echo $cat['id']; ?>" <?php echo $formData['category'] == $cat['id'] ? 'selected' : ''; ?>>
-              <?php echo htmlspecialchars($cat['nom']); ?> - <?php echo htmlspecialchars($cat['description']); ?>
-            </option>
-          <?php 
-            endforeach;
-          endif;
-          ?>
-        </select>
-        <span id="category_error" class="error-message"><?php echo $errors['category'] ?? ''; ?></span>
+      <label class="form-label">Sélectionnez la catégorie principale (optionnel)</label>
+      <input type="hidden" name="category" id="categoryInput" value="<?php echo htmlspecialchars($formData['category']); ?>">
+      <div class="category-grid mb-4" id="categoryGrid">
+        <?php
+        $icons = [
+          'ai' => 'bi-robot',
+          'iot' => 'bi-cpu',
+          'blockchain' => 'bi-diagram-3',
+          'web' => 'bi-code-slash',
+          'data' => 'bi-database',
+          'security' => 'bi-shield-check'
+        ];
+        $colors = [
+          'ai' => '#2563EB',
+          'iot' => '#7C3AED',
+          'blockchain' => '#F59E0B',
+          'web' => '#10B981',
+          'data' => '#06B6D4',
+          'security' => '#EF4444'
+        ];
+        
+        if ($categories):
+          foreach ($categories as $cat):
+            $catName = strtolower($cat['nom']);
+            $icon = $icons[$catName] ?? 'bi-star';
+            $color = $colors[$catName] ?? '#2563EB';
+            $isSelected = ($formData['category'] == $cat['id']) ? 'selected' : '';
+        ?>
+          <div class="category-card <?php echo $isSelected; ?>" data-category="<?php echo $cat['id']; ?>">
+            <i class="bi <?php echo $icon; ?>" style="color: <?php echo $color; ?>;"></i>
+            <div><?php echo htmlspecialchars($cat['nom']); ?></div>
+          </div>
+        <?php 
+          endforeach;
+        endif;
+        ?>
       </div>
+      <span id="category_error" class="error-message"><?php echo $errors['category'] ?? ''; ?></span>
 
       <!-- Section 3: Financement -->
       <div class="section-title mt-4">
@@ -452,5 +499,22 @@ $categories = $categorieController->listCategories();
   </div>
 
   <script src="script.js"></script>
+  <script>
+    // Pré-sélectionner la catégorie si elle existe
+    document.addEventListener('DOMContentLoaded', function() {
+      const categoryInput = document.getElementById('categoryInput');
+      if (categoryInput && categoryInput.value) {
+        selectedCategory = categoryInput.value;
+      }
+      
+      // Scroll vers la première erreur si elle existe
+      const firstError = document.querySelector('.error');
+      if (firstError) {
+        setTimeout(function() {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    });
+  </script>
 </body>
 </html>
