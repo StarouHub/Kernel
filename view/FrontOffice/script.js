@@ -1,4 +1,5 @@
 // Variables globales
+let selectedCategory = null;
 let tags = [];
 
 // Fonction pour afficher les messages d'erreur ou de succès
@@ -31,6 +32,44 @@ function clearAllErrors() {
     inputs.forEach(input => {
         input.classList.remove('error');
     });
+}
+
+// Gestion des catégories - Version simplifiée
+function initCategories() {
+    const categoryCards = document.querySelectorAll('.category-card');
+    const categoryInput = document.getElementById('categoryInput');
+    
+    if (!categoryCards.length) return;
+    
+    categoryCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Retirer la sélection précédente
+            categoryCards.forEach(c => c.classList.remove('selected'));
+            
+            // Ajouter la nouvelle sélection
+            this.classList.add('selected');
+            selectedCategory = this.getAttribute('data-category');
+            
+            // Mettre à jour le champ caché
+            if (categoryInput) {
+                categoryInput.value = selectedCategory;
+                console.log('✅ Catégorie sélectionnée:', selectedCategory);
+            }
+            
+            // Effacer le message d'erreur
+            const errorSpan = document.getElementById('category_error');
+            if (errorSpan) {
+                errorSpan.textContent = '';
+            }
+        });
+    });
+}
+
+// Initialiser les catégories dès que possible
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCategories);
+} else {
+    initCategories();
 }
 
 // Gestion des tags (optionnel - si les éléments existent)
@@ -117,6 +156,10 @@ function validateForm() {
     
     let isValid = true;
     
+    // Debug: Afficher la valeur de la catégorie
+    const categoryInput = document.getElementById('categoryInput');
+    console.log('Validation - Catégorie:', categoryInput ? categoryInput.value : 'Input non trouvé');
+    
     // 1. Validation du titre du projet
     const projectTitle = document.getElementById('projectTitle');
     if (projectTitle.value.trim().length === 0) {
@@ -154,11 +197,15 @@ function validateForm() {
         isValid = false;
     }
     
-    // 5. Validation de la catégorie
-    const category = document.getElementById('category');
-    if (category && category.value === '') {
-        displayMessage('category', 'Veuillez sélectionner une catégorie', true);
-        isValid = false;
+    // 5. Validation de la catégorie (DÉSACTIVÉE - validation PHP uniquement)
+    const categoryInput = document.getElementById('categoryInput');
+    if (categoryInput && categoryInput.value) {
+        // Mettre à jour selectedCategory pour cohérence
+        selectedCategory = categoryInput.value;
+        console.log('✅ Catégorie validée:', selectedCategory);
+    } else {
+        console.log('⚠️ Aucune catégorie sélectionnée - PHP validera');
+        // Ne pas bloquer ici, laisser PHP valider
     }
     
     // 6. Validation du budget (optionnel mais si renseigné doit être valide)
