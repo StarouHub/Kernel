@@ -286,12 +286,12 @@ class userController
             }
 
             // Hasher le nouveau mot de passe
-           // ✅ NOUVEAU CODE (sans hachage - EN CLAIR)
+           // NOUVEAU CODE (sans hachage - EN CLAIR)
             // Mettre à jour le mot de passe EN CLAIR
             $sqlUpdate = "UPDATE users SET mdp = :mdp WHERE email = :email";
             $stmtUpdate = $this->pdo->prepare($sqlUpdate);
             $stmtUpdate->execute([
-                ':mdp' => $newPassword,  // ← Directement sans hachage
+                ':mdp' => $newPassword,  // Directement sans hachage
                 ':email' => $email
             ]);
 
@@ -325,34 +325,14 @@ class userController
         try {
             $mail = new PHPMailer(true);
 
-            // ========================================
-            // CHOISISSEZ UNE CONFIGURATION CI-DESSOUS
-            // ========================================
-
-            // ===== OPTION 1: MAILTRAP (RECOMMANDÉ POUR LES TESTS) =====
-            // Inscrivez-vous sur https://mailtrap.io/ et récupérez vos identifiants
-            /*
-            $mail->isSMTP();
-            $mail->Host = 'sandbox.smtp.mailtrap.io';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'VOTRE_USERNAME_MAILTRAP'; // ⚠️ À changer
-            $mail->Password = 'VOTRE_PASSWORD_MAILTRAP'; // ⚠️ À changer
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 2525;
-            */
-
-            // ===== OPTION 2: GMAIL (POUR LA PRODUCTION) =====
-            // Obtenez un mot de passe d'application: https://myaccount.google.com/apppasswords
-            
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'awissem349@gmail.com'; // ⚠️ CHANGEZ ICI - Votre email Gmail
-            $mail->Password = 'umat bwep dbrq mcre'; // ⚠️ CHANGEZ ICI - Mot de passe d'application (16 caractères)
+            $mail->Username = 'awissem349@gmail.com';
+            $mail->Password = 'umat bwep dbrq mcre';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
             
-            // Options SSL pour éviter les erreurs
             $mail->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => false,
@@ -361,15 +341,10 @@ class userController
                 )
             );
             
-            // Activer le débogage (à retirer en production)
-            // $mail->SMTPDebug = 2; // Décommentez cette ligne pour voir les erreurs détaillées
-
-            // Paramètres de l'email
             $mail->setFrom('noreply@kernel.tn', 'Kernel');
             $mail->addAddress($email);
             $mail->CharSet = 'UTF-8';
 
-            // Contenu de l'email
             $mail->isHTML(true);
             $mail->Subject = 'Code de réinitialisation - Kernel';
             $mail->Body = "
@@ -392,10 +367,75 @@ class userController
             return true;
 
         } catch (Exception $e) {
-            // Afficher l'erreur pour le débogage (à retirer en production)
             echo "Erreur d'envoi: " . $mail->ErrorInfo . "<br>";
             error_log("Email error: " . $mail->ErrorInfo);
             return false;
         }
+    }
+
+    // ==================================================================
+    // ==================== REMEMBER ME - AJOUTÉE ICI ===================
+    // ==================================================================
+
+    public function createRememberToken(int $userId): string
+    {
+        $selector = bin2hex(random_bytes(16));
+        $validator = bin2hex(random_bytes(32));
+        $token = $selector . ':' . $validator;
+        $hashedValidator = password_hash($validator, PASSWORD_DEFAULT);
+
+        $this->deleteRememberTokens($userId);
+
+        $sql = "INSERT INTO remember_tokens (user_id, token, expires_at) 
+                VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 30 DAY))";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':token'   => $selector . ':' . $hashedValidator
+        ]);
+
+        return $token;
+    }
+
+    public function validateRememberToken(string $token): ?User
+    {
+        if (empty($token) || strpos($token, ':') === false) return null;
+
+        [$selector, $validator] = explode(':', $token, 2);
+
+        $sql = "SELECT rt.*, u.* FROM remember_tokens rt 
+                JOIN users u ON rt.user_id = u.id 
+                WHERE rt.token LIKE :selector 
+                  AND rt.expires_at > NOW() 
+                LIMIT 1";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':selector' => $selector . '%']);
+        $row = $stmt->fetch();
+
+        if (!$row) return null;
+
+        $storedHash = explode(':', $row['token'], 2)[1] ?? '';
+        if (password_verify($validator, $storedHash)) {
+            $this->createRememberToken($row['id']);
+            
+            return new User(
+                $row['nom'],
+                $row['prenom'],
+                $row['email'],
+                $row['telephone'],
+                $row['mdp'],
+                $row['role'],
+                (int)$row['id']
+            );
+        }
+        return null;
+    }
+
+    public function deleteRememberTokens(int $userId): void
+    {
+        $sql = "DELETE FROM remember_tokens WHERE user_id = :user_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
     }
 }

@@ -1,20 +1,15 @@
 <?php
 session_start();
 require_once '../../config.php';
-  
 require_once 'C:/xampp/htdocs/projetweb/Kernel/controller/userController.php';
-
 
 $controller = new userController();
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email    = trim($_POST['email']);
-    $password = $_POST['password'];
-
-    $user = $controller->getUserByEmail($email);
-
-    if ($user && $password === $user->getMdp()) {     // ← CHANGED HERE
+// === VÉRIFICATION DU COOKIE "REMEMBER ME" AU CHARGEMENT ===
+if (!isset($_SESSION['user']) && isset($_COOKIE['remember_token'])) {
+    $user = $controller->validateRememberToken($_COOKIE['remember_token']);
+    if ($user) {
         $_SESSION['user'] = [
             'id'     => $user->getId(),
             'nom'    => $user->getNom(),
@@ -22,6 +17,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email'  => $user->getEmail(),
             'role'   => $user->getRole()
         ];
+        header('Location: home.php');
+        exit;
+    } else {
+        // Token invalide → on supprime le cookie
+        setcookie('remember_token', '', time() - 3600, '/', '', true, true);
+    }
+}
+
+// === TRAITEMENT DU FORMULAIRE DE CONNEXION ===
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = trim($_POST['email']);
+    $password = $_POST['password'];
+    $remember = isset($_POST['remember']);
+
+    $user = $controller->getUserByEmail($email);
+
+    if ($user && $password === $user->getMdp()) {
+        $_SESSION['user'] = [
+            'id'     => $user->getId(),
+            'nom'    => $user->getNom(),
+            'prenom' => $user->getPrenom(),
+            'email'  => $user->getEmail(),
+            'role'   => $user->getRole()
+        ];
+
+        // === REMEMBER ME ===
+        if ($remember) {
+            $token = $controller->createRememberToken($user->getId());
+            // Cookie sécurisé : 30 jours
+            setcookie('remember_token', $token, [
+                'expires' => time() + 30 * 24 * 3600,
+                'path' => '/',
+                'secure' => true,      // seulement en HTTPS en prod
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+        }
+
         header('Location: home.php');
         exit;
     } else {
@@ -90,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
 
-          <div class="mb-4">
+          <div class="mb-3">
             <label class="form-label">Mot de passe</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-lock"></i></span>
@@ -101,7 +134,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
 
-          <div class="text-end mb-4">
+          <!-- REMEMBER ME -->
+          <div class="mb-4 d-flex justify-content-between align-items-center">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="remember" id="remember" <?php echo (isset($_POST['remember']) ? 'checked' : ''); ?>>
+              <label class="form-check-label" for="remember">
+                Rester connecté
+              </label>
+            </div>
             <a href="mdpo1.php" class="forgot-password">Mot de passe oublié ?</a>
           </div>
 
