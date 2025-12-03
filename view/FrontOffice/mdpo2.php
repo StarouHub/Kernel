@@ -25,11 +25,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = $result['message'];
         }
     } else {
-        // Vérifier le code
-        $code = trim($_POST['code'] ?? '');
+        // Récupérer le code depuis les inputs individuels OU depuis le champ caché
+        if (isset($_POST['code']) && !empty($_POST['code'])) {
+            $code = trim($_POST['code']);
+        } else {
+            // Construire le code à partir des 6 inputs individuels
+            $code = '';
+            for ($i = 1; $i <= 6; $i++) {
+                if (isset($_POST['digit' . $i])) {
+                    $code .= $_POST['digit' . $i];
+                }
+            }
+        }
+        
+        // Debug: afficher le code reçu (à supprimer après test)
+        // echo "Code reçu: '" . $code . "' (longueur: " . strlen($code) . ")<br>";
         
         if (empty($code) || strlen($code) !== 6) {
             $error = 'Veuillez entrer un code à 6 chiffres.';
+        } elseif (!ctype_digit($code)) {
+            $error = 'Le code doit contenir uniquement des chiffres.';
         } else {
             $controller = new userController();
             $result = $controller->verifyResetCode($_SESSION['reset_email'], $code);
@@ -147,7 +162,7 @@ $maskedEmail = substr($emailParts[0], 0, 1) . '***' . substr($emailParts[0], -1)
         </div>
         <?php endif; ?>
         
-        <form method="POST" action="">
+        <form method="POST" action="" id="verifyForm">
           <div class="code-inputs">
             <input type="text" class="code-input" maxlength="1" name="digit1" id="code1" autofocus>
             <input type="text" class="code-input" maxlength="1" name="digit2" id="code2">
