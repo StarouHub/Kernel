@@ -366,9 +366,9 @@ $typeColor = $typeColors[$evenement['type']] ?? '#2563EB';
           <span>places disponibles</span>
         </div>
 
-        <button class="btn-register-main">
+        <a href="index.php?action=inscription&id=<?php echo $evenement['id']; ?>" class="btn-register-main" style="text-decoration: none; text-align: center; display: inline-block;">
           <i class="bi bi-box-arrow-right me-2"></i> S'inscrire Maintenant
-        </button>
+        </a>
 
         <button class="btn-add-calendar">
           <i class="bi bi-calendar-plus me-2"></i> Ajouter au calendrier

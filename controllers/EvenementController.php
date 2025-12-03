@@ -5,12 +5,15 @@
  */
 
 require_once __DIR__ . '/../models/Evenement.php';
+require_once __DIR__ . '/../models/Inscription.php';
 
 class EvenementController {
     private $model;
+    private $inscriptionModel;
     
     public function __construct() {
         $this->model = new Evenement();
+        $this->inscriptionModel = new Inscription();
     }
     
     /**
@@ -125,6 +128,89 @@ class EvenementController {
         }
         
         require_once __DIR__ . '/../views/evenements/details.php';
+    }
+
+    /**
+     * Afficher le formulaire d'inscription pour un événement
+     * Accessible à tous les utilisateurs (même non connectés)
+     */
+    public function inscriptionForm() {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            header('Location: index.php');
+            exit;
+        }
+
+        $evenement = $this->model->getById($id);
+
+        if (!$evenement) {
+            header('Location: index.php');
+            exit;
+        }
+
+        require_once __DIR__ . '/../views/evenements/inscription.php';
+    }
+
+    /**
+     * Enregistrer une inscription (POST)
+     */
+    public function inscriptionSave() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php');
+            exit;
+        }
+
+        // id_evenement correspond à la colonne de ta base
+        $evenementId = $_POST['id_evenement'] ?? null;
+
+        if (!$evenementId) {
+            $_SESSION['error'] = "Événement introuvable pour l'inscription.";
+            header('Location: index.php');
+            exit;
+        }
+
+        $evenement = $this->model->getById($evenementId);
+        if (!$evenement) {
+            $_SESSION['error'] = "Événement introuvable.";
+            header('Location: index.php');
+            exit;
+        }
+
+        $data = [
+            'nom'             => trim($_POST['nom'] ?? ''),
+            'prenom'          => trim($_POST['prenom'] ?? ''),
+            // adresse_mail = nom de ta colonne
+            'adresse_mail'    => trim($_POST['adresse_mail'] ?? ''),
+            'date_inscription'=> $_POST['date_inscription'] ?? date('Y-m-d'),
+            'statut'          => $_POST['statut'] ?? 'En attente',
+            // id_evenement = nom de ta colonne
+            'id_evenement'    => $evenementId,
+        ];
+
+        // Validation minimale côté serveur
+        if (
+            empty($data['nom']) ||
+            empty($data['prenom']) ||
+            empty($data['adresse_mail']) ||
+            !filter_var($data['adresse_mail'], FILTER_VALIDATE_EMAIL)
+        ) {
+            $_SESSION['error'] = "Merci de vérifier les informations saisies.";
+            header('Location: index.php?action=inscription&id=' . $evenementId);
+            exit;
+        }
+
+        $result = $this->inscriptionModel->create($data);
+
+        if ($result) {
+            $_SESSION['success'] = "Votre inscription a été enregistrée avec succès !";
+        } else {
+            $_SESSION['error'] = "Une erreur est survenue lors de l'enregistrement de votre inscription.";
+        }
+
+        // Après inscription, on renvoie vers la page de détails de l'événement
+        header('Location: index.php?action=details&id=' . $evenementId);
+        exit;
     }
     
     /**

@@ -18,8 +18,8 @@ require_once __DIR__ . '/controllers/EvenementController.php';
 // Create controller instance
 $controller = new EvenementController();
 
-// Check authentication (except for login and logout)
-$publicActions = ['login', 'logout'];
+// Check authentication (except for login, logout et inscription publique)
+$publicActions = ['login', 'logout', 'inscription', 'inscription_save'];
 if (!in_array($action, $publicActions) && !isset($_SESSION['user_role'])) {
     header('Location: index.php?action=login');
     exit;
@@ -51,6 +51,14 @@ switch ($action) {
     case 'details':
     case 'show':
         $controller->details();
+        break;
+
+    case 'inscription':
+        $controller->inscriptionForm();
+        break;
+
+    case 'inscription_save':
+        $controller->inscriptionSave();
         break;
     
     case 'save':

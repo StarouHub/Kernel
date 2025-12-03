@@ -10,6 +10,7 @@ class Database {
     
     // Database configuration
     private $host = 'localhost';
+    // Base principale de l'application (événements + inscriptions)
     private $dbname = 'events_db';
     private $username = 'root';
     private $password = '';
