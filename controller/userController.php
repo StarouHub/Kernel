@@ -286,13 +286,12 @@ class userController
             }
 
             // Hasher le nouveau mot de passe
-            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-
-            // Mettre à jour le mot de passe
+           // ✅ NOUVEAU CODE (sans hachage - EN CLAIR)
+            // Mettre à jour le mot de passe EN CLAIR
             $sqlUpdate = "UPDATE users SET mdp = :mdp WHERE email = :email";
             $stmtUpdate = $this->pdo->prepare($sqlUpdate);
             $stmtUpdate->execute([
-                ':mdp' => $hashedPassword,
+                ':mdp' => $newPassword,  // ← Directement sans hachage
                 ':email' => $email
             ]);
 
@@ -326,17 +325,34 @@ class userController
         try {
             $mail = new PHPMailer(true);
 
-            // Configuration du serveur SMTP
+            // ========================================
+            // CHOISISSEZ UNE CONFIGURATION CI-DESSOUS
+            // ========================================
+
+            // ===== OPTION 1: MAILTRAP (RECOMMANDÉ POUR LES TESTS) =====
+            // Inscrivez-vous sur https://mailtrap.io/ et récupérez vos identifiants
+            /*
+            $mail->isSMTP();
+            $mail->Host = 'sandbox.smtp.mailtrap.io';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'VOTRE_USERNAME_MAILTRAP'; // ⚠️ À changer
+            $mail->Password = 'VOTRE_PASSWORD_MAILTRAP'; // ⚠️ À changer
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 2525;
+            */
+
+            // ===== OPTION 2: GMAIL (POUR LA PRODUCTION) =====
+            // Obtenez un mot de passe d'application: https://myaccount.google.com/apppasswords
             
+            $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'awissem349@gmail.com'; // ⚠️ CHANGEZ ICI
-            $mail->Password = '95893212aw'; // ⚠️ CHANGEZ ICI
+            $mail->Username = 'awissem349@gmail.com'; // ⚠️ CHANGEZ ICI - Votre email Gmail
+            $mail->Password = 'umat bwep dbrq mcre'; // ⚠️ CHANGEZ ICI - Mot de passe d'application (16 caractères)
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
-             
-
-
+            
+            // Options SSL pour éviter les erreurs
             $mail->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => false,
@@ -344,9 +360,10 @@ class userController
                     'allow_self_signed' => true
                 )
             );
-
-
             
+            // Activer le débogage (à retirer en production)
+            // $mail->SMTPDebug = 2; // Décommentez cette ligne pour voir les erreurs détaillées
+
             // Paramètres de l'email
             $mail->setFrom('noreply@kernel.tn', 'Kernel');
             $mail->addAddress($email);
@@ -375,6 +392,8 @@ class userController
             return true;
 
         } catch (Exception $e) {
+            // Afficher l'erreur pour le débogage (à retirer en production)
+            echo "Erreur d'envoi: " . $mail->ErrorInfo . "<br>";
             error_log("Email error: " . $mail->ErrorInfo);
             return false;
         }

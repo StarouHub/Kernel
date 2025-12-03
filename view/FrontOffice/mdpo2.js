@@ -2,10 +2,17 @@
 const inputs = document.querySelectorAll('.code-input');
 const verifyBtn = document.getElementById('verifyBtn');
 const fullCodeInput = document.getElementById('fullCode');
+const verifyForm = document.getElementById('verifyForm');
 
 inputs.forEach((input, index) => {
   input.addEventListener('input', (e) => {
     const value = e.target.value;
+    
+    // Accepter uniquement les chiffres
+    if (value && !/^\d$/.test(value)) {
+      e.target.value = '';
+      return;
+    }
     
     if (value.length === 1) {
       input.classList.add('filled');
@@ -15,13 +22,7 @@ inputs.forEach((input, index) => {
     }
     
     // Vérifier si tous les champs sont remplis
-    const allFilled = Array.from(inputs).every(inp => inp.value.length === 1);
-    verifyBtn.disabled = !allFilled;
-    
-    // Mettre à jour le champ caché avec le code complet
-    if (allFilled) {
-      fullCodeInput.value = Array.from(inputs).map(inp => inp.value).join('');
-    }
+    updateFullCode();
   });
   
   input.addEventListener('keydown', (e) => {
@@ -34,7 +35,7 @@ inputs.forEach((input, index) => {
   // Permettre le collage du code
   input.addEventListener('paste', (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
     pastedData.split('').forEach((char, i) => {
       if (inputs[i]) {
         inputs[i].value = char;
@@ -43,10 +44,33 @@ inputs.forEach((input, index) => {
     });
     if (pastedData.length === 6) {
       inputs[5].focus();
-      verifyBtn.disabled = false;
-      fullCodeInput.value = pastedData;
+      updateFullCode();
     }
   });
+});
+
+// Fonction pour mettre à jour le code complet
+function updateFullCode() {
+  const code = Array.from(inputs).map(inp => inp.value).join('');
+  fullCodeInput.value = code;
+  
+  // Activer/désactiver le bouton
+  const allFilled = code.length === 6 && /^\d{6}$/.test(code);
+  verifyBtn.disabled = !allFilled;
+}
+
+// S'assurer que le code est à jour avant la soumission
+verifyForm.addEventListener('submit', (e) => {
+  updateFullCode();
+  
+  const code = fullCodeInput.value;
+  
+  // Vérification supplémentaire
+  if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+    e.preventDefault();
+    alert('Veuillez entrer un code à 6 chiffres valide.');
+    return false;
+  }
 });
 
 // Timer principal (30 minutes)

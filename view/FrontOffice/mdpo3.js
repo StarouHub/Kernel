@@ -128,32 +128,38 @@ function updateSaveButton() {
 document.getElementById('newPassword').addEventListener('input', checkPasswordStrength);
 document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
 
-// Form submission
+// ✅ CORRECTION : Laisser le formulaire se soumettre normalement au serveur PHP
 document.getElementById('passwordForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
   const password = document.getElementById('newPassword').value;
   const confirmPassword = document.getElementById('confirmPassword').value;
   
+  // Validation côté client
   if (password !== confirmPassword) {
+    e.preventDefault();
     alert('Les mots de passe ne correspondent pas !');
-    return;
+    return false;
   }
   
+  // Vérifier les exigences
+  const hasLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[@$!%*?&]/.test(password);
+  
+  if (!hasLength || !hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
+    e.preventDefault();
+    alert('Le mot de passe ne respecte pas tous les critères de sécurité.');
+    return false;
+  }
+  
+  // Afficher un indicateur de chargement
   const saveBtn = document.getElementById('saveBtn');
   saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Enregistrement...';
   saveBtn.disabled = true;
   
-  // Simulation d'enregistrement
-  setTimeout(() => {
-    saveBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i> Mot de passe enregistré !';
-    saveBtn.style.background = '#10B981';
-    
-    setTimeout(() => {
-      alert('Mot de passe réinitialisé avec succès ! 🎉\nVous pouvez maintenant vous connecter avec votre nouveau mot de passe.');
-      window.location.href = 'connexion.html';
-    }, 1500);
-  }, 2000);
+  // ✅ Le formulaire va maintenant s'envoyer au serveur PHP normalement
+  // Pas de e.preventDefault() ici si la validation passe
 });
 
 // Animation au chargement
