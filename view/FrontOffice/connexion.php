@@ -102,14 +102,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <div class="text-end mb-4">
-            <a href="mdpo1.html" class="forgot-password">Mot de passe oublié ?</a>
+            <a href="mdpo1.php" class="forgot-password">Mot de passe oublié ?</a>
           </div>
 
           <button type="submit" class="btn-login">
             <i class="bi bi-box-arrow-in-right me-2"></i> Se connecter
           </button>
         </form>
-
+        
         <div class="register-link">
           Pas encore de compte ? <a href="inscriptiom.php">Créer un compte</a>
         </div>
