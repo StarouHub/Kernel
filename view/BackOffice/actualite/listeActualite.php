@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once(__DIR__ . '/../../../controller/actualitecontroller.php');
+include_once(__DIR__ . '/../../components/office-switch.php');
 
 $actualiteController = new ActualiteController();
 
@@ -147,6 +148,8 @@ unset($_SESSION['message'], $_SESSION['message_type']);
     </style>
 </head>
 <body>
+    <?php echo renderOfficeSwitch('back', 'actualite'); ?>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->

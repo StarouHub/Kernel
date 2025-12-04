@@ -2,6 +2,7 @@
 session_start();
 include_once(__DIR__ . '/../../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../../controller/categoriecontroller.php');
+include_once(__DIR__ . '/../../components/office-switch.php');
 
 $projetController = new ProjetController();
 $categorieController = new CategorieController();
@@ -246,12 +247,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
         }
         
-        .required {
+        . {
             color: #EF4444;
         }
     </style>
 </head>
 <body>
+    <?php echo renderOfficeSwitch('back', 'projet', $projet_id); ?>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
@@ -311,13 +314,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <!-- Titre -->
                                 <div class="col-md-8 mb-4">
                                     <label class="form-label">
-                                        Titre du Projet <span class="required">*</span>
+                                        Titre du Projet <span class="">*</span>
                                     </label>
                                     <input type="text" 
                                            name="titre" 
                                            class="form-control <?php echo isset($errors['titre']) ? 'is-invalid' : ''; ?>" 
                                            value="<?php echo htmlspecialchars($formData['titre']); ?>"
-                                           required>
+                                           >
                                     <?php if (isset($errors['titre'])): ?>
                                         <div class="invalid-feedback">
                                             <?php echo $errors['titre']; ?>
@@ -328,11 +331,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <!-- Statut -->
                                 <div class="col-md-4 mb-4">
                                     <label class="form-label">
-                                        Statut <span class="required">*</span>
+                                        Statut <span class="">*</span>
                                     </label>
                                     <select name="statut" 
                                             class="form-select <?php echo isset($errors['statut']) ? 'is-invalid' : ''; ?>" 
-                                            required>
+                                            >
                                         <option value="">Sélectionner...</option>
                                         <option value="idee" <?php echo ($formData['statut'] == 'idee') ? 'selected' : ''; ?>>💡 Idée</option>
                                         <option value="prototype" <?php echo ($formData['statut'] == 'prototype') ? 'selected' : ''; ?>>🔧 Prototype</option>
@@ -350,12 +353,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <!-- Description -->
                             <div class="mb-4">
                                 <label class="form-label">
-                                    Description <span class="required">*</span>
+                                    Description <span class="">*</span>
                                 </label>
                                 <textarea name="description" 
                                           class="form-control <?php echo isset($errors['description']) ? 'is-invalid' : ''; ?>" 
                                           rows="6" 
-                                          required><?php echo htmlspecialchars($formData['description']); ?></textarea>
+                                          ><?php echo htmlspecialchars($formData['description']); ?></textarea>
                                 <?php if (isset($errors['description'])): ?>
                                     <div class="invalid-feedback">
                                         <?php echo $errors['description']; ?>
@@ -367,11 +370,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <!-- Catégorie -->
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label">
-                                        Catégorie <span class="required">*</span>
+                                        Catégorie <span class="">*</span>
                                     </label>
                                     <select name="category" 
                                             class="form-select <?php echo isset($errors['category']) ? 'is-invalid' : ''; ?>" 
-                                            required>
+                                            >
                                         <option value="">Sélectionner...</option>
                                         <?php foreach ($categories as $cat): ?>
                                             <option value="<?php echo $cat['id']; ?>" 

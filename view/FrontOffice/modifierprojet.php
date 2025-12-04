@@ -1,6 +1,7 @@
 <?php
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/categoriecontroller.php');
+include_once(__DIR__ . '/../components/office-switch.php');
 
 // Récupérer l'ID du projet depuis l'URL
 $projet_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -352,6 +353,8 @@ $categories = $categorieController->listCategories();
 </head>
 
 <body>
+  <?php echo renderOfficeSwitch('front', 'projet', $projet_id); ?>
+  
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo">
@@ -395,12 +398,12 @@ $categories = $categorieController->listCategories();
       <div class="row mb-3">
         <div class="col-md-8">
           <label class="form-label">Titre du Projet *</label>
-          <input type="text" name="projectTitle" id="projectTitle" class="form-control <?php echo isset($errors['projectTitle']) ? 'error' : ''; ?>" placeholder="Ex: Assistant IA Intelligent pour PME" value="<?php echo htmlspecialchars($formData['projectTitle']); ?>" required>
+          <input type="text" name="projectTitle" id="projectTitle" class="form-control <?php echo isset($errors['projectTitle']) ? 'error' : ''; ?>" placeholder="Ex: Assistant IA Intelligent pour PME" value="<?php echo htmlspecialchars($formData['projectTitle']); ?>" >
           <span id="projectTitle_error" class="error-message"><?php echo $errors['projectTitle'] ?? ''; ?></span>
         </div>
         <div class="col-md-4">
           <label class="form-label">Statut du Projet *</label>
-          <select name="projectStatus" id="projectStatus" class="form-select <?php echo isset($errors['projectStatus']) ? 'error' : ''; ?>" required>
+          <select name="projectStatus" id="projectStatus" class="form-select <?php echo isset($errors['projectStatus']) ? 'error' : ''; ?>" >
             <option value="">Sélectionner...</option>
             <option value="idee" <?php echo $formData['projectStatus'] === 'idee' ? 'selected' : ''; ?>>Idée / Concept</option>
             <option value="prototype" <?php echo $formData['projectStatus'] === 'prototype' ? 'selected' : ''; ?>>Prototype</option>
@@ -413,14 +416,14 @@ $categories = $categorieController->listCategories();
 
       <div class="mb-3">
         <label class="form-label">Description Courte *</label>
-        <textarea name="shortDescription" id="shortDescription" class="form-control <?php echo isset($errors['shortDescription']) ? 'error' : ''; ?>" rows="2" placeholder="Résumé du projet en une phrase" required><?php echo htmlspecialchars($formData['shortDescription']); ?></textarea>
+        <textarea name="shortDescription" id="shortDescription" class="form-control <?php echo isset($errors['shortDescription']) ? 'error' : ''; ?>" rows="2" placeholder="Résumé du projet en une phrase" ><?php echo htmlspecialchars($formData['shortDescription']); ?></textarea>
         <small class="text-muted">150 caractères maximum</small>
         <span id="shortDescription_error" class="error-message"><?php echo $errors['shortDescription'] ?? ''; ?></span>
       </div>
 
       <div class="mb-4">
         <label class="form-label">Description Détaillée *</label>
-        <textarea name="detailedDescription" id="detailedDescription" class="form-control <?php echo isset($errors['detailedDescription']) ? 'error' : ''; ?>" rows="6" placeholder="Décrivez votre projet en détail : problématique, solution, valeur ajoutée..." required><?php echo htmlspecialchars($formData['detailedDescription']); ?></textarea>
+        <textarea name="detailedDescription" id="detailedDescription" class="form-control <?php echo isset($errors['detailedDescription']) ? 'error' : ''; ?>" rows="6" placeholder="Décrivez votre projet en détail : problématique, solution, valeur ajoutée..." ><?php echo htmlspecialchars($formData['detailedDescription']); ?></textarea>
         <span id="detailedDescription_error" class="error-message"><?php echo $errors['detailedDescription'] ?? ''; ?></span>
       </div>
 

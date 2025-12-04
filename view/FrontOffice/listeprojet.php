@@ -1,6 +1,7 @@
 <?php
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/categoriecontroller.php');
+include_once(__DIR__ . '/../components/office-switch.php');
 
 $projetController = new ProjetController();
 $categorieController = new CategorieController();
@@ -318,6 +319,8 @@ function getStatusBadge($statut) {
 </head>
 
 <body>
+  <?php echo renderOfficeSwitch('front', 'projet'); ?>
+  
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo">

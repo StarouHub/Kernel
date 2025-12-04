@@ -1,6 +1,7 @@
 <?php
 include_once(__DIR__ . '/../../controller/actualitecontroller.php');
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
+include_once(__DIR__ . '/../components/office-switch.php');
 
 $actualiteController = new ActualiteController();
 $projetController = new ProjetController();
@@ -202,6 +203,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+  <?php echo renderOfficeSwitch('front', 'actualite'); ?>
+  
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo">
@@ -230,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form class="form-container" method="POST" action="">
       <div class="mb-3">
         <label class="form-label">Projet *</label>
-        <select name="projet_id" class="form-select <?php echo isset($errors['projet_id']) ? 'error' : ''; ?>" required>
+        <select name="projet_id" class="form-select <?php echo isset($errors['projet_id']) ? 'error' : ''; ?>" >
           <option value="">Sélectionner un projet...</option>
           <?php foreach ($projets as $projet): ?>
             <option value="<?php echo $projet['id']; ?>">
@@ -245,7 +248,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="mb-3">
         <label class="form-label">Titre de l'actualité *</label>
-        <input type="text" name="titre" class="form-control <?php echo isset($errors['titre']) ? 'error' : ''; ?>" placeholder="Ex: Lancement de la version Beta" required>
+        <input type="text" name="titre" class="form-control <?php echo isset($errors['titre']) ? 'error' : ''; ?>" placeholder="Ex: Lancement de la version Beta" >
         <?php if (isset($errors['titre'])): ?>
           <div class="error-message"><?php echo $errors['titre']; ?></div>
         <?php endif; ?>
@@ -253,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="mb-3">
         <label class="form-label">Type d'actualité *</label>
-        <select name="type" class="form-select <?php echo isset($errors['type']) ? 'error' : ''; ?>" required>
+        <select name="type" class="form-select <?php echo isset($errors['type']) ? 'error' : ''; ?>" >
           <option value="">Sélectionner...</option>
           <option value="milestone">🎯 Milestone (Étape importante)</option>
           <option value="update">📢 Update (Mise à jour)</option>
@@ -266,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="mb-4">
         <label class="form-label">Contenu *</label>
-        <textarea name="contenu" class="form-control <?php echo isset($errors['contenu']) ? 'error' : ''; ?>" rows="8" placeholder="Décrivez l'actualité en détail..." required></textarea>
+        <textarea name="contenu" class="form-control <?php echo isset($errors['contenu']) ? 'error' : ''; ?>" rows="8" placeholder="Décrivez l'actualité en détail..." ></textarea>
         <?php if (isset($errors['contenu'])): ?>
           <div class="error-message"><?php echo $errors['contenu']; ?></div>
         <?php endif; ?>

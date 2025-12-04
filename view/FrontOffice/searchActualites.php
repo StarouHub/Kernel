@@ -1,6 +1,7 @@
 <?php
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/actualitecontroller.php');
+include_once(__DIR__ . '/../components/office-switch.php');
 
 $projetController = new ProjetController();
 $actualiteController = new ActualiteController();
@@ -172,6 +173,8 @@ function getTypeBadge($type) {
 </head>
 
 <body>
+  <?php echo renderOfficeSwitch('front', 'actualite'); ?>
+  
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo">
@@ -197,7 +200,7 @@ function getTypeBadge($type) {
         <div class="row align-items-end">
           <div class="col-md-9">
             <label class="form-label fw-bold">Sélectionner un projet</label>
-            <select name="projet_id" class="form-select form-select-lg" required>
+            <select name="projet_id" class="form-select form-select-lg" >
               <option value="">Choisir un projet...</option>
               <?php foreach ($projets as $projet): ?>
                 <option value="<?php echo $projet['id']; ?>" <?php echo ($selectedProjetId == $projet['id']) ? 'selected' : ''; ?>>

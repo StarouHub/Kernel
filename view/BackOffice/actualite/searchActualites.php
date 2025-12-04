@@ -2,6 +2,7 @@
 session_start();
 include_once(__DIR__ . '/../../../controller/actualitecontroller.php');
 include_once(__DIR__ . '/../../../controller/projetcontroller.php');
+include_once(__DIR__ . '/../../components/office-switch.php');
 
 $actualiteController = new ActualiteController();
 $projetController = new ProjetController();
@@ -207,6 +208,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['projet_id']) && !empt
     </style>
 </head>
 <body>
+    <?php echo renderOfficeSwitch('back', 'actualite'); ?>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
@@ -244,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['projet_id']) && !empt
                 <div class="page-header d-flex justify-content-between align-items-center">
                     <div>
                         <h1><i class="bi bi-search text-primary"></i> Rechercher Actualités par Projet</h1>
-                        <p class="text-muted mb-0">Afficher les actualités d'un projet spécifique (JOINTURE SQL)</p>
+                        <p class="text-muted mb-0">Afficher les actualités d'un projet spécifique</p>
                     </div>
                     <a href="listeActualite.php" class="btn btn-outline-primary">
                         <i class="bi bi-list me-2"></i> Toutes les Actualités
@@ -260,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['projet_id']) && !empt
                         <div class="row align-items-end">
                             <div class="col-md-9">
                                 <label class="form-label">Sélectionner un projet</label>
-                                <select name="projet_id" class="form-select" required>
+                                <select name="projet_id" class="form-select" >
                                     <option value="">-- Choisir un projet --</option>
                                     <?php foreach ($projets as $projet): ?>
                                         <option value="<?php echo $projet['id']; ?>" 
