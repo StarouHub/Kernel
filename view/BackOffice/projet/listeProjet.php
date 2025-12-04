@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once(__DIR__ . '/../../../controller/projetcontroller.php');
+include_once(__DIR__ . '/../../components/office-switch.php');
 
 $projetController = new ProjetController();
 
@@ -152,6 +153,8 @@ unset($_SESSION['message'], $_SESSION['message_type']);
     </style>
 </head>
 <body>
+    <?php echo renderOfficeSwitch('back', 'projet'); ?>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->

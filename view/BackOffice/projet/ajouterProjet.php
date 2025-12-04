@@ -2,6 +2,7 @@
 session_start();
 include_once(__DIR__ . '/../../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../../controller/categoriecontroller.php');
+include_once(__DIR__ . '/../../components/office-switch.php');
 
 $projetController = new ProjetController();
 $categorieController = new CategorieController();
@@ -221,6 +222,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
+    <?php echo renderOfficeSwitch('back', 'projet'); ?>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->

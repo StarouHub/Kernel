@@ -191,14 +191,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="mb-3">
                                         <label for="nom" class="form-label">Nom de la catégorie *</label>
                                         <input type="text" class="form-control" id="nom" name="nom" 
-                                               value="<?php echo htmlspecialchars($categorie['nom']); ?>" required>
+                                               value="<?php echo htmlspecialchars($categorie['nom']); ?>" >
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="icon" class="form-label">Icône Bootstrap *</label>
                                         <input type="text" class="form-control" id="icon" name="icon" 
                                                value="<?php echo htmlspecialchars($categorie['icon']); ?>"
-                                               placeholder="Ex: robot, cpu, diagram-3" required>
+                                               placeholder="Ex: robot, cpu, diagram-3" >
                                         <small class="text-muted">
                                             Voir les icônes disponibles sur 
                                             <a href="https://icons.getbootstrap.com/" target="_blank">Bootstrap Icons</a>

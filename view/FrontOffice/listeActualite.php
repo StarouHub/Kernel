@@ -1,5 +1,6 @@
 <?php
 include_once(__DIR__ . '/../../controller/actualitecontroller.php');
+include_once(__DIR__ . '/../components/office-switch.php');
 
 $actualiteController = new ActualiteController();
 
@@ -161,6 +162,8 @@ function getTypeBadge($type) {
 </head>
 
 <body>
+  <?php echo renderOfficeSwitch('front', 'actualite'); ?>
+  
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo">

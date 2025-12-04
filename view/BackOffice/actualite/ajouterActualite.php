@@ -2,6 +2,7 @@
 session_start();
 include_once(__DIR__ . '/../../../controller/actualitecontroller.php');
 include_once(__DIR__ . '/../../../controller/projetcontroller.php');
+include_once(__DIR__ . '/../../components/office-switch.php');
 
 $actualiteController = new ActualiteController();
 $projetController = new ProjetController();
@@ -201,13 +202,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
         }
-        
-        .required {
-            color: #EF4444;
-        }
+
     </style>
 </head>
 <body>
+    <?php echo renderOfficeSwitch('back', 'actualite'); ?>
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
@@ -266,11 +266,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <!-- Projet -->
                             <div class="mb-4">
                                 <label class="form-label">
-                                    Projet <span class="required">*</span>
+                                    Projet <span class="">*</span>
                                 </label>
                                 <select name="projet_id" 
                                         class="form-select <?php echo isset($errors['projet_id']) ? 'is-invalid' : ''; ?>" 
-                                        required>
+                                        >
                                     <option value="">-- Sélectionner un projet --</option>
                                     <?php foreach ($projets as $projet): ?>
                                         <option value="<?php echo $projet['id']; ?>" 
@@ -289,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <!-- Titre -->
                             <div class="mb-4">
                                 <label class="form-label">
-                                    Titre <span class="required">*</span>
+                                    Titre <span class="">*</span>
                                 </label>
                                 <input type="text" 
                                        name="titre" 
@@ -297,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                        placeholder="Ex: Lancement de la version Beta"
                                        value="<?php echo htmlspecialchars($formData['titre']); ?>"
                                        minlength="5"
-                                       required>
+                                       >
                                 <?php if (isset($errors['titre'])): ?>
                                     <div class="invalid-feedback">
                                         <?php echo $errors['titre']; ?>
@@ -309,11 +309,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <!-- Type -->
                             <div class="mb-4">
                                 <label class="form-label">
-                                    Type d'actualité <span class="required">*</span>
+                                    Type d'actualité <span class="">*</span>
                                 </label>
                                 <select name="type" 
                                         class="form-select <?php echo isset($errors['type']) ? 'is-invalid' : ''; ?>" 
-                                        required>
+                                        >
                                     <option value="">-- Sélectionner un type --</option>
                                     <option value="milestone" <?php echo ($formData['type'] == 'milestone') ? 'selected' : ''; ?>>
                                         🎯 Milestone (Étape importante)
@@ -335,14 +335,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <!-- Contenu -->
                             <div class="mb-4">
                                 <label class="form-label">
-                                    Contenu <span class="required">*</span>
+                                    Contenu <span class="">*</span>
                                 </label>
                                 <textarea name="contenu" 
                                           class="form-control <?php echo isset($errors['contenu']) ? 'is-invalid' : ''; ?>" 
                                           rows="8" 
                                           placeholder="Décrivez l'actualité en détail..."
                                           minlength="20"
-                                          required><?php echo htmlspecialchars($formData['contenu']); ?></textarea>
+                                          ><?php echo htmlspecialchars($formData['contenu']); ?></textarea>
                                 <?php if (isset($errors['contenu'])): ?>
                                     <div class="invalid-feedback">
                                         <?php echo $errors['contenu']; ?>
