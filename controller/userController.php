@@ -4,11 +4,9 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../model/user.php';
 
-// Importez PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Chargez l'autoloader de Composer
 require_once __DIR__ . '/../vendor/autoload.php';
 
 class userController
@@ -20,9 +18,54 @@ class userController
         $this->pdo = Config::getConnexion();
     }
 
-    // ============ MÉTHODES ORIGINALES ============
+    // ============ BAN METHODS ============
 
-    // 1. Add user (inscription)
+    /**
+     * Ban a user until a specific date
+     */
+    public function banUser(int $userId, string $banUntil): bool
+    {
+        try {
+            $sql = "UPDATE users SET banned_until = :banned_until WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':banned_until' => $banUntil,
+                ':id' => $userId
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Ban user error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Unban a user (remove ban)
+     */
+    public function unbanUser(int $userId): bool
+    {
+        try {
+            $sql = "UPDATE users SET banned_until = NULL WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id' => $userId]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Unban user error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if user is currently banned
+     */
+    public function isUserBanned(int $userId): bool
+    {
+        $user = $this->getUserById($userId);
+        return $user ? $user->isBanned() : false;
+    }
+
+    // ============ ORIGINAL METHODS (UPDATED) ============
+
     public function addUser(User $user): bool
     {
         try {
@@ -47,12 +90,10 @@ class userController
         }
     }
 
-    // 2. Update user (admin modify)
     public function updateUser(User $user): bool
     {
         try {
             if (empty($user->getMdp())) {
-                // No password change
                 $sql = "UPDATE users 
                         SET nom = :nom, prenom = :prenom, email = :email, 
                             telephone = :telephone, role = :role 
@@ -90,7 +131,6 @@ class userController
         }
     }
 
-    // 3. Delete user
     public function deleteUser(int $id): bool
     {
         try {
@@ -104,7 +144,6 @@ class userController
         }
     }
 
-    // 4. Get user by email (for login)
     public function getUserByEmail(string $email): ?User
     {
         $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
@@ -114,19 +153,18 @@ class userController
 
         if (!$data) return null;
 
-        $user = new User(
+        return new User(
             $data['nom'],
             $data['prenom'],
             $data['email'],
             $data['telephone'],
             $data['mdp'],
             $data['role'],
-            (int)$data['id']
+            (int)$data['id'],
+            $data['banned_until']
         );
-        return $user;
     }
 
-    // 5. Get user by ID (for modify)
     public function getUserById(int $id): ?User
     {
         $sql = "SELECT * FROM users WHERE id = :id LIMIT 1";
@@ -136,19 +174,18 @@ class userController
 
         if (!$data) return null;
 
-        $user = new User(
+        return new User(
             $data['nom'],
             $data['prenom'],
             $data['email'],
             $data['telephone'],
             $data['mdp'],
             $data['role'],
-            (int)$data['id']
+            (int)$data['id'],
+            $data['banned_until']
         );
-        return $user;
     }
 
-    // 6. Get all users (admin list)
     public function getAllUsers(): array
     {
         $sql = "SELECT * FROM users ORDER BY id DESC";
@@ -158,173 +195,101 @@ class userController
 
         $users = [];
         foreach ($results as $row) {
-            $user = new User(
+            $users[] = new User(
                 $row['nom'],
                 $row['prenom'],
                 $row['email'],
                 $row['telephone'],
                 $row['mdp'],
                 $row['role'],
-                (int)$row['id']
+                (int)$row['id'],
+                $row['banned_until']
             );
-            $users[] = $user;
         }
         return $users;
     }
 
-    // ============ NOUVELLES MÉTHODES POUR MOT DE PASSE OUBLIÉ ============
+    // ============ PASSWORD RESET METHODS ============
 
-    /**
-     * Générer et envoyer un code de réinitialisation
-     */
     public function sendResetCode(string $email): array
     {
         try {
-            // Vérifier si l'email existe
             $user = $this->getUserByEmail($email);
             if (!$user) {
-                return [
-                    'success' => false,
-                    'message' => 'Aucun compte associé à cet email.'
-                ];
+                return ['success' => false, 'message' => 'Aucun compte associé à cet email.'];
             }
 
-            // Générer un code à 6 chiffres
             $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
-            // Supprimer les anciens codes non utilisés pour cet email
             $sqlDelete = "DELETE FROM password_resets WHERE email = :email AND is_used = 0";
             $stmtDelete = $this->pdo->prepare($sqlDelete);
             $stmtDelete->execute([':email' => $email]);
 
-            // Insérer le nouveau code (expire dans 30 minutes)
             $sqlInsert = "INSERT INTO password_resets (email, code, expires_at) 
                          VALUES (:email, :code, DATE_ADD(NOW(), INTERVAL 30 MINUTE))";
             $stmtInsert = $this->pdo->prepare($sqlInsert);
-            $stmtInsert->execute([
-                ':email' => $email,
-                ':code' => $code
-            ]);
+            $stmtInsert->execute([':email' => $email, ':code' => $code]);
 
-            // Envoyer l'email
             $emailSent = $this->sendResetEmail($email, $code, $user->getPrenom());
 
-            if ($emailSent) {
-                return [
-                    'success' => true,
-                    'message' => 'Code envoyé avec succès.'
-                ];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'Erreur lors de l\'envoi de l\'email.'
-                ];
-            }
+            return $emailSent 
+                ? ['success' => true, 'message' => 'Code envoyé avec succès.']
+                : ['success' => false, 'message' => 'Erreur lors de l\'envoi de l\'email.'];
 
         } catch (PDOException $e) {
             error_log("Send reset code error: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Erreur serveur.'
-            ];
+            return ['success' => false, 'message' => 'Erreur serveur.'];
         }
     }
 
-    /**
-     * Vérifier le code de réinitialisation
-     */
     public function verifyResetCode(string $email, string $code): array
     {
         try {
             $sql = "SELECT * FROM password_resets 
-                    WHERE email = :email 
-                    AND code = :code 
-                    AND is_used = 0 
-                    AND expires_at > NOW()
-                    ORDER BY created_at DESC 
-                    LIMIT 1";
+                    WHERE email = :email AND code = :code AND is_used = 0 
+                    AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1";
             
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([
-                ':email' => $email,
-                ':code' => $code
-            ]);
+            $stmt->execute([':email' => $email, ':code' => $code]);
             
-            $result = $stmt->fetch();
-
-            if ($result) {
-                return [
-                    'success' => true,
-                    'message' => 'Code valide.'
-                ];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'Code incorrect ou expiré.'
-                ];
-            }
+            return $stmt->fetch() 
+                ? ['success' => true, 'message' => 'Code valide.']
+                : ['success' => false, 'message' => 'Code incorrect ou expiré.'];
 
         } catch (PDOException $e) {
             error_log("Verify reset code error: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Erreur serveur.'
-            ];
+            return ['success' => false, 'message' => 'Erreur serveur.'];
         }
     }
 
-    /**
-     * Réinitialiser le mot de passe
-     */
     public function resetPassword(string $email, string $code, string $newPassword): array
     {
         try {
-            // Vérifier d'abord que le code est valide
             $verification = $this->verifyResetCode($email, $code);
             if (!$verification['success']) {
                 return $verification;
             }
 
-            // Hasher le nouveau mot de passe
-           // NOUVEAU CODE (sans hachage - EN CLAIR)
-            // Mettre à jour le mot de passe EN CLAIR
             $sqlUpdate = "UPDATE users SET mdp = :mdp WHERE email = :email";
             $stmtUpdate = $this->pdo->prepare($sqlUpdate);
-            $stmtUpdate->execute([
-                ':mdp' => $newPassword,  // Directement sans hachage
-                ':email' => $email
-            ]);
+            $stmtUpdate->execute([':mdp' => $newPassword, ':email' => $email]);
 
-            // Marquer le code comme utilisé
             $sqlMarkUsed = "UPDATE password_resets SET is_used = 1 WHERE email = :email AND code = :code";
             $stmtMarkUsed = $this->pdo->prepare($sqlMarkUsed);
-            $stmtMarkUsed->execute([
-                ':email' => $email,
-                ':code' => $code
-            ]);
+            $stmtMarkUsed->execute([':email' => $email, ':code' => $code]);
 
-            return [
-                'success' => true,
-                'message' => 'Mot de passe réinitialisé avec succès.'
-            ];
+            return ['success' => true, 'message' => 'Mot de passe réinitialisé avec succès.'];
 
         } catch (PDOException $e) {
             error_log("Reset password error: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Erreur lors de la réinitialisation.'
-            ];
+            return ['success' => false, 'message' => 'Erreur lors de la réinitialisation.'];
         }
     }
 
-    /**
-     * Envoyer l'email avec le code
-     */
     private function sendResetEmail(string $email, string $code, string $prenom): bool
     {
         try {
             $mail = new PHPMailer(true);
-
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
@@ -332,50 +297,37 @@ class userController
             $mail->Password = 'umat bwep dbrq mcre';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
-            
-            $mail->SMTPOptions = array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true
-                )
-            );
+            $mail->SMTPOptions = ['ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]];
             
             $mail->setFrom('noreply@kernel.tn', 'Kernel');
             $mail->addAddress($email);
             $mail->CharSet = 'UTF-8';
-
             $mail->isHTML(true);
             $mail->Subject = 'Code de réinitialisation - Kernel';
             $mail->Body = "
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
                     <h2 style='color: #2563EB;'>Réinitialisation de mot de passe</h2>
                     <p>Bonjour <strong>{$prenom}</strong>,</p>
-                    <p>Vous avez demandé la réinitialisation de votre mot de passe Kernel.</p>
                     <div style='background: #F3F4F6; padding: 20px; border-radius: 10px; text-align: center; margin: 20px 0;'>
-                        <p style='margin: 0; color: #6B7280;'>Votre code de vérification :</p>
-                        <h1 style='color: #2563EB; font-size: 36px; margin: 10px 0; letter-spacing: 5px;'>{$code}</h1>
+                        <h1 style='color: #2563EB; font-size: 36px; letter-spacing: 5px;'>{$code}</h1>
                     </div>
                     <p style='color: #EF4444;'><strong>Ce code expire dans 30 minutes.</strong></p>
-                    <p>Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.</p>
-                    <hr style='border: none; border-top: 1px solid #E5E7EB; margin: 20px 0;'>
-                    <p style='color: #6B7280; font-size: 12px;'>© 2024 Kernel. Tous droits réservés.</p>
                 </div>
             ";
 
             $mail->send();
             return true;
-
         } catch (Exception $e) {
-            echo "Erreur d'envoi: " . $mail->ErrorInfo . "<br>";
             error_log("Email error: " . $mail->ErrorInfo);
             return false;
         }
     }
 
-    // ==================================================================
-    // ==================== REMEMBER ME - AJOUTÉE ICI ===================
-    // ==================================================================
+    // ============ REMEMBER ME ============
 
     public function createRememberToken(int $userId): string
     {
@@ -405,9 +357,7 @@ class userController
 
         $sql = "SELECT rt.*, u.* FROM remember_tokens rt 
                 JOIN users u ON rt.user_id = u.id 
-                WHERE rt.token LIKE :selector 
-                  AND rt.expires_at > NOW() 
-                LIMIT 1";
+                WHERE rt.token LIKE :selector AND rt.expires_at > NOW() LIMIT 1";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':selector' => $selector . '%']);
@@ -426,7 +376,8 @@ class userController
                 $row['telephone'],
                 $row['mdp'],
                 $row['role'],
-                (int)$row['id']
+                (int)$row['id'],
+                $row['banned_until']
             );
         }
         return null;

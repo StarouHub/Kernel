@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../../config.php';  // Pour avoir accès à la BDD
-require_once '../../controller/userController.php';  // CHEMIN CORRIGÉ
+require_once '../../controller/userController.php';  
 
 $controller = new userController();
 

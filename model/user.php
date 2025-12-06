@@ -2,16 +2,15 @@
 
 class User
 {
-    
     private ?int $id = null;
     private string $nom;
     private string $prenom;
     private string $email;
     private string $telephone;
     private string $mdp;        
-    private string $role;       
+    private string $role;
+    private ?string $banned_until = null;
 
-    
     public function __construct(
         string $nom = '',
         string $prenom = '',
@@ -19,18 +18,20 @@ class User
         string $telephone = '',
         string $mdp = '',
         string $role = 'user',   
-        ?int $id = null
+        ?int $id = null,
+        ?string $banned_until = null
     ) {
-        $this->id        = $id;
-        $this->nom       = $nom;
-        $this->prenom    = $prenom;
-        $this->email     = $email;
-        $this->telephone = $telephone;
-        $this->mdp       = $mdp;
-        $this->role      = $role;
+        $this->id           = $id;
+        $this->nom          = $nom;
+        $this->prenom       = $prenom;
+        $this->email        = $email;
+        $this->telephone    = $telephone;
+        $this->mdp          = $mdp;
+        $this->role         = $role;
+        $this->banned_until = $banned_until;
     }
 
-    //  GETTERS
+    // GETTERS
     public function getId(): ?int
     {
         return $this->id;
@@ -66,6 +67,11 @@ class User
         return $this->role;
     }
 
+    public function getBannedUntil(): ?string
+    {
+        return $this->banned_until;
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -76,7 +82,15 @@ class User
         return $this->role === 'user';
     }
 
-    //SETTERS
+    public function isBanned(): bool
+    {
+        if ($this->banned_until === null) {
+            return false;
+        }
+        return strtotime($this->banned_until) > time();
+    }
+
+    // SETTERS
     public function setId(?int $id): void
     {
         $this->id = $id;
@@ -114,5 +128,10 @@ class User
         } else {
             throw new InvalidArgumentException("Le rôle doit être 'admin' ou 'user'");
         }
+    }
+
+    public function setBannedUntil(?string $banned_until): void
+    {
+        $this->banned_until = $banned_until;
     }
 }
