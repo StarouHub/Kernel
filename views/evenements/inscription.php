@@ -181,18 +181,13 @@ $today = date('Y-m-d');
           <div class="row">
             <div class="mb-3 col-md-6">
               <label class="form-label" for="date_inscription">Date d'inscription</label>
-              <input class="form-control" id="date_inscription" name="date_inscription" type="date" value="<?php echo $today; ?>">
+              <input class="form-control" id="date_inscription" name="date_inscription" type="date" value="<?php echo $today; ?>" readonly>
               <div class="error-message" id="err-date-inscription">Veuillez saisir une date d'inscription.</div>
             </div>
 
             <div class="mb-3 col-md-6">
               <label class="form-label" for="statut">Statut</label>
-              <select class="form-select" id="statut" name="statut">
-                <option value="">-- Sélectionner --</option>
-                <option value="Confirmé">Confirmé</option>
-                <option value="En attente" selected>En attente</option>
-                <option value="Annulé">Annulé</option>
-              </select>
+              <input class="form-control" id="statut" name="statut" type="text" value="Confirmé" readonly>
               <div class="error-message" id="err-statut">Veuillez choisir un statut.</div>
             </div>
           </div>
@@ -255,14 +250,16 @@ $today = date('Y-m-d');
     }
 
     var dateInscription = document.getElementById("date_inscription");
-    if (!dateInscription.value) {
+    var todayDate = "<?php echo $today; ?>";
+    if (!dateInscription.value || dateInscription.value !== todayDate) {
       ok = false;
       dateInscription.classList.add("field-invalid");
       document.getElementById("err-date-inscription").style.display = "block";
+      document.getElementById("err-date-inscription").textContent = "La date d'inscription doit être la date du jour.";
     }
 
     var statut = document.getElementById("statut");
-    if (!statut.value) {
+    if (statut.value !== "Confirmé") {
       ok = false;
       statut.classList.add("field-invalid");
       document.getElementById("err-statut").style.display = "block";

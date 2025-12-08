@@ -1,175 +1,269 @@
 <?php
 /**
  * Evenement Model
- * Handles all database operations for events
+ * Représente une entité Événement avec ses propriétés
+ * Les opérations CRUD sont gérées dans le contrôleur
  */
 
-require_once __DIR__ . '/../config/database.php';
-
 class Evenement {
-    private $db;
+    // Propriétés de l'événement
+    private $id;
+    private $titre;
+    private $type;
+    private $date;
+    private $lieu;
+    private $capacite;
+    private $user_id;
+    private $description;
+    private $created_at;
     
-    public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+    /**
+     * Constructor
+     * 
+     * @param array|null $data Données pour initialiser l'objet
+     */
+    public function __construct(?array $data = null) {
+        if ($data !== null) {
+            $this->hydrate($data);
+        }
     }
     
     /**
-     * Get all events
-     * @param string $type Optional filter by type
-     * @param string $search Optional search term
+     * Hydrate l'objet avec des données
+     * 
+     * @param array $data
+     * @return void
+     */
+    public function hydrate(array $data): void {
+        if (isset($data['id'])) {
+            $this->setId((int)$data['id']);
+        }
+        if (isset($data['titre'])) {
+            $this->setTitre($data['titre']);
+        }
+        if (isset($data['type'])) {
+            $this->setType($data['type']);
+        }
+        if (isset($data['date'])) {
+            $this->setDate($data['date']);
+        }
+        if (isset($data['lieu'])) {
+            $this->setLieu($data['lieu']);
+        }
+        if (isset($data['capacite'])) {
+            $this->setCapacite((int)$data['capacite']);
+        }
+        if (isset($data['user_id'])) {
+            $this->setUserId((int)$data['user_id']);
+        }
+        if (isset($data['description'])) {
+            $this->setDescription($data['description']);
+        }
+        if (isset($data['created_at'])) {
+            $this->setCreatedAt($data['created_at']);
+        }
+    }
+    
+    /**
+     * Convertit l'objet en tableau
+     * 
      * @return array
      */
-    public function getAll($type = null, $search = null) {
-        $sql = "SELECT * FROM evenements WHERE 1=1";
-        $params = [];
-        
-        if ($type && $type !== 'Tous') {
-            $sql .= " AND type = :type";
-            $params[':type'] = $type;
-        }
-        
-        if ($search) {
-            $sql .= " AND (titre LIKE :search OR description LIKE :search OR lieu LIKE :search)";
-            $params[':search'] = "%{$search}%";
-        }
-        
-        $sql .= " ORDER BY date ASC, created_at DESC";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        
-        return $stmt->fetchAll();
+    public function toArray(): array {
+        return [
+            'id' => $this->id,
+            'titre' => $this->titre,
+            'type' => $this->type,
+            'date' => $this->date,
+            'lieu' => $this->lieu,
+            'capacite' => $this->capacite,
+            'user_id' => $this->user_id,
+            'description' => $this->description,
+            'created_at' => $this->created_at,
+        ];
+    }
+    
+    // Getters and Setters
+    
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int {
+        return $this->id;
     }
     
     /**
-     * Get event by ID
      * @param int $id
-     * @return array|false
+     * @return self
      */
-    public function getById($id) {
-        $sql = "SELECT * FROM evenements WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        
-        return $stmt->fetch();
+    public function setId(int $id): self {
+        $this->id = $id;
+        return $this;
     }
     
     /**
-     * Create a new event
-     * @param array $data
-     * @return int|false Event ID on success, false on failure
+     * @return string|null
      */
-    public function create($data) {
-        $sql = "INSERT INTO evenements (titre, type, date, lieu, capacite, user_id, description) 
-                VALUES (:titre, :type, :date, :lieu, :capacite, :user_id, :description)";
-        
-        $stmt = $this->db->prepare($sql);
-        
-        // Convert date format from DD/MM/YYYY to YYYY-MM-DD
-        $dateFormatted = $this->formatDate($data['date']);
-        
-        $result = $stmt->execute([
-            ':titre' => $data['titre'],
-            ':type' => $data['type'],
-            ':date' => $dateFormatted,
-            ':lieu' => $data['lieu'],
-            ':capacite' => (int)$data['capacite'],
-            ':user_id' => (int)$data['user_id'],
-            ':description' => $data['description']
-        ]);
-        
-        return $result ? $this->db->lastInsertId() : false;
+    public function getTitre(): ?string {
+        return $this->titre;
     }
     
     /**
-     * Update an existing event
-     * @param int $id
-     * @param array $data
-     * @return bool
+     * @param string $titre
+     * @return self
      */
-    public function update($id, $data) {
-        $sql = "UPDATE evenements 
-                SET titre = :titre, type = :type, date = :date, lieu = :lieu, 
-                    capacite = :capacite, user_id = :user_id, description = :description
-                WHERE id = :id";
-        
-        $stmt = $this->db->prepare($sql);
-        
-        // Convert date format from DD/MM/YYYY to YYYY-MM-DD
-        $dateFormatted = $this->formatDate($data['date']);
-        
-        return $stmt->execute([
-            ':id' => $id,
-            ':titre' => $data['titre'],
-            ':type' => $data['type'],
-            ':date' => $dateFormatted,
-            ':lieu' => $data['lieu'],
-            ':capacite' => (int)$data['capacite'],
-            ':user_id' => (int)$data['user_id'],
-            ':description' => $data['description']
-        ]);
+    public function setTitre(string $titre): self {
+        $this->titre = trim($titre);
+        return $this;
     }
     
     /**
-     * Delete an event
-     * @param int $id
-     * @return bool
+     * @return string|null
      */
-    public function delete($id) {
-        $sql = "DELETE FROM evenements WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        
-        return $stmt->execute([':id' => $id]);
+    public function getType(): ?string {
+        return $this->type;
     }
     
     /**
-     * Format date from DD/MM/YYYY to YYYY-MM-DD
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self {
+        $this->type = $type;
+        return $this;
+    }
+    
+    /**
+     * @return string|null
+     */
+    public function getDate(): ?string {
+        return $this->date;
+    }
+    
+    /**
      * @param string $date
-     * @return string
+     * @return self
      */
-    private function formatDate($date) {
-        if (empty($date)) {
-            return date('Y-m-d');
-        }
-        
-        // Check if already in YYYY-MM-DD format
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
-            return $date;
-        }
-        
-        // Convert from DD/MM/YYYY to YYYY-MM-DD
-        if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $date, $matches)) {
-            return $matches[3] . '-' . $matches[2] . '-' . $matches[1];
-        }
-        
-        return date('Y-m-d');
+    public function setDate(string $date): self {
+        $this->date = $date;
+        return $this;
+    }
+    
+    /**
+     * @return string|null
+     */
+    public function getLieu(): ?string {
+        return $this->lieu;
+    }
+    
+    /**
+     * @param string $lieu
+     * @return self
+     */
+    public function setLieu(string $lieu): self {
+        $this->lieu = trim($lieu);
+        return $this;
+    }
+    
+    /**
+     * @return int|null
+     */
+    public function getCapacite(): ?int {
+        return $this->capacite;
+    }
+    
+    /**
+     * @param int $capacite
+     * @return self
+     */
+    public function setCapacite(int $capacite): self {
+        $this->capacite = $capacite;
+        return $this;
+    }
+    
+    /**
+     * @return int|null
+     */
+    public function getUserId(): ?int {
+        return $this->user_id;
+    }
+    
+    /**
+     * @param int $user_id
+     * @return self
+     */
+    public function setUserId(int $user_id): self {
+        $this->user_id = $user_id;
+        return $this;
+    }
+    
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string {
+        return $this->description;
+    }
+    
+    /**
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self {
+        $this->description = trim($description);
+        return $this;
+    }
+    
+    /**
+     * @return string|null
+     */
+    public function getCreatedAt(): ?string {
+        return $this->created_at;
+    }
+    
+    /**
+     * @param string $created_at
+     * @return self
+     */
+    public function setCreatedAt(string $created_at): self {
+        $this->created_at = $created_at;
+        return $this;
     }
     
     /**
      * Format date from YYYY-MM-DD to DD/MM/YYYY for display
+     * 
      * @param string $date
      * @return string
      */
-    public static function formatDateForDisplay($date) {
+    public static function formatDateForDisplay(string $date): string {
         if (empty($date)) {
             return '';
         }
         
         $timestamp = strtotime($date);
+        if ($timestamp === false) {
+            return $date;
+        }
+        
         return date('d/m/Y', $timestamp);
     }
     
     /**
      * Get formatted date with day name
+     * 
      * @param string $date
      * @return string
      */
-    public static function formatDateWithDay($date) {
+    public static function formatDateWithDay(string $date): string {
         if (empty($date)) {
             return '';
         }
         
         $timestamp = strtotime($date);
+        if ($timestamp === false) {
+            return $date;
+        }
+        
         $days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
         $months = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
                    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
@@ -182,4 +276,3 @@ class Evenement {
         return "$dayName $day $month $year";
     }
 }
-
