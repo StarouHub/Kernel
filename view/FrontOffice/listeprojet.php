@@ -1,7 +1,8 @@
 <?php
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/categoriecontroller.php');
-include_once(__DIR__ . '/../components/office-switch.php');
+include_once(__DIR__ . '/../components/main-navigation.php');
+include_once(__DIR__ . '/../components/chatbot-widget.php');
 
 $projetController = new ProjetController();
 $categorieController = new CategorieController();
@@ -56,53 +57,7 @@ function getStatusBadge($statut) {
       padding-top: 80px;
     }
     
-    .header {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      padding: 15px 0;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .logo {
-      font-size: 28px;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-      font-family: 'Raleway', sans-serif;
-    }
-    
-    .navmenu ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      gap: 30px;
-      align-items: center;
-    }
-    
-    .navmenu a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s;
-    }
-    
-    .navmenu a:hover {
-      color: var(--accent-color);
-    }
-    
-    .btn-getstarted {
-      background: var(--accent-color);
-      color: white;
-      padding: 10px 25px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
+
     
     .page-header {
       background: white;
@@ -319,27 +274,8 @@ function getStatusBadge($statut) {
 </head>
 
 <body>
-  <?php echo renderOfficeSwitch('front', 'projet'); ?>
-  
-  <header class="header d-flex align-items-center">
-    <div class="container d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo">
-        <i class="bi bi-hexagon-fill"></i> Kernel
-      </a>
-
-      <nav class="navmenu">
-        <ul>
-          <li><a href="index.html">Accueil</a></li>
-          <li><a href="listeprojet.php" style="color: var(--accent-color);">Projets</a></li>
-          <li><a href="evenements-list.html">Événements</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="profil-utilisateur.html">Profil</a></li>
-        </ul>
-      </nav>
-
-      <a class="btn-getstarted" href="login.html">Connexion</a>
-    </div>
-  </header>
+  <?php echo renderMainNavigation('projets'); ?>
+  <?php echo renderChatbotWidget(); ?>
 
   <div class="page-header">
     <div class="container">

@@ -7,6 +7,22 @@ include_once(__DIR__ . '/../components/chatbot-widget.php');
 $actualiteController = new ActualiteController();
 $projetController = new ProjetController();
 
+// Récupérer l'ID de l'actualité
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($id === 0) {
+    header('Location: listeActualite.php');
+    exit;
+}
+
+// Récupérer l'actualité
+$actualiteData = $actualiteController->showActualite($id);
+
+if (!$actualiteData) {
+    header('Location: listeActualite.php');
+    exit;
+}
+
 // Récupérer tous les projets
 $projets = $projetController->listProjets();
 
@@ -39,24 +55,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['projet_id'] = 'Veuillez sélectionner un projet';
     }
     
-    // Si pas d'erreurs, ajouter l'actualité
+    // Si pas d'erreurs, modifier l'actualité
     if (empty($errors)) {
         try {
             $actualite = new Actualite(
-                null,
+                $id,
                 $titre,
                 $contenu,
-                new DateTime(),
+                new DateTime($actualiteData['date_publication']),
                 $type,
                 intval($projet_id)
             );
             
-            if ($actualiteController->addActualite($actualite)) {
-                $message = '✓ Actualité publiée avec succès !';
+            if ($actualiteController->updateActualite($actualite, $id)) {
+                $message = '✓ Actualité modifiée avec succès !';
                 $messageType = 'success';
-                header("refresh:2;url=searchActualites.php");
+                header("refresh:2;url=listeActualite.php");
             } else {
-                $message = '✗ Erreur lors de la publication.';
+                $message = '✗ Erreur lors de la modification.';
                 $messageType = 'error';
             }
         } catch (Exception $e) {
@@ -74,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Publier une Actualité - Kernel</title>
+  <title>Modifier l'Actualité - Kernel</title>
   
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -212,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <a href="index.html" class="logo">
         <i class="bi bi-hexagon-fill"></i> Kernel
       </a>
-      <a class="btn btn-light" href="searchActualites.php">
+      <a class="btn btn-light" href="listeActualite.php">
         <i class="bi bi-arrow-left me-2"></i> Retour
       </a>
     </div>
@@ -220,8 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="page-header">
     <div class="container">
-      <h1><i class="bi bi-newspaper"></i> Publier une Actualité</h1>
-      <p>Tenez vos investisseurs informés de l'évolution de votre projet</p>
+      <h1><i class="bi bi-pencil-square"></i> Modifier l'Actualité</h1>
+      <p>Mettez à jour les informations de votre actualité</p>
     </div>
   </div>
 
@@ -238,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <select name="projet_id" class="form-select <?php echo isset($errors['projet_id']) ? 'error' : ''; ?>" >
           <option value="">Sélectionner un projet...</option>
           <?php foreach ($projets as $projet): ?>
-            <option value="<?php echo $projet['id']; ?>">
+            <option value="<?php echo $projet['id']; ?>" <?php echo ($actualiteData['projet_id'] == $projet['id']) ? 'selected' : ''; ?>>
               <?php echo htmlspecialchars($projet['titre']); ?>
             </option>
           <?php endforeach; ?>
@@ -250,7 +266,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="mb-3">
         <label class="form-label">Titre de l'actualité *</label>
-        <input type="text" name="titre" class="form-control <?php echo isset($errors['titre']) ? 'error' : ''; ?>" placeholder="Ex: Lancement de la version Beta" >
+        <input type="text" name="titre" class="form-control <?php echo isset($errors['titre']) ? 'error' : ''; ?>" 
+               value="<?php echo htmlspecialchars($actualiteData['titre']); ?>" placeholder="Ex: Lancement de la version Beta" >
         <?php if (isset($errors['titre'])): ?>
           <div class="error-message"><?php echo $errors['titre']; ?></div>
         <?php endif; ?>
@@ -260,9 +277,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label class="form-label">Type d'actualité *</label>
         <select name="type" class="form-select <?php echo isset($errors['type']) ? 'error' : ''; ?>" >
           <option value="">Sélectionner...</option>
-          <option value="milestone">🎯 Milestone (Étape importante)</option>
-          <option value="update">📢 Update (Mise à jour)</option>
-          <option value="announcement">📣 Announcement (Annonce)</option>
+          <option value="milestone" <?php echo ($actualiteData['type'] == 'milestone') ? 'selected' : ''; ?>>🎯 Milestone (Étape importante)</option>
+          <option value="update" <?php echo ($actualiteData['type'] == 'update') ? 'selected' : ''; ?>>📢 Update (Mise à jour)</option>
+          <option value="announcement" <?php echo ($actualiteData['type'] == 'announcement') ? 'selected' : ''; ?>>📣 Announcement (Annonce)</option>
         </select>
         <?php if (isset($errors['type'])): ?>
           <div class="error-message"><?php echo $errors['type']; ?></div>
@@ -271,18 +288,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="mb-4">
         <label class="form-label">Contenu *</label>
-        <textarea name="contenu" class="form-control <?php echo isset($errors['contenu']) ? 'error' : ''; ?>" rows="8" placeholder="Décrivez l'actualité en détail..." ></textarea>
+        <textarea name="contenu" class="form-control <?php echo isset($errors['contenu']) ? 'error' : ''; ?>" 
+                  rows="8" placeholder="Décrivez l'actualité en détail..." ><?php echo htmlspecialchars($actualiteData['contenu']); ?></textarea>
         <?php if (isset($errors['contenu'])): ?>
           <div class="error-message"><?php echo $errors['contenu']; ?></div>
         <?php endif; ?>
       </div>
 
       <div class="d-flex gap-3 justify-content-end">
-        <a href="searchActualites.php" class="btn btn-secondary">
+        <a href="listeActualite.php" class="btn btn-secondary">
           <i class="bi bi-x-circle me-2"></i> Annuler
         </a>
         <button type="submit" class="btn-submit">
-          <i class="bi bi-send me-2"></i> Publier l'actualité
+          <i class="bi bi-check-circle me-2"></i> Enregistrer les modifications
         </button>
       </div>
     </form>
