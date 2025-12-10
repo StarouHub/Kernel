@@ -2,6 +2,7 @@
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/categoriecontroller.php');
 include_once(__DIR__ . '/../components/office-switch.php');
+include_once(__DIR__ . '/../components/chatbot-widget.php');
 
 // Initialiser les variables pour conserver les valeurs
 $formData = [
@@ -331,6 +332,7 @@ $categories = $categorieController->listCategories();
 
 <body>
   <?php echo renderOfficeSwitch('front', 'projet'); ?>
+  <?php echo renderChatbotWidget(); ?>
   
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">

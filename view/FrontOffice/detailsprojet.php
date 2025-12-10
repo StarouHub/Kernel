@@ -1,6 +1,7 @@
 <?php
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
-include_once(__DIR__ . '/../components/office-switch.php');
+include_once(__DIR__ . '/../components/main-navigation.php');
+include_once(__DIR__ . '/../components/chatbot-widget.php');
 
 $projetController = new ProjetController();
 
@@ -354,27 +355,8 @@ function getStatusLabel($statut) {
 </head>
 
 <body>
-  <?php echo renderOfficeSwitch('front', 'projet', $projet_id); ?>
-  
-  <header class="header d-flex align-items-center">
-    <div class="container d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo">
-        <i class="bi bi-hexagon-fill"></i> Kernel
-      </a>
-
-      <nav class="navmenu">
-        <ul>
-          <li><a href="index.html">Accueil</a></li>
-          <li><a href="listeprojet.php" style="color: var(--accent-color);">Projets</a></li>
-          <li><a href="evenements-list.html">Événements</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="profil-utilisateur.html">Profil</a></li>
-        </ul>
-      </nav>
-
-      <a class="btn-getstarted" href="login.html">Connexion</a>
-    </div>
-  </header>
+  <?php echo renderMainNavigation('projets'); ?>
+  <?php echo renderChatbotWidget(); ?>
 
   <div class="project-hero">
     <div class="container">

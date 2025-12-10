@@ -2,6 +2,7 @@
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/actualitecontroller.php');
 include_once(__DIR__ . '/../components/office-switch.php');
+include_once(__DIR__ . '/../components/chatbot-widget.php');
 
 $projetController = new ProjetController();
 $actualiteController = new ActualiteController();
@@ -174,6 +175,7 @@ function getTypeBadge($type) {
 
 <body>
   <?php echo renderOfficeSwitch('front', 'actualite'); ?>
+  <?php echo renderChatbotWidget(); ?>
   
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
@@ -257,10 +259,18 @@ function getTypeBadge($type) {
                 <i class="bi bi-calendar me-1"></i>
                 <?php echo date('d/m/Y à H:i', strtotime($actu['date_publication'])); ?>
               </span>
-              <span>
-                <i class="bi bi-folder me-1"></i>
-                <?php echo htmlspecialchars($actu['projet_titre']); ?>
-              </span>
+              <div class="d-flex gap-2 align-items-center">
+                <span>
+                  <i class="bi bi-folder me-1"></i>
+                  <?php echo htmlspecialchars($actu['projet_titre']); ?>
+                </span>
+                <a href="modifierActualite.php?id=<?php echo $actu['id']; ?>" class="btn btn-sm btn-outline-primary" title="Modifier">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="supprimerActualite.php?id=<?php echo $actu['id']; ?>" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
             </div>
           </div>
         <?php endforeach; ?>

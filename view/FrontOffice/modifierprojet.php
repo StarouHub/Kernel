@@ -2,6 +2,7 @@
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/categoriecontroller.php');
 include_once(__DIR__ . '/../components/office-switch.php');
+include_once(__DIR__ . '/../components/chatbot-widget.php');
 
 // Récupérer l'ID du projet depuis l'URL
 $projet_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -354,6 +355,7 @@ $categories = $categorieController->listCategories();
 
 <body>
   <?php echo renderOfficeSwitch('front', 'projet', $projet_id); ?>
+  <?php echo renderChatbotWidget(); ?>
   
   <header class="header d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
