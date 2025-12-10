@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user->setRole($_POST['role']);
 
     if (!empty($_POST['password'])) {
-        $user->setMdp($_POST['password']); // 100% texte clair
+        $user->setMdp($_POST['password']);
     }
 
     $controller->updateUser($user);
@@ -41,161 +41,252 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Modifier l'utilisateur - Kernel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      font-family: 'Raleway', sans-serif;
-      margin: 0;
-      padding: 20px 0;
+    :root {
+      --bg: #0f0f1e;
+      --card: #1a1a2e;
+      --text: #e0e0e0;
+      --text-muted: #aaa;
+      --pink: #ff2e63;
+      --purple: #764ba2;
+      --border: rgba(255, 46, 99, 0.2);
     }
-    .modify-wrapper { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    .modify-card { background: white; border-radius: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; max-width: 800px; width: 100%; }
-    .modify-header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 40px; text-align: center; }
-    .modify-header h1 { margin: 0; font-size: 2.5rem; font-weight: 900; }
-    .modify-header p { margin: 10px 0 0; opacity: 0.9; font-size: 1.2rem; }
-    .modify-body { padding: 50px; }
-    .form-label { font-weight: 600; color: #444; margin-bottom: 8px; }
-    .form-control, .form-select {
-      height: 56px; border-radius: 12px; border: 2px solid #e0e0e0; padding: 0 20px; font-size: 1.1rem;
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      padding: 30px 15px;
+      background-image: radial-gradient(circle at 10% 20%, rgba(255, 46, 99, 0.1) 0%, transparent 20%),
+                        radial-gradient(circle at 90% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 20%);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 40px;
+      text-align: center;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .header p {
+      font-size: 1.3rem;
+      opacity: 0.9;
+    }
+
+    .body {
+      padding: 50px;
+    }
+
+    .form-group {
+      margin-bottom: 28px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select {
+      width: 100%;
+      padding: 18px 22px;
+      border-radius: 16px;
+      border: 2px solid #33334d;
+      background: #16213e;
+      color: white;
+      font-size: 1.1rem;
       transition: all 0.3s;
     }
-    .form-control:focus, .form-select:focus {
-      border-color: #667eea; box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--pink);
+      box-shadow: 0 0 0 4px rgba(255, 46, 99, 0.2);
     }
-    .error-msg { color: #dc3545; font-size: 0.9rem; margin-top: 5px; display: none; }
+
+    .role-badge {
+      display: inline-block;
+      padding: 12px 28px;
+      background: rgba(255, 46, 99, 0.2);
+      color: var(--pink);
+      border: 1px solid var(--pink);
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .btn-group {
+      text-align: center;
+      margin-top: 50px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 16px 40px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     .btn-save {
-      background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 16px 50px;
-      border: none; border-radius: 50px; font-weight: 700; font-size: 1.2rem;
+      background: linear-gradient(135deg, #ff2e63, #ff6b9d);
+      color: white;
+      box-shadow: 0 10px 30px rgba(255, 46, 99, 0.4);
     }
+
     .btn-cancel {
-      background: #6c757d; color: white; padding: 16px 50px; border: none;
-      border-radius: 50px; font-weight: 700; font-size: 1.2rem; text-decoration: none;
+      background: #33334d;
+      color: #ccc;
     }
-    .btn-save:hover, .btn-cancel:hover {
-      transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+
+    .btn:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
     }
-    .current-role {
-      display: inline-block; padding: 10px 25px; background: #667eea; color: white;
-      border-radius: 50px; font-weight: bold; font-size: 1.1rem;
+
+    .error-msg {
+      color: #ff6b6b;
+      font-size: 0.95rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .body { padding: 30px 25px; }
+      .header h1 { font-size: 2.2rem; }
+      .btn-group { flex-direction: column; }
+      .btn { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="modify-wrapper">
-    <div class="modify-card">
-      <div class="modify-header">
-        <h1>Kernel</h1>
-        <p>Modifier l'utilisateur #<?php echo $user->getId(); ?></p>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1>Modifier l'utilisateur</h1>
+        <p>ID : #<?php echo $user->getId(); ?> • <?php echo htmlspecialchars($user->getPrenom() . ' ' . $user->getNom()); ?></p>
       </div>
 
-      <div class="modify-body">
-        <form method="POST" id="modifyForm" novalidate>
+      </div>
+
+      <div class="body">
+        <form method="POST" id="modifyForm">
           <div class="row g-4">
             <div class="col-md-6">
-              <label class="form-label">Prénom</label>
-              <input type="text" name="prenom" class="form-control" value="<?php echo htmlspecialchars($user->getPrenom()); ?>">
-              <div class="error-msg" id="prenomError">Le prénom est obligatoire</div>
+              <div class="form-group">
+                <label>Prénom</label>
+                <input type="text" name="prenom" value="<?php echo htmlspecialchars($user->getPrenom()); ?>" required>
+                <div class="error-msg" id="prenomError">Le prénom est obligatoire</div>
+              </div>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Nom</label>
-              <input type="text" name="nom" class="form-control" value="<?php echo htmlspecialchars($user->getNom()); ?>">
-              <div class="error-msg" id="nomError">Le nom est obligatoire</div>
+              <div class="form-group">
+                <label>Nom</label>
+                <input type="text" name="nom" value="<?php echo htmlspecialchars($user->getNom()); ?>" required>
+                <div class="error-msg" id="nomError">Le nom est obligatoire</div>
+              </div>
             </div>
+
+          <div class="form-group mt-4">
+            <label>Email</label>
+            <input type="email" name="email" value="<?php echo htmlspecialchars($user->getEmail()); ?>" required>
+            <div class="error-msg" id="emailError">Email invalide</div>
           </div>
 
-          <div class="mt-4">
-            <label class="form-label">Email</label>
-            <input type="text" name="email" class="form-control" value="<?php echo htmlspecialchars($user->getEmail()); ?>">
-            <div class="error-msg" id="emailError">Veuillez entrer un email valide</div>
+          <div class="form-group mt-4">
+            <label>Téléphone</label>
+            <input type="text" name="telephone" value="<?php echo htmlspecialchars($user->getTelephone()); ?>" placeholder="Ex: 22112233">
+            <div class="error-msg" id="telephoneError">8 chiffres requis</div>
           </div>
 
-          <div class="mt-4">
-            <label class="form-label">Téléphone</label>
-            <input type="text" name="telephone" class="form-control" value="<?php echo htmlspecialchars($user->getTelephone()); ?>">
-            <div class="error-msg" id="telephoneError">Le téléphone doit contenir exactement 8 chiffres</div>
+          <div class="form-group mt-4">
+            <label>Nouveau mot de passe (laisser vide pour garder l'actuel)</label>
+            <input type="password" name="password" placeholder="Minimum 8 caractères">
+            <div class="error-msg" id="passwordError">Minimum 8 caractères</div>
           </div>
 
-          <div class="mt-4">
-            <label class="form-label">Nouveau mot de passe</label>
-            <input type="password" name="password" class="form-control" placeholder="Laisser vide pour ne pas changer">
-            <div class="error-msg" id="passwordError">Le mot de passe doit contenir au moins 8 caractères</div>
-          </div>
-
-          <div class="mt-4">
-            <label class="form-label">Rôle actuel</label><br>
-            <span class="current-role">
-              <?php echo $user->getRole() === 'admin' ? 'Administrateur' : 'Utilisateur'; ?>
+          <div class="form-group mt-4">
+            <label>Rôle actuel</label><br>
+            <span class="role-badge">
+              <?php echo $user->getRole() === 'admin' ? 'Administrateur' : 'Utilisateur standard'; ?>
             </span>
           </div>
 
-          <div class="mt-4">
-            <label class="form-label">Changer le rôle</label>
-            <select name="role" class="form-select">
+          <div class="form-group mt-4">
+            <label>Changer le rôle</label>
+            <select name="role" class="form-control">
               <option value="user" <?php echo $user->getRole() === 'user' ? 'selected' : ''; ?>>Utilisateur</option>
               <option value="admin" <?php echo $user->getRole() === 'admin' ? 'selected' : ''; ?>>Administrateur</option>
             </select>
           </div>
 
-          <div class="text-center mt-5">
-            <button type="submit" class="btn-save">Sauvegarder</button>
-            <a href="admin.php" class="btn-cancel ms-3">Annuler</a>
+          <div class="btn-group">
+            <button type="submit" class="btn btn-save">Sauvegarder</button>
+            <a href="admin.php" class="btn btn-cancel">Annuler</a>
           </div>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript intégré directement dans le fichier -->
   <script>
     document.getElementById('modifyForm').addEventListener('submit', function(e) {
-      let hasError = false;
+      let error = false;
 
-      // Réinitialiser les messages d'erreur
       document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
 
-      // Prénom
       const prenom = document.querySelector('[name="prenom"]').value.trim();
-      if (prenom === '') {
-        document.getElementById('prenomError').style.display = 'block';
-        hasError = true;
-      }
+      if (!prenom) { document.getElementById('prenomError').style.display = 'block'; error = true; }
 
-      // Nom
       const nom = document.querySelector('[name="nom"]').value.trim();
-      if (nom === '') {
-        document.getElementById('nomError').style.display = 'block';
-        hasError = true;
-      }
+      if (!nom) { document.getElementById('nomError').style.display = 'block'; error = true; }
 
-      // Email
       const email = document.querySelector('[name="email"]').value.trim();
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (email === '' || !emailRegex.test(email)) {
-        document.getElementById('emailError').style.display = 'block';
-        hasError = true;
-      }
+      if (!emailRegex.test(email)) { document.getElementById('emailError').style.display = 'block'; error = true; }
 
-      // Téléphone : exactement 8 chiffres
-      const telephone = document.querySelector('[name="telephone"]').value.trim();
-      if (!/^\d{8}$/.test(telephone)) {
-        document.getElementById('telephoneError').style.display = 'block';
-        hasError = true;
-      }
+      const tel = document.querySelector('[name="telephone"]').value.trim();
+      if (tel && !/^\d{8}$/.test(tel)) { document.getElementById('telephoneError').style.display = 'block'; error = true; }
 
-      // Mot de passe (seulement si rempli)
-      const password = document.querySelector('[name="password"]').value;
-      if (password !== '' && password.length < 8) {
-        document.getElementById('passwordError').style.display = 'block';
-        hasError = true;
-      }
+      const pwd = document.querySelector('[name="password"]').value;
+      if (pwd && pwd.length < 8) { document.getElementById('passwordError').style.display = 'block'; error = true; }
 
-      if (hasError) {
-        e.preventDefault();
-      }
+      if (error) e.preventDefault();
     });
   </script>
 </body>
