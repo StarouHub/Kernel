@@ -69,6 +69,49 @@ switch ($action) {
         $controller->delete();
         break;
     
+    case 'chatbot':
+        require_once __DIR__ . '/services/ChatbotService.php';
+        require_once __DIR__ . '/controllers/EvenementController.php';
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $message = $_POST['message'] ?? '';
+            $eventId = $_POST['event_id'] ?? null;
+            
+            $chatbot = new ChatbotService();
+            
+            // Si un ID d'événement est fourni, on peut donner des réponses contextuelles
+            if ($eventId) {
+                $controller = new EvenementController();
+                $evenement = $controller->getEvenementById((int)$eventId);
+                if ($evenement) {
+                    $result = $chatbot->processMessageWithContext($message, $evenement);
+                } else {
+                    $result = $chatbot->processMessage($message);
+                }
+            } else {
+                $result = $chatbot->processMessage($message);
+            }
+            
+            echo json_encode($result);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Méthode non autorisée']);
+        }
+        exit;
+        break;
+    
+    case 'payment_checkout':
+        $controller->paymentCheckout();
+        break;
+    
+    case 'process_payment':
+        $controller->processPayment();
+        break;
+    
+    case 'payment_success':
+        $controller->paymentSuccess();
+        break;
+    
     default:
         $controller->index();
         break;

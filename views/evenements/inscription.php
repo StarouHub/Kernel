@@ -148,14 +148,33 @@ $today = date('Y-m-d');
           Formulaire d'inscription
         </div>
 
+        <?php if (isset($isFull) && $isFull): ?>
+          <div class="alert alert-warning" style="background: #FEF3C7; border: 2px solid #F59E0B; color: #92400E; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <i class="bi bi-exclamation-triangle-fill"></i> <strong>Événement complet</strong><br>
+            Cet événement a atteint sa capacité maximale. Vous pouvez vous inscrire sur la liste d'attente. 
+            Vous serez notifié si une place se libère.
+          </div>
+        <?php elseif (isset($remainingSpots) && $remainingSpots <= 5): ?>
+          <div class="alert alert-info" style="background: #DBEAFE; border: 2px solid #2563EB; color: #1E40AF; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <i class="bi bi-info-circle-fill"></i> <strong>Plus que <?php echo $remainingSpots; ?> place<?php echo $remainingSpots > 1 ? 's' : ''; ?> disponible<?php echo $remainingSpots > 1 ? 's' : ''; ?> !</strong>
+          </div>
+        <?php endif; ?>
+
         <p class="hint" style="margin-bottom: 20px;">
-          Vous vous inscrivez à : <strong><?php echo htmlspecialchars($evenement['titre']); ?></strong>
+          <?php if (isset($isFull) && $isFull): ?>
+            Vous souhaitez vous inscrire sur la liste d'attente pour : <strong><?php echo htmlspecialchars($evenement['titre']); ?></strong>
+          <?php else: ?>
+            Vous vous inscrivez à : <strong><?php echo htmlspecialchars($evenement['titre']); ?></strong>
+          <?php endif; ?>
           (<?php echo htmlspecialchars(Evenement::formatDateForDisplay($evenement['date'])); ?>)
         </p>
 
         <form id="inscriptionForm" action="index.php?action=inscription_save" method="post" onsubmit="return validerInscription();">
           <!-- id_evenement correspond à la colonne de ta base -->
           <input type="hidden" name="id_evenement" value="<?php echo htmlspecialchars($evenement['id']); ?>">
+          <?php if (isset($isFull) && $isFull): ?>
+            <input type="hidden" name="waitlist" value="1">
+          <?php endif; ?>
 
           <div class="row">
             <div class="mb-3 col-md-6">
@@ -194,7 +213,11 @@ $today = date('Y-m-d');
 
           <div class="d-flex flex-wrap gap-2 mt-4">
             <button type="submit" class="btn-primary-gradient">
-              <i class="bi bi-check2-circle"></i> S'inscrire
+              <?php if (isset($isFull) && $isFull): ?>
+                <i class="bi bi-clock-history"></i> S'inscrire sur la liste d'attente
+              <?php else: ?>
+                <i class="bi bi-check2-circle"></i> S'inscrire
+              <?php endif; ?>
             </button>
             <a href="index.php?action=details&id=<?php echo $evenement['id']; ?>" class="btn-secondary-outline">
               <i class="bi bi-x-circle"></i> Annuler

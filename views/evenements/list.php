@@ -314,19 +314,31 @@ $currentSearch = $_GET['search'] ?? '';
     </div>
   </form>
 
-  <div class="filter-tabs">
-    <a href="index.php?type=Tous<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
-       class="filter-tab <?php echo $currentType === 'Tous' ? 'active' : ''; ?>">Tous</a>
-    <a href="index.php?type=Hackathon<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
-       class="filter-tab <?php echo $currentType === 'Hackathon' ? 'active' : ''; ?>">Hackathons</a>
-    <a href="index.php?type=Conférence<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
-       class="filter-tab <?php echo $currentType === 'Conférence' ? 'active' : ''; ?>">Conférences</a>
-    <a href="index.php?type=Workshop<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
-       class="filter-tab <?php echo $currentType === 'Workshop' ? 'active' : ''; ?>">Workshops</a>
-    <a href="index.php?type=Meetup<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
-       class="filter-tab <?php echo $currentType === 'Meetup' ? 'active' : ''; ?>">Meetups</a>
-    <a href="index.php?type=Webinaire<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
-       class="filter-tab <?php echo $currentType === 'Webinaire' ? 'active' : ''; ?>">Webinaires</a>
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+    <div class="filter-tabs">
+      <a href="index.php?type=Tous<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
+         class="filter-tab <?php echo $currentType === 'Tous' ? 'active' : ''; ?>">Tous</a>
+      <a href="index.php?type=Hackathon<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
+         class="filter-tab <?php echo $currentType === 'Hackathon' ? 'active' : ''; ?>">Hackathons</a>
+      <a href="index.php?type=Conférence<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
+         class="filter-tab <?php echo $currentType === 'Conférence' ? 'active' : ''; ?>">Conférences</a>
+      <a href="index.php?type=Workshop<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
+         class="filter-tab <?php echo $currentType === 'Workshop' ? 'active' : ''; ?>">Workshops</a>
+      <a href="index.php?type=Meetup<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
+         class="filter-tab <?php echo $currentType === 'Meetup' ? 'active' : ''; ?>">Meetups</a>
+      <a href="index.php?type=Webinaire<?php echo $currentSearch ? '&search=' . urlencode($currentSearch) : ''; ?>" 
+         class="filter-tab <?php echo $currentType === 'Webinaire' ? 'active' : ''; ?>">Webinaires</a>
+    </div>
+    
+    <div class="sort-controls">
+      <label for="sortDate" style="font-weight: 500; color: #374151; margin-right: 8px;">
+        <i class="bi bi-sort-down"></i> Trier par date :
+      </label>
+      <select id="sortDate" class="form-select" style="display: inline-block; width: auto; min-width: 200px;">
+        <option value="desc">Du plus récent au plus ancien</option>
+        <option value="asc" selected>Du plus ancien au plus récent</option>
+      </select>
+    </div>
   </div>
 
   <div class="row">
@@ -343,7 +355,7 @@ $currentSearch = $_GET['search'] ?? '';
           </a>
         </div>
       <?php else: ?>
-        <div class="row">
+        <div class="row" id="eventsContainer">
           <?php foreach ($evenements as $event): 
             $dateFormatted = Evenement::formatDateForDisplay($event['date']);
             $dateParts = explode('/', $dateFormatted);
@@ -361,7 +373,7 @@ $currentSearch = $_GET['search'] ?? '';
             ];
             $typeColor = $typeColors[$event['type']] ?? '#2563EB';
           ?>
-            <div class="col-md-6 mb-4">
+            <div class="col-md-6 mb-4" data-event-date="<?php echo htmlspecialchars($event['date']); ?>">
               <div class="event-card">
                 <a href="index.php?action=details&id=<?php echo $event['id']; ?>" style="text-decoration:none; color:inherit;">
                   <div style="position: relative;">
@@ -429,6 +441,52 @@ $currentSearch = $_GET['search'] ?? '';
     if (e.key === 'Enter') {
       this.closest('form').submit();
     }
+  });
+
+  // Tri dynamique des événements par date
+  document.addEventListener('DOMContentLoaded', function() {
+    const sortSelect = document.getElementById('sortDate');
+    const eventsContainer = document.getElementById('eventsContainer');
+    
+    if (!sortSelect || !eventsContainer) return;
+    
+    // Récupérer tous les événements
+    const eventCards = Array.from(eventsContainer.querySelectorAll('[data-event-date]'));
+    
+    sortSelect.addEventListener('change', function() {
+      const sortOrder = this.value;
+      
+      // Trier les événements par date
+      eventCards.sort(function(a, b) {
+        const dateA = new Date(a.getAttribute('data-event-date'));
+        const dateB = new Date(b.getAttribute('data-event-date'));
+        
+        if (sortOrder === 'asc') {
+          // Du plus récent au plus ancien (dates décroissantes)
+          return dateB - dateA;
+        } else {
+          // Du plus ancien au plus récent (dates croissantes)
+          return dateA - dateB;
+        }
+      });
+      
+      // Réorganiser les événements dans le DOM avec animation
+      eventsContainer.style.opacity = '0.5';
+      eventsContainer.style.transition = 'opacity 0.3s';
+      
+      setTimeout(function() {
+        // Vider le conteneur
+        eventsContainer.innerHTML = '';
+        
+        // Réinsérer les événements triés
+        eventCards.forEach(function(card) {
+          eventsContainer.appendChild(card);
+        });
+        
+        // Restaurer l'opacité
+        eventsContainer.style.opacity = '1';
+      }, 150);
+    });
   });
 </script>
 

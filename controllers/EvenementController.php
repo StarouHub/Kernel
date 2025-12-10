@@ -8,11 +8,14 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Evenement.php';
 require_once __DIR__ . '/../models/Inscription.php';
+require_once __DIR__ . '/../services/EmailService.php';
 
 class EvenementController {
     private $db;
     private $tableEvenements = 'evenements';
     private $tableInscriptions = 'inscription';
+    private $tableWaitlist = 'waitlist';
+    private $defaultPrice = 0.00; // Prix par défaut si non spécifié
     
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
@@ -294,6 +297,134 @@ class EvenementController {
         return $stmt->execute([':id' => $id]);
     }
     
+    // ==================== GESTION DES PLACES RESTANTES ====================
+    
+    /**
+     * Vérifie si un événement est complet
+     * 
+     * @param int $eventId
+     * @return bool
+     */
+    public function isEventFull(int $eventId): bool {
+        $evenement = $this->getEvenementById($eventId);
+        if (!$evenement) {
+            return false;
+        }
+        
+        $inscriptionsCount = $this->countInscriptionsByEventId($eventId);
+        return $inscriptionsCount >= (int)$evenement['capacite'];
+    }
+    
+    /**
+     * Calcule le nombre de places restantes
+     * 
+     * @param int $eventId
+     * @return int
+     */
+    public function getRemainingSpots(int $eventId): int {
+        $evenement = $this->getEvenementById($eventId);
+        if (!$evenement) {
+            return 0;
+        }
+        
+        $inscriptionsCount = $this->countInscriptionsByEventId($eventId);
+        $remaining = (int)$evenement['capacite'] - $inscriptionsCount;
+        
+        return max(0, $remaining);
+    }
+    
+    // ==================== GESTION DE LA LISTE D'ATTENTE ====================
+    
+    /**
+     * Créer une entrée dans la liste d'attente
+     * 
+     * @param array $data
+     * @return int|false ID de l'entrée en cas de succès, false sinon
+     */
+    public function addToWaitlist(array $data) {
+        // Créer la table si elle n'existe pas
+        $this->createWaitlistTableIfNotExists();
+        
+        $sql = "INSERT INTO {$this->tableWaitlist} (nom, prenom, adresse_mail, id_evenement, date_inscription)
+                VALUES (:nom, :prenom, :adresse_mail, :id_evenement, :date_inscription)";
+
+        $stmt = $this->db->prepare($sql);
+
+        $dateInscription = $data['date_inscription'] ?? date('Y-m-d');
+
+        $result = $stmt->execute([
+            ':nom' => trim($data['nom']),
+            ':prenom' => trim($data['prenom']),
+            ':adresse_mail' => strtolower(trim($data['adresse_mail'])),
+            ':id_evenement' => (int)$data['id_evenement'],
+            ':date_inscription' => $dateInscription,
+        ]);
+
+        return $result ? (int)$this->db->lastInsertId() : false;
+    }
+    
+    /**
+     * Vérifie si un email est déjà dans la liste d'attente
+     * 
+     * @param string $email
+     * @param int $eventId
+     * @return bool
+     */
+    public function isEmailInWaitlist(string $email, int $eventId): bool {
+        $this->createWaitlistTableIfNotExists();
+        
+        $sql = "SELECT COUNT(*) as total FROM {$this->tableWaitlist} 
+                WHERE adresse_mail = :email AND id_evenement = :event_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':email' => $email,
+            ':event_id' => $eventId
+        ]);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$result['total'] > 0;
+    }
+    
+    /**
+     * Récupère toutes les entrées de la liste d'attente pour un événement
+     * 
+     * @param int $eventId
+     * @return array
+     */
+    public function getWaitlistByEventId(int $eventId): array {
+        $this->createWaitlistTableIfNotExists();
+        
+        $sql = "SELECT * FROM {$this->tableWaitlist} WHERE id_evenement = :event_id ORDER BY date_inscription ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':event_id' => $eventId]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Crée la table waitlist si elle n'existe pas
+     */
+    private function createWaitlistTableIfNotExists() {
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tableWaitlist} (
+            id_waitlist INT AUTO_INCREMENT PRIMARY KEY,
+            nom VARCHAR(100) NOT NULL,
+            prenom VARCHAR(100) NOT NULL,
+            adresse_mail VARCHAR(255) NOT NULL,
+            id_evenement INT NOT NULL,
+            date_inscription DATE NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_event (id_evenement),
+            INDEX idx_email (adresse_mail)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        
+        try {
+            $this->db->exec($sql);
+        } catch (PDOException $e) {
+            // La table existe peut-être déjà, on ignore l'erreur
+            error_log("Erreur lors de la création de la table waitlist: " . $e->getMessage());
+        }
+    }
+    
     // ==================== ACTIONS DU CONTRÔLEUR ====================
     
     /**
@@ -388,6 +519,10 @@ class EvenementController {
             exit;
         }
         
+        // Calculer les places restantes
+        $remainingSpots = $this->getRemainingSpots((int)$id);
+        $isFull = $this->isEventFull((int)$id);
+        
         require_once __DIR__ . '/../views/evenements/details.php';
     }
 
@@ -409,6 +544,10 @@ class EvenementController {
             header('Location: index.php');
             exit;
         }
+        
+        // Vérifier si l'événement est complet
+        $isFull = $this->isEventFull((int)$id);
+        $remainingSpots = $this->getRemainingSpots((int)$id);
 
         require_once __DIR__ . '/../views/evenements/inscription.php';
     }
@@ -458,10 +597,56 @@ class EvenementController {
             exit;
         }
 
+        // Vérifier si l'événement est complet
+        $isFull = $this->isEventFull($evenementId);
+        $isWaitlist = isset($_POST['waitlist']) && $_POST['waitlist'] === '1';
+
+        // Si l'événement est complet et que ce n'est pas une demande de liste d'attente
+        if ($isFull && !$isWaitlist) {
+            // Vérifier si l'email est déjà dans la liste d'attente
+            if ($this->isEmailInWaitlist($data['adresse_mail'], $evenementId)) {
+                $_SESSION['error'] = "Vous êtes déjà inscrit sur la liste d'attente pour cet événement.";
+            } else {
+                // Proposer la liste d'attente
+                $_SESSION['info'] = "Cet événement est complet. Souhaitez-vous vous inscrire sur la liste d'attente ?";
+                $_SESSION['waitlist_event_id'] = $evenementId;
+                $_SESSION['waitlist_data'] = $data;
+            }
+            header('Location: index.php?action=inscription&id=' . $evenementId);
+            exit;
+        }
+
+        // Si c'est une inscription sur la liste d'attente
+        if ($isWaitlist || ($isFull && $isWaitlist)) {
+            $result = $this->addToWaitlist($data);
+            
+            if ($result) {
+                $_SESSION['success'] = "Vous avez été ajouté à la liste d'attente. Vous serez notifié si une place se libère.";
+            } else {
+                $_SESSION['error'] = "Une erreur est survenue lors de l'ajout à la liste d'attente.";
+            }
+            
+            header('Location: index.php?action=details&id=' . $evenementId);
+            exit;
+        }
+
+        // Inscription normale
         $result = $this->createInscription($data);
 
         if ($result) {
-            $_SESSION['success'] = "Votre inscription a été enregistrée avec succès !";
+            // Vérifier si l'événement nécessite un paiement
+            $eventPrice = $this->getEventPrice($evenementId);
+            
+            if ($eventPrice > 0) {
+                // Rediriger vers le paiement
+                $_SESSION['pending_inscription_id'] = $result;
+                $_SESSION['pending_inscription_data'] = $data;
+                header('Location: index.php?action=payment_checkout&inscription_id=' . $result . '&event_id=' . $evenementId);
+                exit;
+            } else {
+                // Événement gratuit - procéder normalement
+                $this->completeFreeRegistration($result, $data, $evenement, $evenementId);
+            }
         } else {
             $_SESSION['error'] = "Une erreur est survenue lors de l'enregistrement de votre inscription.";
         }
@@ -563,5 +748,237 @@ class EvenementController {
         
         header('Location: index.php');
         exit;
+    }
+    
+    /**
+     * Récupère le prix d'un événement
+     * 
+     * @param int $eventId
+     * @return float
+     */
+    private function getEventPrice(int $eventId): float {
+        // Pour l'instant, on utilise un prix par défaut
+        // En production, vous pouvez ajouter un champ 'prix' dans la table evenements
+        // ou utiliser une table de tarification séparée
+        
+        // Exemple : prix basé sur le type d'événement
+        $evenement = $this->getEvenementById($eventId);
+        if (!$evenement) {
+            return $this->defaultPrice;
+        }
+        
+        // Prix par défaut selon le type (vous pouvez personnaliser)
+        $prices = [
+            'Workshop' => 50.00,
+            'Hackathon' => 0.00, // Gratuit
+            'Conférence' => 75.00,
+            'Meetup' => 0.00, // Gratuit
+            'Webinaire' => 25.00
+        ];
+        
+        return $prices[$evenement['type']] ?? $this->defaultPrice;
+    }
+    
+    /**
+     * Complète l'inscription pour un événement gratuit
+     * 
+     * @param int $inscriptionId
+     * @param array $data
+     * @param array $evenement
+     * @param int $evenementId
+     */
+    private function completeFreeRegistration(int $inscriptionId, array $data, array $evenement, int $evenementId) {
+        // Vérifier si l'événement est maintenant complet après cette inscription
+        $isNowFull = $this->isEventFull($evenementId);
+        
+        // Envoyer l'email de confirmation avec QR code
+        try {
+            require_once __DIR__ . '/../services/EmailService.php';
+            $emailService = new EmailService();
+            $emailSent = $emailService->sendConfirmationEmail($data, $evenement);
+            
+            if ($emailSent) {
+                $_SESSION['success'] = "Votre inscription a été enregistrée avec succès ! Un email de confirmation avec votre QR code vous a été envoyé.";
+            } else {
+                $_SESSION['success'] = "Votre inscription a été enregistrée avec succès ! (Note: L'envoi de l'email de confirmation a échoué, mais votre inscription est bien enregistrée.)";
+            }
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'envoi de l'email de confirmation: " . $e->getMessage());
+            $_SESSION['success'] = "Votre inscription a été enregistrée avec succès !";
+        }
+        
+        if ($isNowFull) {
+            $_SESSION['info'] = "Cet événement est maintenant complet.";
+        }
+        
+        header('Location: index.php?action=details&id=' . $evenementId);
+        exit;
+    }
+    
+    /**
+     * Affiche la page de checkout pour le paiement
+     */
+    public function paymentCheckout() {
+        $inscriptionId = $_GET['inscription_id'] ?? null;
+        $eventId = $_GET['event_id'] ?? null;
+        
+        if (!$inscriptionId || !$eventId) {
+            $_SESSION['error'] = "Informations de paiement manquantes.";
+            header('Location: index.php');
+            exit;
+        }
+        
+        // Récupérer les données depuis la session ou la base
+        $inscriptionData = $_SESSION['pending_inscription_data'] ?? null;
+        $evenement = $this->getEvenementById((int)$eventId);
+        
+        if (!$evenement || !$inscriptionData) {
+            $_SESSION['error'] = "Données d'inscription introuvables.";
+            header('Location: index.php');
+            exit;
+        }
+        
+        $eventPrice = $this->getEventPrice((int)$eventId);
+        
+        require_once __DIR__ . '/../views/payment/checkout.php';
+    }
+    
+    /**
+     * Traite le paiement
+     */
+    public function processPayment() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php');
+            exit;
+        }
+        
+        $inscriptionId = $_POST['inscription_id'] ?? null;
+        $eventId = $_POST['event_id'] ?? null;
+        $paymentMethod = $_POST['payment_method'] ?? 'stripe';
+        
+        if (!$inscriptionId || !$eventId) {
+            $_SESSION['error'] = "Informations de paiement manquantes.";
+            header('Location: index.php');
+            exit;
+        }
+        
+        $inscriptionData = $_SESSION['pending_inscription_data'] ?? null;
+        $evenement = $this->getEvenementById((int)$eventId);
+        
+        if (!$evenement || !$inscriptionData) {
+            $_SESSION['error'] = "Données d'inscription introuvables.";
+            header('Location: index.php');
+            exit;
+        }
+        
+        $eventPrice = $this->getEventPrice((int)$eventId);
+        
+        require_once __DIR__ . '/../services/PaymentService.php';
+        $paymentService = new PaymentService();
+        
+        // Créer la session de paiement
+        $paymentData = [
+            'inscription_id' => (int)$inscriptionId,
+            'event_id' => (int)$eventId,
+            'amount' => $eventPrice,
+            'currency' => 'EUR',
+            'payment_method' => $paymentMethod
+        ];
+        
+        // Créer la session selon la méthode de paiement
+        if ($paymentMethod === 'paypal') {
+            $checkoutSession = $paymentService->createPayPalSession($paymentData);
+        } else {
+            $checkoutSession = $paymentService->createStripeCheckoutSession($paymentData);
+        }
+        
+        if ($checkoutSession && $checkoutSession['success']) {
+            // Simuler le paiement réussi (en production, cela viendrait du webhook Stripe/PayPal)
+            // Pour la démo, on simule directement
+            $this->completePayment($checkoutSession['payment_id'], $inscriptionId, $inscriptionData, $evenement, $eventId);
+        } else {
+            $_SESSION['error'] = "Erreur lors de l'initialisation du paiement.";
+            header('Location: index.php?action=payment_checkout&inscription_id=' . $inscriptionId . '&event_id=' . $eventId);
+            exit;
+        }
+    }
+    
+    /**
+     * Complète le paiement et envoie la facture
+     * 
+     * @param int $paymentId
+     * @param int $inscriptionId
+     * @param array $inscriptionData
+     * @param array $evenement
+     * @param int $eventId
+     */
+    private function completePayment(int $paymentId, int $inscriptionId, array $inscriptionData, array $evenement, int $eventId) {
+        require_once __DIR__ . '/../services/PaymentService.php';
+        require_once __DIR__ . '/../services/InvoiceService.php';
+        
+        $paymentService = new PaymentService();
+        $invoiceService = new InvoiceService();
+        
+        // Marquer le paiement comme réussi
+        $payment = $paymentService->getPayment($paymentId);
+        if ($payment) {
+            // Mettre à jour le statut du paiement
+            $sql = "UPDATE payments SET payment_status = 'succeeded' WHERE id_payment = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([':id' => $paymentId]);
+        }
+        
+        // Envoyer la facture par email
+        try {
+            $invoiceSent = $invoiceService->sendInvoiceByEmail($paymentId, $inscriptionData, $evenement);
+            
+            // Envoyer aussi l'email de confirmation avec QR code
+            require_once __DIR__ . '/../services/EmailService.php';
+            $emailService = new EmailService();
+            $emailService->sendConfirmationEmail($inscriptionData, $evenement);
+            
+            if ($invoiceSent) {
+                $_SESSION['success'] = "Paiement effectué avec succès ! Votre facture et votre confirmation d'inscription ont été envoyées par email.";
+            } else {
+                $_SESSION['success'] = "Paiement effectué avec succès ! Votre confirmation d'inscription a été envoyée par email.";
+                $_SESSION['info'] = "Note: L'envoi de la facture a échoué, mais votre paiement est bien enregistré.";
+            }
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'envoi de la facture: " . $e->getMessage());
+            $_SESSION['success'] = "Paiement effectué avec succès !";
+        }
+        
+        // Nettoyer la session
+        unset($_SESSION['pending_inscription_id']);
+        unset($_SESSION['pending_inscription_data']);
+        
+        header('Location: index.php?action=payment_success&payment_id=' . $paymentId);
+        exit;
+    }
+    
+    /**
+     * Affiche la page de succès du paiement
+     */
+    public function paymentSuccess() {
+        $paymentId = $_GET['payment_id'] ?? null;
+        
+        if (!$paymentId) {
+            header('Location: index.php');
+            exit;
+        }
+        
+        require_once __DIR__ . '/../services/PaymentService.php';
+        $paymentService = new PaymentService();
+        $payment = $paymentService->getPayment((int)$paymentId);
+        
+        if (!$payment) {
+            $_SESSION['error'] = "Paiement introuvable.";
+            header('Location: index.php');
+            exit;
+        }
+        
+        $evenement = $this->getEvenementById($payment['id_evenement']);
+        
+        require_once __DIR__ . '/../views/payment/success.php';
     }
 }

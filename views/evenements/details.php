@@ -358,17 +358,39 @@ $typeColor = $typeColors[$evenement['type']] ?? '#2563EB';
 
     <div class="col-lg-4">
       <div class="registration-card">
-        <div class="price-tag">GRATUIT</div>
-        <div class="price-label">Places limitées</div>
+        <?php 
+        // Prix par défaut selon le type d'événement
+        $prices = [
+            'Workshop' => 50.00,
+            'Hackathon' => 0.00,
+            'Conférence' => 75.00,
+            'Meetup' => 0.00,
+            'Webinaire' => 25.00
+        ];
+        $eventPrice = $prices[$evenement['type']] ?? 0.00;
+        ?>
+        <div class="price-tag"><?php echo $eventPrice > 0 ? number_format($eventPrice, 2, ',', ' ') . ' €' : 'GRATUIT'; ?></div>
+        <div class="price-label"><?php echo $eventPrice > 0 ? 'Prix par personne' : 'Places limitées'; ?></div>
 
-        <div class="spots-remaining">
-          <span class="spots-number"><?php echo $evenement['capacite']; ?></span>
-          <span>places disponibles</span>
+        <div class="spots-remaining <?php echo isset($isFull) && $isFull ? 'spots-full' : ''; ?>">
+          <?php if (isset($isFull) && $isFull): ?>
+            <span class="spots-number" style="color: #EF4444;">COMPLET</span>
+            <span>Cet événement est complet</span>
+          <?php else: ?>
+            <span class="spots-number"><?php echo isset($remainingSpots) ? $remainingSpots : $evenement['capacite']; ?></span>
+            <span>places disponibles</span>
+          <?php endif; ?>
         </div>
 
-        <a href="index.php?action=inscription&id=<?php echo $evenement['id']; ?>" class="btn-register-main" style="text-decoration: none; text-align: center; display: inline-block;">
-          <i class="bi bi-box-arrow-right me-2"></i> S'inscrire Maintenant
-        </a>
+        <?php if (isset($isFull) && $isFull): ?>
+          <a href="index.php?action=inscription&id=<?php echo $evenement['id']; ?>" class="btn-register-main" style="text-decoration: none; text-align: center; display: inline-block; background: #F59E0B;">
+            <i class="bi bi-clock-history me-2"></i> S'inscrire sur la liste d'attente
+          </a>
+        <?php else: ?>
+          <a href="index.php?action=inscription&id=<?php echo $evenement['id']; ?>" class="btn-register-main" style="text-decoration: none; text-align: center; display: inline-block;">
+            <i class="bi bi-box-arrow-right me-2"></i> S'inscrire Maintenant
+          </a>
+        <?php endif; ?>
 
         <button class="btn-add-calendar">
           <i class="bi bi-calendar-plus me-2"></i> Ajouter au calendrier
@@ -391,6 +413,12 @@ $typeColor = $typeColors[$evenement['type']] ?? '#2563EB';
             <span>👥 Capacité</span>
             <strong><?php echo $evenement['capacite']; ?> places</strong>
           </div>
+          <?php if (isset($remainingSpots)): ?>
+          <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);">
+            <span>✅ Inscrits</span>
+            <strong><?php echo $evenement['capacite'] - $remainingSpots; ?> / <?php echo $evenement['capacite']; ?></strong>
+          </div>
+          <?php endif; ?>
         </div>
       </div>
 

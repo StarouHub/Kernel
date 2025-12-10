@@ -134,5 +134,13 @@
     </div>
     <?php unset($_SESSION['error']); ?>
   <?php endif; ?>
+
+  <?php if (isset($_SESSION['info'])): ?>
+    <div class="alert alert-info alert-dismissible fade show" role="alert" style="background: #DBEAFE; border-color: #2563EB; color: #1E40AF;">
+      <i class="bi bi-info-circle me-2"></i><?php echo htmlspecialchars($_SESSION['info']); ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php unset($_SESSION['info']); ?>
+  <?php endif; ?>
 </div>
 
