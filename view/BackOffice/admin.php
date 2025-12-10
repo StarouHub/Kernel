@@ -43,6 +43,10 @@ if (isset($_GET['unban'])) {
 $totalUsers = count($users);
 $bannedCount = count(array_filter($users, fn($u) => $u->isBanned()));
 $activeCount = $totalUsers - $bannedCount;
+$adminCount = count(array_filter($users, fn($u) => $u->getRole() === 'admin'));
+$userCount = $totalUsers - $adminCount;
+// Get registration data for chart (last 12 months)
+$registrationData = $controller->getRegistrationsByMonth();
 ?>
 
 <!DOCTYPE html>
@@ -236,6 +240,21 @@ $activeCount = $totalUsers - $bannedCount;
       margin: 5px 0 0;
       font-size: 14px;
       font-weight: 500;
+    }
+    /* Charts Row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    /* Chart Container */
+    .chart-container {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
     }
 
     /* Search Box */
@@ -533,7 +552,9 @@ $activeCount = $totalUsers - $bannedCount;
         width: 0;
         overflow: hidden;
       }
-
+      .charts-row {
+          grid-template-columns: 1fr;
+        }
       .main-content {
         margin-left: 0;
         padding: 20px;
@@ -632,6 +653,22 @@ $activeCount = $totalUsers - $bannedCount;
         <h3><?php echo $bannedCount; ?></h3>
         <p>Utilisateurs Bannis</p>
       </div>
+    </div>
+  </div>
+
+  <!-- Roles Chart -->
+  <!-- Charts Row -->
+  <div class="charts-row">
+    <!-- Registration Chart -->
+    <div class="chart-container">
+      <h3><i class="bi bi-graph-up me-2"></i>Inscriptions 2025</h3>
+      <canvas id="registrationChart" style="max-height: 350px;"></canvas>
+    </div>
+
+    <!-- Roles Chart -->
+    <div class="chart-container">
+      <h3><i class="bi bi-pie-chart-fill me-2"></i>Répartition des Rôles</h3>
+      <canvas id="rolesChart" style="max-height: 350px;"></canvas>
     </div>
   </div>
 
@@ -758,6 +795,7 @@ $activeCount = $totalUsers - $bannedCount;
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Search functionality
 document.getElementById('searchInput').addEventListener('input', function() {
@@ -790,6 +828,141 @@ function openBanModal(userId, userName) {
   document.getElementById('userName').textContent = userName;
   banModal.show();
 }
+
+// Roles Chart
+// Registration Chart Data (from PHP)
+const registrationData = <?php echo json_encode($registrationData); ?>;
+
+// Registration Chart
+const ctxRegistration = document.getElementById('registrationChart').getContext('2d');
+const registrationChart = new Chart(ctxRegistration, {
+    type: 'line',
+    data: {
+        labels: registrationData.labels,
+        datasets: [{
+            label: 'Nouveaux utilisateurs',
+            data: registrationData.data,
+            borderColor: '#60a5fa',
+            backgroundColor: 'rgba(96, 165, 250, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 6,
+            pointBackgroundColor: '#60a5fa',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointHoverRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    font: {
+                        size: 13,
+                        family: "'Inter', sans-serif",
+                        weight: 600
+                    },
+                    color: '#60a5fa',
+                    padding: 15,
+                    usePointStyle: true,
+                    pointStyle: 'circle'
+                }
+            },
+            tooltip: {
+                backgroundColor: '#1e293b',
+                titleFont: {
+                    size: 14,
+                    weight: 600
+                },
+                bodyFont: {
+                    size: 13
+                },
+                padding: 12,
+                cornerRadius: 8,
+                displayColors: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 2,
+                    font: {
+                        size: 12,
+                        family: "'Inter', sans-serif"
+                    },
+                    color: '#94a3b8'
+                },
+                grid: {
+                    color: 'rgba(148, 163, 184, 0.1)',
+                    drawBorder: false
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 12,
+                        family: "'Inter', sans-serif"
+                    },
+                    color: '#94a3b8'
+                },
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+// Roles Chart
+const ctx = document.getElementById('rolesChart').getContext('2d');
+const rolesChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Admins', 'Users'],
+        datasets: [{
+            data: [<?php echo $adminCount; ?>, <?php echo $userCount; ?>],
+            backgroundColor: [
+                '#ef4444',
+                '#2563eb'
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    font: {
+                        size: 14,
+                        family: "'Inter', sans-serif",
+                        weight: 500
+                    },
+                    padding: 20
+                }
+            },
+            tooltip: {
+                backgroundColor: '#1e293b',
+                titleFont: {
+                    size: 14,
+                    weight: 600
+                },
+                bodyFont: {
+                    size: 13
+                },
+                padding: 12,
+                cornerRadius: 8
+            }
+        }
+    }
+});
 </script>
 
 </body>
