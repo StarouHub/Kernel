@@ -389,4 +389,46 @@ class userController
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':user_id' => $userId]);
     }
+    /**
+ * Get user registrations grouped by month for the last 12 months
+ */
+    public function getRegistrationsByMonth(): array
+    {
+        try {
+            $sql = "SELECT 
+                        DATE_FORMAT(created_at, '%b') as month,
+                        COUNT(*) as count
+                    FROM users 
+                    WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+                    GROUP BY YEAR(created_at), MONTH(created_at)
+                    ORDER BY YEAR(created_at), MONTH(created_at)";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Create array with all 12 months
+            $months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+            $data = array_fill(0, 12, 0);
+            
+            // Fill in actual data
+            foreach ($results as $row) {
+                $monthIndex = array_search($row['month'], $months);
+                if ($monthIndex !== false) {
+                    $data[$monthIndex] = (int)$row['count'];
+                }
+            }
+            
+            return [
+                'labels' => $months,
+                'data' => $data
+            ];
+        } catch (PDOException $e) {
+            error_log("Get registrations error: " . $e->getMessage());
+            return [
+                'labels' => ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+                'data' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ];
+        }
+}
 }
