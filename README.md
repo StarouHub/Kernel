@@ -2,9 +2,16 @@
 
 ## 📖 Description
 
-Kernel est une plateforme web permettant aux innovateurs de présenter leurs projets technologiques et de rechercher des financements. Partagez vos idées, suivez l'évolution des projets et connectez-vous avec des investisseurs.
+Kernel est une plateforme web complète permettant aux innovateurs de présenter leurs projets technologiques et de rechercher des financements. Partagez vos idées, suivez l'évolution des projets, connectez-vous avec des investisseurs et gérez votre communauté d'utilisateurs.
 
 ## ✨ Fonctionnalités
+
+### 👥 Système d'Authentification Complet
+- **Inscription sécurisée** : Création de compte avec validation des données
+- **Connexion** : Authentification avec gestion des sessions
+- **Gestion des rôles** : Visiteur, Utilisateur, Innovateur, Investisseur, Administrateur
+- **Profils utilisateurs** : Gestion des informations personnelles
+- **Sécurité avancée** : Hashage des mots de passe, protection CSRF
 
 ### 💡 Gestion des Projets
 - **Créer un projet** : Présentez votre idée innovante avec un formulaire simple
@@ -27,11 +34,19 @@ Kernel est une plateforme web permettant aux innovateurs de présenter leurs pro
 - **Filtrage** : Par catégorie, statut, budget
 - **Interface intuitive** : Navigation simple et claire
 
+### 🛡️ Administration
+- **Panneau d'administration** : Interface dédiée pour les administrateurs
+- **Gestion des utilisateurs** : Créer, modifier, supprimer des comptes
+- **Statistiques** : Vue d'ensemble des utilisateurs et activités
+- **Recherche avancée** : Filtrage des utilisateurs par critères
+
 ## 🛠️ Technologies
 
 - **Frontend** : HTML5, CSS3, JavaScript, Bootstrap 5
-- **Backend** : PHP 8.0+
+- **Backend** : PHP 8.0+ (POO, MVC)
 - **Base de données** : MySQL / MariaDB
+- **Sécurité** : Sessions PHP, hashage bcrypt, validation des données
+- **Dépendances** : Composer, PHPMailer
 - **Design** : Responsive, moderne, accessible
 
 ## 📦 Installation
@@ -41,24 +56,28 @@ Kernel est une plateforme web permettant aux innovateurs de présenter leurs pro
 - PHP 8.0 ou supérieur
 - MySQL ou MariaDB
 
-### Installation en 5 étapes
+### Installation en 6 étapes
 
 1. **Télécharger** le projet dans votre dossier web (htdocs, www, etc.)
 
-2. **Créer la base de données** `kernel1` dans phpMyAdmin
+2. **Créer la base de données** `kernel` dans phpMyAdmin
 
-3. **Importer les fichiers SQL** :
-   - `kernel1.sql` (structure + projets)
-   - `actualites_test_data.sql` (actualités de test)
+3. **Importer le fichier SQL** :
+   - `kernel.sql` (structure complète + tables d'authentification)
 
-4. **Vérifier la configuration** dans `config.php` :
+4. **Installer les dépendances** (optionnel pour PHPMailer) :
+   ```bash
+   composer install
+   ```
+
+5. **Vérifier la configuration** dans `config.php` :
    ```php
-   $dbname = "kernel1";
+   $dbname = "kernel";
    ```
 
-5. **Accéder à la plateforme** :
+6. **Accéder à la plateforme** :
    ```
-   http://localhost/votre-projet/view/FrontOffice/listeprojet.php
+   http://localhost/votre-projet/view/FrontOffice/index.php
    ```
 
 📖 **Guide détaillé** : Consultez [INSTALLATION.md](INSTALLATION.md)
@@ -67,33 +86,71 @@ Kernel est une plateforme web permettant aux innovateurs de présenter leurs pro
 
 ```
 kernel/
-├── config.php                      # Configuration
-├── kernel1.sql                     # Base de données
-├── actualites_test_data.sql        # Données de test
+├── config.php                      # Configuration base de données
+├── kernel.sql                      # Base de données complète
+├── composer.json                   # Dépendances PHP
+├── vendor/                         # Librairies externes
 │
-├── controller/                     # Logique métier
-│   ├── projetcontroller.php
-│   ├── categoriecontroller.php
-│   └── actualitecontroller.php
+├── controller/                     # Logique métier (MVC)
+│   ├── projetcontroller.php        # Gestion des projets
+│   ├── categoriecontroller.php     # Gestion des catégories
+│   ├── actualitecontroller.php     # Gestion des actualités
+│   └── userController.php          # Gestion des utilisateurs
 │
 ├── model/                          # Modèles de données
-│   ├── projet.php
-│   ├── categorie.php
-│   └── actualite.php
+│   ├── projet.php                  # Modèle Projet
+│   ├── categorie.php               # Modèle Catégorie
+│   ├── actualite.php               # Modèle Actualité
+│   ├── model.php                   # Modèles génériques
+│   └── user.php                    # Modèle Utilisateur
 │
-└── view/FrontOffice/               # Interface utilisateur
-    ├── ajoutprojet.php             # Créer un projet
-    ├── listeprojet.php             # Liste des projets
-    ├── detailsprojet.php           # Détails d'un projet
-    ├── modifierprojet.php          # Modifier un projet
-    ├── ajouterActualite.php        # Publier une actualité
-    ├── searchActualites.php        # Rechercher des actualités
-    └── listeActualite.php          # Toutes les actualités
+├── view/FrontOffice/               # Interface utilisateur
+│   ├── index.php                   # Page d'accueil
+│   ├── connexion.php               # Connexion
+│   ├── inscription.php             # Inscription
+│   ├── logout.php                  # Déconnexion
+│   ├── profil-utilisateur.php      # Profil utilisateur
+│   ├── ajoutprojet.php             # Créer un projet
+│   ├── listeprojet.php             # Liste des projets
+│   ├── detailsprojet.php           # Détails d'un projet
+│   ├── modifierprojet.php          # Modifier un projet
+│   ├── ajouterActualite.php        # Publier une actualité
+│   └── listeActualite.php          # Toutes les actualités
+│
+├── view/BackOffice/                # Interface d'administration
+│   ├── admin-users.php             # Gestion des utilisateurs
+│   └── modify-user.php             # Modification d'utilisateur
+│
+├── api/                            # API endpoints
+│   ├── chatbot.php                 # API Chatbot
+│   └── counts.php                  # API Statistiques
+│
+└── services/                       # Services métier
+    ├── ChatbotService.php          # Service Chatbot
+    └── MailingService.php          # Service Email
 ```
 
 ## 🎯 Guide d'Utilisation
 
-### � Poutr les Innovateurs
+### 🔐 Authentification
+
+#### 1. Créer un compte
+- Allez sur **"Inscription"**
+- Remplissez vos informations (nom, prénom, email, téléphone)
+- Choisissez un mot de passe sécurisé
+- Confirmez votre inscription
+
+#### 2. Se connecter
+- Utilisez votre email et mot de passe
+- Option "Rester connecté" disponible
+- Accès différencié selon votre rôle
+
+#### 3. Gestion du profil
+- Modifiez vos informations personnelles
+- Changez votre mot de passe
+- Gérez vos préférences
+
+### 💡 Pour les Innovateurs
 
 #### 1. Créer votre projet
 - Allez sur **"Nouveau Projet"**
@@ -118,6 +175,24 @@ kernel/
 - Filtrez par projet pour voir son historique
 - Restez informé des **milestones** importants
 
+### 🛡️ Pour les Administrateurs
+
+#### 1. Accéder au panneau d'administration
+- Connectez-vous avec un compte administrateur
+- Accédez au **"Panneau d'administration"**
+- Vue d'ensemble des statistiques
+
+#### 2. Gérer les utilisateurs
+- **Voir tous les utilisateurs** : Liste complète avec recherche
+- **Modifier un utilisateur** : Changer rôle, informations
+- **Supprimer un utilisateur** : Suppression définitive
+- **Statistiques** : Nombre total, par rôle, etc.
+
+#### 3. Recherche avancée
+- Filtrer par nom, email, rôle
+- Recherche en temps réel
+- Export des données (à venir)
+
 ### 🔍 Recherche
 
 **Dans la liste des projets :**
@@ -129,6 +204,11 @@ kernel/
 - Sélectionnez un projet
 - Voir toutes ses actualités
 - Triées par date (plus récentes en premier)
+
+**Dans l'administration :**
+- Recherche d'utilisateurs par nom, prénom, email
+- Filtrage en temps réel
+- Résultats instantanés
 
 ## 🎨 Interface
 
@@ -146,10 +226,23 @@ kernel/
 
 ## 🔐 Sécurité
 
+### Authentification
+- ✅ Hashage des mots de passe (bcrypt)
+- ✅ Gestion sécurisée des sessions PHP
+- ✅ Validation des données d'entrée
+- ✅ Protection contre les attaques par force brute
+
+### Protection des données
 - ✅ Validation des formulaires (JavaScript + PHP)
-- ✅ Protection contre les injections SQL
-- ✅ Échappement des données affichées
+- ✅ Protection contre les injections SQL (PDO)
+- ✅ Échappement des données affichées (htmlspecialchars)
 - ✅ Confirmation avant suppression
+
+### Contrôle d'accès
+- ✅ Système de rôles et permissions
+- ✅ Vérification des autorisations
+- ✅ Redirection automatique selon le rôle
+- ✅ Protection des pages d'administration
 
 ## 📊 Données Incluses
 
@@ -181,16 +274,32 @@ kernel/
 
 ## 🧪 Test de la Plateforme
 
-Après installation, testez :
+### Comptes de test
+Après installation, vous pouvez créer des comptes ou utiliser :
+
+**Administrateur :**
+- Email : admin@kernel.tn
+- Mot de passe : admin123
+- Accès : Panneau d'administration complet
+
+**Utilisateur standard :**
+- Créez votre compte via l'inscription
+- Accès : Fonctionnalités utilisateur
+
+### Pages de test
 ```
-http://localhost/votre-projet/test_connexion.php
+http://localhost/votre-projet/view/FrontOffice/index.php        # Page d'accueil
+http://localhost/votre-projet/view/FrontOffice/connexion.php    # Connexion
+http://localhost/votre-projet/view/FrontOffice/inscription.php  # Inscription
+http://localhost/votre-projet/view/BackOffice/admin-users.php   # Administration
 ```
 
-Ce script vérifie :
+### Vérifications automatiques
+Le système vérifie automatiquement :
 - ✅ Connexion à la base de données
-- ✅ Existence des tables
-- ✅ Chargement des controllers
-- ✅ Données de test disponibles
+- ✅ Existence des tables utilisateurs
+- ✅ Chargement des contrôleurs
+- ✅ Fonctionnement de l'authentification
 
 ## 🤝 Support
 
@@ -208,9 +317,31 @@ Projet développé dans un cadre éducatif.
 **Kernel** - Plateforme d'Innovation Technologique  
 Développé par l'équipe Webzz
 
+## 🆕 Nouvelles Fonctionnalités (v3.0)
+
+### ✨ Système d'Authentification Complet
+- **Inscription/Connexion** : Interface moderne et sécurisée
+- **Gestion des rôles** : 5 niveaux d'accès différents
+- **Profils utilisateurs** : Gestion complète des informations
+- **Sessions sécurisées** : Authentification robuste
+
+### 🛡️ Panneau d'Administration
+- **Interface dédiée** : Design moderne pour les administrateurs
+- **Gestion des utilisateurs** : CRUD complet
+- **Statistiques en temps réel** : Vue d'ensemble des données
+- **Recherche avancée** : Filtrage intelligent des utilisateurs
+
+### 🔧 Améliorations Techniques
+- **Architecture MVC** : Code organisé et maintenable
+- **Sécurité renforcée** : Protection contre les attaques courantes
+- **Base de données optimisée** : Nouvelles tables pour l'authentification
+- **Code propre** : Respect des bonnes pratiques PHP
+
 ---
 
-**Version :** 2.0  
-**Dernière mise à jour :** Novembre 2025  
-**Statut :** ✅ Opérationnel
+**Version :** 3.0  
+**Dernière mise à jour :** Décembre 2025  
+**Statut :** ✅ Opérationnel avec Authentification Complète
+
+**Nouvelles fonctionnalités :** Système d'authentification, panneau d'administration, gestion des utilisateurs, sécurité renforcée
 
