@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 10, 2025 at 08:49 PM
+-- Generation Time: Dec 11, 2025 at 02:48 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -304,6 +304,53 @@ CREATE TABLE `sujet` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `taches_projet`
+--
+
+CREATE TABLE `taches_projet` (
+  `id` int(11) NOT NULL,
+  `projet_id` int(11) NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `statut` enum('a_faire','en_cours','termine') DEFAULT 'a_faire',
+  `priorite` enum('basse','moyenne','haute') DEFAULT 'moyenne',
+  `date_creation` datetime DEFAULT current_timestamp(),
+  `date_debut` datetime DEFAULT NULL,
+  `date_fin` datetime DEFAULT NULL,
+  `date_echeance` datetime DEFAULT NULL,
+  `assignee_id` int(11) DEFAULT NULL,
+  `ordre` int(11) DEFAULT 0,
+  `couleur` varchar(7) DEFAULT '#3B82F6',
+  `tags` text DEFAULT NULL,
+  `temps_estime` int(11) DEFAULT NULL COMMENT 'Temps estimé en heures',
+  `temps_passe` int(11) DEFAULT 0 COMMENT 'Temps passé en heures',
+  `created_by` int(11) DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `taches_projet`
+--
+
+INSERT INTO `taches_projet` (`id`, `projet_id`, `titre`, `description`, `statut`, `priorite`, `date_creation`, `date_debut`, `date_fin`, `date_echeance`, `assignee_id`, `ordre`, `couleur`, `tags`, `temps_estime`, `temps_passe`, `created_by`, `updated_at`) VALUES
+(16, 1, 'Implémenter API OpenAI', 'Intégrer l\'API OpenAI pour le traitement du langage naturel', 'a_faire', 'haute', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 1, '#EF4444', 'API,IA,Backend', 16, 0, 1, '2025-12-11 02:35:07'),
+(17, 1, 'Tests de charge serveur', 'Effectuer des tests de performance et de charge', 'a_faire', 'moyenne', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 2, '#F59E0B', 'Tests,Performance', 8, 0, 1, '2025-12-11 01:36:09'),
+(18, 1, 'Documentation technique', 'Rédiger la documentation complète de l\'API', 'a_faire', 'basse', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 3, '#10B981', 'Documentation', 12, 0, 1, '2025-12-11 01:36:09'),
+(19, 1, 'Développement interface admin', 'Créer l\'interface d\'administration', 'en_cours', 'haute', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 4, '#3B82F6', 'Frontend,Admin', 20, 0, 1, '2025-12-11 01:36:09'),
+(20, 1, 'Intégration base de données', 'Optimiser les requêtes et la structure BDD', 'en_cours', 'moyenne', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 5, '#8B5CF6', 'Database,Backend', 10, 0, 1, '2025-12-11 01:36:09'),
+(21, 1, 'Design interface utilisateur', 'Finaliser le design UX/UI', 'termine', 'haute', '2025-12-06 01:36:09', NULL, NULL, NULL, NULL, 6, '#10B981', 'Design,UX', 24, 0, 1, '2025-12-11 01:36:09'),
+(22, 1, 'Prototype v1.0', 'Développer le premier prototype fonctionnel', 'termine', 'haute', '2025-12-01 01:36:09', NULL, NULL, NULL, NULL, 7, '#10B981', 'Prototype,MVP', 40, 0, 1, '2025-12-11 01:36:09'),
+(23, 1, 'Tests utilisateurs', 'Effectuer les tests avec les utilisateurs finaux', 'termine', 'moyenne', '2025-12-08 01:36:09', NULL, NULL, NULL, NULL, 8, '#10B981', 'Tests,UX', 16, 0, 1, '2025-12-11 01:36:09'),
+(31, 2, 'Installation capteurs IoT', 'Installer et configurer les capteurs dans la maison témoin', 'en_cours', 'haute', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 1, '#EF4444', 'IoT,Hardware', 12, 0, 1, '2025-12-11 01:36:09'),
+(32, 2, 'Développement app mobile', 'Créer l\'application mobile de contrôle', 'a_faire', 'haute', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 2, '#3B82F6', 'Mobile,Frontend', 30, 0, 1, '2025-12-11 01:36:09'),
+(33, 2, 'Algorithme d\'optimisation', 'Développer l\'IA d\'optimisation énergétique', 'en_cours', 'haute', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 3, '#8B5CF6', 'IA,Algorithme', 25, 0, 1, '2025-12-11 01:36:09'),
+(34, 2, 'Tests de consommation', 'Mesurer l\'efficacité énergétique', 'termine', 'moyenne', '2025-12-04 01:36:09', NULL, NULL, NULL, NULL, 4, '#10B981', 'Tests,Energie', 8, 0, 1, '2025-12-11 01:36:09'),
+(38, 3, 'Smart contracts Ethereum', 'Développer les contrats intelligents', 'a_faire', 'haute', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 1, '#EF4444', 'Blockchain,Smart Contracts', 20, 0, 1, '2025-12-11 01:36:09'),
+(40, 3, 'Système de paiement', 'Intégrer les paiements en crypto', 'en_cours', 'haute', '2025-12-11 01:36:09', NULL, NULL, NULL, NULL, 3, '#3B82F6', 'Payment,Crypto', 18, 0, 1, '2025-12-11 01:36:09');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `transaction`
 --
 
@@ -339,6 +386,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `telephone`, `mdp`, `role`, `created_at`, `banned_until`) VALUES
+(1, 'Admin', 'System', 'admin@kernel.tn', '00000000', 'admin123', 'admin', '2025-12-11 00:36:09', NULL),
 (9, 'ayari', 'wissem', 'wissem@gmail.com', '95893212', 'wissem', 'admin', '2025-11-17 20:38:56', NULL),
 (13, 'aouina', 'malek', 'malek@gmail.com', '50282358', 'Malek12@', 'user', '2025-11-18 10:39:21', NULL),
 (17, 'ayari', 'wissem', 'awissem349@gmail.com', '+21695893212', 'Wissem@12', 'user', '2025-12-03 04:06:24', NULL),
@@ -481,6 +529,20 @@ ALTER TABLE `sujet`
   ADD KEY `categorie_id` (`categorie_id`);
 
 --
+-- Indexes for table `taches_projet`
+--
+ALTER TABLE `taches_projet`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `projet_id` (`projet_id`),
+  ADD KEY `assignee_id` (`assignee_id`),
+  ADD KEY `created_by` (`created_by`),
+  ADD KEY `statut` (`statut`),
+  ADD KEY `priorite` (`priorite`),
+  ADD KEY `idx_taches_projet_status_priority` (`statut`,`priorite`),
+  ADD KEY `idx_taches_projet_dates` (`date_creation`,`date_echeance`),
+  ADD KEY `idx_taches_projet_ordre` (`projet_id`,`ordre`);
+
+--
 -- Indexes for table `transaction`
 --
 ALTER TABLE `transaction`
@@ -501,380 +563,26 @@ ALTER TABLE `utilisateur`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_interests`
---
-ALTER TABLE `user_interests`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_user_category` (`user_id`,`categorie_id`),
-  ADD KEY `idx_user_interests` (`user_id`,`is_active`),
-  ADD KEY `idx_category_interests` (`categorie_id`,`is_active`);
-
---
--- Indexes for table `project_followers`
---
-ALTER TABLE `project_followers`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_user_project` (`user_id`,`projet_id`),
-  ADD KEY `idx_project_followers` (`projet_id`,`is_active`),
-  ADD KEY `idx_user_follows` (`user_id`,`is_active`);
-
---
--- Indexes for table `user_notification_preferences`
---
-ALTER TABLE `user_notification_preferences`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_user_prefs` (`user_id`);
-
---
--- Indexes for table `notification_log`
---
-ALTER TABLE `notification_log`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_user_notifications` (`user_id`,`created_at`),
-  ADD KEY `idx_project_notifications` (`projet_id`,`created_at`),
-  ADD KEY `idx_status_notifications` (`status`,`created_at`),
-  ADD KEY `idx_channel_notifications` (`channel`,`status`);
-
---
--- Indexes for table `user_engagement_tracking`
---
-ALTER TABLE `user_engagement_tracking`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_user_engagement` (`user_id`,`created_at`),
-  ADD KEY `idx_project_engagement` (`projet_id`,`created_at`),
-  ADD KEY `idx_category_engagement` (`categorie_id`,`created_at`);
-
---
--- SYSTÈME DE NOTIFICATION INTELLIGENT - NOUVELLES TABLES
---
-
---
--- Table structure for table `user_interests`
---
-
-CREATE TABLE `user_interests` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `categorie_id` int(11) NOT NULL,
-  `interest_level` enum('low','medium','high') DEFAULT 'medium',
-  `date_added` datetime DEFAULT current_timestamp(),
-  `is_active` tinyint(1) DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `user_interests`
---
-
-INSERT INTO `user_interests` (`id`, `user_id`, `categorie_id`, `interest_level`, `date_added`, `is_active`) VALUES
-(1, 18, 1, 'high', '2025-12-10 21:00:00', 1),
-(2, 18, 5, 'medium', '2025-12-10 21:00:00', 1),
-(3, 18, 6, 'medium', '2025-12-10 21:00:00', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `project_followers`
---
-
-CREATE TABLE `project_followers` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `projet_id` int(11) NOT NULL,
-  `follow_type` enum('owner','investor','interested','collaborator') DEFAULT 'interested',
-  `notification_frequency` enum('instant','daily','weekly','never') DEFAULT 'instant',
-  `notification_types` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`notification_types`)),
-  `date_followed` datetime DEFAULT current_timestamp(),
-  `is_active` tinyint(1) DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_notification_preferences`
---
-
-CREATE TABLE `user_notification_preferences` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `email_notifications` tinyint(1) DEFAULT 1,
-  `push_notifications` tinyint(1) DEFAULT 1,
-  `sms_notifications` tinyint(1) DEFAULT 0,
-  `digest_frequency` enum('never','daily','weekly','monthly') DEFAULT 'weekly',
-  `quiet_hours_start` time DEFAULT '22:00:00',
-  `quiet_hours_end` time DEFAULT '08:00:00',
-  `timezone` varchar(50) DEFAULT 'Africa/Tunis',
-  `language` enum('fr','ar','en') DEFAULT 'fr',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `user_notification_preferences`
---
-
-INSERT INTO `user_notification_preferences` (`id`, `user_id`, `email_notifications`, `digest_frequency`, `language`) VALUES
-(1, 18, 1, 'weekly', 'fr');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `notification_log`
---
-
-CREATE TABLE `notification_log` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `projet_id` int(11) DEFAULT NULL,
-  `actualite_id` int(11) DEFAULT NULL,
-  `notification_type` enum('actualite','digest','reminder','system') DEFAULT 'actualite',
-  `channel` enum('email','push','sms','in_app') DEFAULT 'email',
-  `subject` varchar(500) NOT NULL,
-  `content` text NOT NULL,
-  `recipient_email` varchar(255) NOT NULL,
-  `status` enum('pending','sent','delivered','failed','bounced') DEFAULT 'pending',
-  `sent_at` datetime DEFAULT NULL,
-  `delivered_at` datetime DEFAULT NULL,
-  `opened_at` datetime DEFAULT NULL,
-  `clicked_at` datetime DEFAULT NULL,
-  `error_message` text DEFAULT NULL,
-  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_engagement_tracking`
---
-
-CREATE TABLE `user_engagement_tracking` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `projet_id` int(11) DEFAULT NULL,
-  `categorie_id` int(11) DEFAULT NULL,
-  `action_type` enum('view','like','share','comment','invest','follow','unfollow') NOT NULL,
-  `engagement_score` decimal(3,2) DEFAULT 0.00,
-  `session_duration` int(11) DEFAULT NULL,
-  `device_type` enum('desktop','mobile','tablet') DEFAULT 'desktop',
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- View structure for view `user_smart_recommendations`
---
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user_smart_recommendations`  AS SELECT `u`.`id` AS `user_id`,`u`.`email` AS `email`,`u`.`nom` AS `nom`,`u`.`prenom` AS `prenom`,`p`.`id` AS `projet_id`,`p`.`titre` AS `projet_titre`,`c`.`nom` AS `categorie_nom`,`c`.`id` AS `categorie_id`,coalesce(`ui`.`interest_level`,'low') AS `interest_level`,coalesce(avg(`uet`.`engagement_score`),0) AS `avg_engagement_score`,count(`uet`.`id`) AS `interaction_count`,case when `pf`.`user_id` is not null then 'following' when `ui`.`user_id` is not null then 'interested' when avg(`uet`.`engagement_score`) > 0.7 then 'highly_engaged' when avg(`uet`.`engagement_score`) > 0.4 then 'moderately_engaged' else 'not_engaged' end AS `recommendation_level` FROM (((((`users` `u` join `projet` `p`) join `projet_categorie` `pc` on(`p`.`id` = `pc`.`projet_id`)) join `categorie` `c` on(`pc`.`categorie_id` = `c`.`id`)) left join `user_interests` `ui` on(`u`.`id` = `ui`.`user_id` and `c`.`id` = `ui`.`categorie_id` and `ui`.`is_active` = 1)) left join `project_followers` `pf` on(`u`.`id` = `pf`.`user_id` and `p`.`id` = `pf`.`projet_id` and `pf`.`is_active` = 1)) left join `user_engagement_tracking` `uet` on(`u`.`id` = `uet`.`user_id` and (`p`.`id` = `uet`.`projet_id` or `c`.`id` = `uet`.`categorie_id`)) WHERE `u`.`email` is not null and `u`.`email` <> '' GROUP BY `u`.`id`,`p`.`id`,`c`.`id` HAVING `recommendation_level` in ('following','interested','highly_engaged','moderately_engaged') ;
-
--- --------------------------------------------------------
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `actualite`
+-- AUTO_INCREMENT for table `taches_projet`
 --
-ALTER TABLE `actualite`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT for table `categorie`
---
-ALTER TABLE `categorie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `password_resets`
---
-ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
-
---
--- AUTO_INCREMENT for table `projet`
---
-ALTER TABLE `projet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `projet_categorie`
---
-ALTER TABLE `projet_categorie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `remember_tokens`
---
-ALTER TABLE `remember_tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT for table `utilisateur`
---
-ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `user_interests`
---
-ALTER TABLE `user_interests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `project_followers`
---
-ALTER TABLE `project_followers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `user_notification_preferences`
---
-ALTER TABLE `user_notification_preferences`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `notification_log`
---
-ALTER TABLE `notification_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `user_engagement_tracking`
---
-ALTER TABLE `user_engagement_tracking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `taches_projet`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `actualite`
+-- Constraints for table `taches_projet`
 --
-ALTER TABLE `actualite`
-  ADD CONSTRAINT `actualite_ibfk_1` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `evenement`
---
-ALTER TABLE `evenement`
-  ADD CONSTRAINT `evenement_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`);
-
---
--- Constraints for table `inscription`
---
-ALTER TABLE `inscription`
-  ADD CONSTRAINT `inscription_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`),
-  ADD CONSTRAINT `inscription_ibfk_2` FOREIGN KEY (`evenement_id`) REFERENCES `evenement` (`id`);
-
---
--- Constraints for table `investissement`
---
-ALTER TABLE `investissement`
-  ADD CONSTRAINT `investissement_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`),
-  ADD CONSTRAINT `investissement_ibfk_2` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`);
-
---
--- Constraints for table `profil`
---
-ALTER TABLE `profil`
-  ADD CONSTRAINT `profil_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`);
-
---
--- Constraints for table `projet`
---
-ALTER TABLE `projet`
-  ADD CONSTRAINT `projet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`);
-
---
--- Constraints for table `projet_categorie`
---
-ALTER TABLE `projet_categorie`
-  ADD CONSTRAINT `projet_categorie_ibfk_1` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`),
-  ADD CONSTRAINT `projet_categorie_ibfk_2` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`id`);
-
---
--- Constraints for table `reclamation`
---
-ALTER TABLE `reclamation`
-  ADD CONSTRAINT `reclamation_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`);
-
---
--- Constraints for table `remember_tokens`
---
-ALTER TABLE `remember_tokens`
-  ADD CONSTRAINT `remember_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `reponse`
---
-ALTER TABLE `reponse`
-  ADD CONSTRAINT `reponse_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`),
-  ADD CONSTRAINT `reponse_ibfk_2` FOREIGN KEY (`sujet_id`) REFERENCES `sujet` (`id`);
-
---
--- Constraints for table `reponse_reclamation`
---
-ALTER TABLE `reponse_reclamation`
-  ADD CONSTRAINT `reponse_reclamation_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `utilisateur` (`id`),
-  ADD CONSTRAINT `reponse_reclamation_ibfk_2` FOREIGN KEY (`reclamation_id`) REFERENCES `reclamation` (`id`);
-
---
--- Constraints for table `sujet`
---
-ALTER TABLE `sujet`
-  ADD CONSTRAINT `sujet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`),
-  ADD CONSTRAINT `sujet_ibfk_2` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`id`);
-
---
--- Constraints for table `transaction`
---
-ALTER TABLE `transaction`
-  ADD CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`investissement_id`) REFERENCES `investissement` (`id`);
-
---
--- Constraints for table `user_interests`
---
-ALTER TABLE `user_interests`
-  ADD CONSTRAINT `user_interests_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_interests_ibfk_2` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `project_followers`
---
-ALTER TABLE `project_followers`
-  ADD CONSTRAINT `project_followers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `project_followers_ibfk_2` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `user_notification_preferences`
---
-ALTER TABLE `user_notification_preferences`
-  ADD CONSTRAINT `user_notification_preferences_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `notification_log`
---
-ALTER TABLE `notification_log`
-  ADD CONSTRAINT `notification_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `notification_log_ibfk_2` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `notification_log_ibfk_3` FOREIGN KEY (`actualite_id`) REFERENCES `actualite` (`id`) ON DELETE SET NULL;
-
---
--- Constraints for table `user_engagement_tracking`
---
-ALTER TABLE `user_engagement_tracking`
-  ADD CONSTRAINT `user_engagement_tracking_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_engagement_tracking_ibfk_2` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `user_engagement_tracking_ibfk_3` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`id`) ON DELETE SET NULL;
-
+ALTER TABLE `taches_projet`
+  ADD CONSTRAINT `taches_projet_ibfk_1` FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `taches_projet_ibfk_2` FOREIGN KEY (`assignee_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `taches_projet_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
