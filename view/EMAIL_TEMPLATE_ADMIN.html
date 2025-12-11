@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #1e3a8a 0%, #5b21b6 100%); color: white; padding: 2rem; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: white; padding: 2rem; border-left: 4px solid #1e3a8a; }
+        .section { margin-bottom: 1.5rem; }
+        .label { font-weight: bold; color: #1e293b; }
+        .value { color: #475569; margin-top: 0.3rem; }
+        .id-badge { background: #dbeafe; color: #1e40af; padding: 0.5rem 1rem; border-radius: 5px; font-weight: bold; display: inline-block; margin: 1rem 0; }
+        .footer { background: #f1f5f9; padding: 1.5rem; text-align: center; color: #64748b; font-size: 0.9rem; border-radius: 0 0 10px 10px; }
+        .button { background: #1e3a8a; color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 1rem; }
+        .priority-badge { padding: 0.3rem 0.8rem; border-radius: 3px; font-weight: bold; font-size: 0.85rem; }
+        .priority-urgente { background: #fecaca; color: #991b1b; }
+        .priority-haute { background: #fed7aa; color: #92400e; }
+        .priority-normale { background: #dbeafe; color: #1e40af; }
+        .priority-basse { background: #bbf7d0; color: #166534; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>📢 Nouvelle Réclamation</h1>
+            <p>Une nouvelle réclamation a été soumise dans le système</p>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <!-- ID BADGE -->
+            <div style="text-align: center;">
+                <div class="id-badge">ID: #[RECLAMATION_ID]</div>
+            </div>
+
+            <!-- DÉTAILS -->
+            <div class="section">
+                <div class="label"><i>📝</i> Titre</div>
+                <div class="value">[TITRE_RECLAMATION]</div>
+            </div>
+
+            <div class="section">
+                <div class="label"><i>📋</i> Description</div>
+                <div class="value" style="white-space: pre-wrap; background: #f8fafc; padding: 1rem; border-radius: 5px;">[DESCRIPTION_RECLAMATION]</div>
+            </div>
+
+            <div class="section">
+                <div class="label"><i>🏷️</i> Type</div>
+                <div class="value">[TYPE_RECLAMATION]</div>
+            </div>
+
+            <div class="section">
+                <div class="label"><i>⚡</i> Priorité</div>
+                <div class="value">
+                    <span class="priority-badge priority-[PRIORITY_CLASS]">[PRIORITE_RECLAMATION]</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="label"><i>👤</i> Utilisateur</div>
+                <div class="value">[NOM_UTILISATEUR] ([EMAIL_UTILISATEUR])</div>
+            </div>
+
+            <div class="section">
+                <div class="label"><i>📅</i> Date de Soumission</div>
+                <div class="value">[DATE_SOUMISSION]</div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="[LIEN_BACKOFFICE]" class="button">
+                    <i>→</i> Voir dans BackOffice
+                </a>
+            </div>
+
+            <!-- INSTRUCTIONS -->
+            <div class="section" style="background: #fffbeb; padding: 1rem; border-radius: 5px; border-left: 3px solid #fbbf24;">
+                <div class="label">📌 À faire</div>
+                <div class="value">
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Examiner la description complète</li>
+                        <li>Assigner à un agent si nécessaire</li>
+                        <li>Marquer comme "En cours" ou "Résolu"</li>
+                        <li>Ajouter une réponse à l'utilisateur</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>✅ Réclamation automatiquement enregistrée dans le système</p>
+            <p style="font-size: 0.8rem;">Cet email a été généré automatiquement. Veuillez ne pas répondre directement.</p>
+            <p style="font-size: 0.8rem; color: #94a3b8;">© 2024 Système de Gestion des Réclamations - Kernel Cirine</p>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- 
+    EMAIL TEMPLATE POUR NOTIFICATIONS ADMIN
+    
+    Variables à remplacer:
+    - [RECLAMATION_ID] → ID unique (ex: 12345)
+    - [TITRE_RECLAMATION] → Titre entré par utilisateur
+    - [DESCRIPTION_RECLAMATION] → Description complète
+    - [TYPE_RECLAMATION] → bug / technique / contenu / suggestion / autre
+    - [PRIORITE_RECLAMATION] → basse / normale / haute / urgente
+    - [PRIORITY_CLASS] → basse / normale / haute / urgente (pour couleur)
+    - [NOM_UTILISATEUR] → Nom de l'utilisateur
+    - [EMAIL_UTILISATEUR] → Email de l'utilisateur
+    - [DATE_SOUMISSION] → Date/heure formatée
+    - [LIEN_BACKOFFICE] → URL vers BackOffice (ex: http://localhost/kernel_cirine/view/BackOffice/gestionreclamations.php)
+    
+    Utilisation dans PHP:
+    $template = file_get_contents('EMAIL_TEMPLATE.html');
+    $email = str_replace('[RECLAMATION_ID]', $reclamation_id, $template);
+    $email = str_replace('[TITRE_RECLAMATION]', $titre, $email);
+    // ... remplacer toutes les variables ...
+    // Envoyer email avec $email comme contenu HTML
+-->

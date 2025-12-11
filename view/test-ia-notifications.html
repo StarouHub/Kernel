@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test IA + Notifications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 2rem 0; }
+        .test-container { max-width: 1000px; margin: 0 auto; }
+        .test-card { background: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .test-title { font-weight: 800; color: #1e3a8a; margin-bottom: 1.5rem; border-bottom: 2px solid #0284c7; padding-bottom: 1rem; }
+        .test-input { margin-bottom: 1rem; }
+        .test-input input, .test-input textarea, .test-input select { border-radius: 8px; }
+        .test-result { background: #f8fafc; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; font-family: 'Monaco', monospace; font-size: 0.85rem; overflow-x: auto; max-height: 300px; overflow-y: auto; }
+        .test-button { padding: 0.8rem 1.5rem; font-weight: 600; border-radius: 8px; }
+        .badge-score { font-size: 1.2rem; padding: 0.8rem 1.5rem; }
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .info { background: #e0f2fe; color: #0c4a6e; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <!-- HEADER -->
+        <div class="test-card" style="background: linear-gradient(135deg, #1e3a8a 0%, #5b21b6 100%); color: white;">
+            <h1 style="margin: 0;"><i class="bi bi-robot"></i> Test IA + Notifications</h1>
+            <p style="margin-top: 0.5rem; opacity: 0.9;">Testez les nouvelles fonctionnalités en temps réel</p>
+        </div>
+
+        <!-- TEST 1: IA BACKEND -->
+        <div class="test-card">
+            <h2 class="test-title"><i class="bi bi-cpu"></i> Test 1: IA Backend</h2>
+            
+            <div class="test-input">
+                <label>Titre</label>
+                <input type="text" id="test_titre" class="form-control" placeholder="Ex: Application se bloque lors du paiement" value="Application se bloque lors du paiement">
+            </div>
+
+            <div class="test-input">
+                <label>Description</label>
+                <textarea id="test_desc" class="form-control" rows="4" placeholder="Décrivez le problème en détail...">Quand je clique sur le bouton paiement, l'application se bloque complètement pendant 5 secondes puis redémarre. Cela arrive à chaque fois que je tente un paiement. Le système montre une erreur: "Transaction failed". C'est très urgent car je ne peux pas finaliser mes commandes.</textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="test-input">
+                        <label>Type</label>
+                        <select id="test_type" class="form-select">
+                            <option value="bug">🐛 Bug</option>
+                            <option value="technique">🔧 Technique</option>
+                            <option value="contenu">📝 Contenu</option>
+                            <option value="suggestion">💡 Suggestion</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="test-input">
+                        <label>Priorité</label>
+                        <select id="test_priorite" class="form-select">
+                            <option value="basse">🟢 Basse</option>
+                            <option value="normale">🔵 Normale</option>
+                            <option value="haute">🟠 Haute</option>
+                            <option value="urgente" selected>🔴 Urgente</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-block test-button mt-3" onclick="testAI()" style="width: 100%;">
+                <i class="bi bi-play-fill"></i> Tester IA
+            </button>
+
+            <div id="ia_result" class="test-result" style="display: none;"></div>
+        </div>
+
+        <!-- TEST 2: NOTIFICATIONS -->
+        <div class="test-card">
+            <h2 class="test-title"><i class="bi bi-bell"></i> Test 2: Notifications API</h2>
+            
+            <p style="margin-bottom: 1.5rem;">
+                <strong>Note:</strong> Les notifications nécessitent une session active. 
+                Vérifiez d'abord que vous êtes connecté.
+            </p>
+
+            <button class="btn btn-info btn-lg test-button" onclick="testNotificationsAPI()" style="width: 100%; margin-bottom: 1rem;">
+                <i class="bi bi-cloud"></i> Charger notifications depuis BD
+            </button>
+
+            <button class="btn btn-warning btn-lg test-button" onclick="testNotificationsList()" style="width: 100%; margin-bottom: 1rem;">
+                <i class="bi bi-list"></i> Afficher notifications
+            </button>
+
+            <div id="notif_result" class="test-result" style="display: none;"></div>
+        </div>
+
+        <!-- TEST 3: SIMULATION COMPLÈTE -->
+        <div class="test-card">
+            <h2 class="test-title"><i class="bi bi-play-circle"></i> Test 3: Simulation Complète</h2>
+            
+            <p style="margin-bottom: 1rem;">
+                Cette simulation envoie une réclamation factice à l'IA et teste tout le système.
+            </p>
+
+            <button class="btn btn-success btn-lg test-button" onclick="testComplete()" style="width: 100%;">
+                <i class="bi bi-rocket"></i> Lancer simulation complète
+            </button>
+
+            <div id="complete_result" class="test-result" style="display: none;"></div>
+        </div>
+
+        <!-- RÉSULTAT FINAL -->
+        <div class="test-card" id="final_result" style="display: none;">
+            <h2 class="test-title"><i class="bi bi-check-circle"></i> Résumé des Tests</h2>
+            <div id="final_content"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = location.origin + location.pathname.substring(0, location.pathname.indexOf('/test'));
+        let testResults = {};
+
+        async function testAI() {
+            const result = document.getElementById('ia_result');
+            result.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Chargement...</span></div> Analyse en cours...';
+            result.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/ai-analyze.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        titre: document.getElementById('test_titre').value,
+                        description: document.getElementById('test_desc').value,
+                        type: document.getElementById('test_type').value,
+                        priorite: document.getElementById('test_priorite').value
+                    })
+                });
+
+                const data = await response.json();
+                testResults.ia = { success: data.success, data: data };
+
+                let html = '<div class="' + (data.success ? 'success' : 'error') + '" style="padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">';
+                html += data.success ? '✅ IA Backend Fonctionne!' : '❌ Erreur IA Backend';
+                html += '</div>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                result.innerHTML = html;
+            } catch (e) {
+                testResults.ia = { success: false, error: e.message };
+                result.innerHTML = '<div class="error" style="padding: 1rem; border-radius: 8px;">❌ Erreur: ' + e.message + '</div>';
+            }
+        }
+
+        async function testNotificationsAPI() {
+            const result = document.getElementById('notif_result');
+            result.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Chargement...</span></div> Chargement notifications...';
+            result.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/load-admin-notifications.php`);
+                const data = await response.json();
+                testResults.notif_load = { success: data.success, data: data };
+
+                let html = '<div class="' + (data.success ? 'success' : 'error') + '" style="padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">';
+                html += data.success ? '✅ API Notifications Fonctionne!' : '❌ Erreur API';
+                html += ' (Chargé: ' + data.notifications_loaded + ' notifications)</div>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                result.innerHTML = html;
+            } catch (e) {
+                testResults.notif_load = { success: false, error: e.message };
+                result.innerHTML = '<div class="error" style="padding: 1rem; border-radius: 8px;">❌ Erreur: ' + e.message + '</div>';
+            }
+        }
+
+        async function testNotificationsList() {
+            const result = document.getElementById('notif_result');
+            result.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Chargement...</span></div> Récupération liste...';
+            result.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/get-notifications.php`);
+                const data = await response.json();
+                testResults.notif_list = { success: data.success, data: data };
+
+                let html = '<div class="' + (data.success ? 'success' : 'error') + '" style="padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">';
+                html += data.success ? '✅ Liste Notifications Fonctionne!' : '❌ Erreur';
+                html += ' (Total: ' + data.notifications.length + ' notifications)</div>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                result.innerHTML = html;
+            } catch (e) {
+                testResults.notif_list = { success: false, error: e.message };
+                result.innerHTML = '<div class="error" style="padding: 1rem; border-radius: 8px;">❌ Erreur: ' + e.message + '</div>';
+            }
+        }
+
+        async function testComplete() {
+            const result = document.getElementById('complete_result');
+            result.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Chargement...</span></div> Simulation en cours...';
+            result.style.display = 'block';
+
+            // Test 1: IA
+            await testAI();
+
+            // Test 2: Notifications
+            await testNotificationsAPI();
+
+            // Résumé final
+            displayFinalResults();
+        }
+
+        function displayFinalResults() {
+            const final = document.getElementById('final_result');
+            const content = document.getElementById('final_content');
+
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">';
+
+            // IA Status
+            const iaSuccess = testResults.ia?.success;
+            html += '<div class="' + (iaSuccess ? 'success' : 'error') + '" style="padding: 1.5rem; border-radius: 8px;">';
+            html += '<h5>' + (iaSuccess ? '✅' : '❌') + ' IA Backend</h5>';
+            html += '<p style="margin: 0; font-size: 0.9rem;">';
+            html += iaSuccess ? 'Score IA: ' + testResults.ia.data.score + '/100' : 'Non fonctionnelle';
+            html += '</p></div>';
+
+            // Notifications Status
+            const notifSuccess = testResults.notif_load?.success;
+            html += '<div class="' + (notifSuccess ? 'success' : 'error') + '" style="padding: 1.5rem; border-radius: 8px;">';
+            html += '<h5>' + (notifSuccess ? '✅' : '❌') + ' Notifications</h5>';
+            html += '<p style="margin: 0; font-size: 0.9rem;">';
+            html += notifSuccess ? 'Chargées: ' + testResults.notif_load.data.notifications_loaded : 'Non fonctionnelles';
+            html += '</p></div>';
+
+            html += '</div>';
+
+            // Recommandations
+            html += '<hr style="margin: 2rem 0;">';
+            html += '<h5>📋 Recommandations:</h5>';
+            html += '<ul>';
+            
+            if (iaSuccess) {
+                html += '<li>✅ IA fonctionne parfaitement - Intégration en production recommandée</li>';
+            } else {
+                html += '<li>❌ Vérifier api/ai-analyze.php et ROOT_PATH</li>';
+            }
+
+            if (notifSuccess) {
+                html += '<li>✅ Notifications BD OK - Incluez navbar.php dans les pages</li>';
+            } else {
+                html += '<li>❌ Vérifier notifications_history en BD et api/load-admin-notifications.php</li>';
+            }
+
+            if (iaSuccess && notifSuccess) {
+                html += '<li>✅ TOUS LES TESTS PASSENT - PRÊT POUR PRODUCTION!</li>';
+            }
+
+            html += '</ul>';
+
+            content.innerHTML = html;
+            final.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
