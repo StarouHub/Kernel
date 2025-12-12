@@ -27,16 +27,58 @@ class Reponse {
         return $stmt->fetch();
     }
     
+<<<<<<< HEAD
     public function getBySujet($sujet_id) {
+=======
+    public function getBySujet($sujet_id, $sortBy = 'date') {
+        // Always order by date in SQL (likes are stored in localStorage, so JavaScript will handle sorting)
+        $orderBy = 'r.date ASC';
+        
+>>>>>>> b2bb62a (first)
         $stmt = $this->db->prepare("
             SELECT r.*, s.titre as sujet_titre 
             FROM reponse r 
             LEFT JOIN sujet s ON r.sujet_id = s.id 
             WHERE r.sujet_id = ?
+<<<<<<< HEAD
             ORDER BY r.date ASC
         ");
         $stmt->execute([$sujet_id]);
         return $stmt->fetchAll();
+=======
+            ORDER BY $orderBy
+        ");
+        $stmt->execute([$sujet_id]);
+        $reponses = $stmt->fetchAll();
+        
+        // Note: When sorting by likes, JavaScript will handle it client-side
+        // since likes are stored in localStorage, not in the database
+        // PHP just returns responses in date order, and JavaScript re-sorts them
+        
+        return $reponses;
+    }
+    
+    public function updateLikes($id, $likes) {
+        // Try to update likes column if it exists
+        try {
+            $stmt = $this->db->prepare("UPDATE reponse SET likes = ? WHERE id = ?");
+            return $stmt->execute([$likes, $id]);
+        } catch (PDOException $e) {
+            // Column doesn't exist, return true anyway (we'll use localStorage)
+            return true;
+        }
+    }
+    
+    public function getLikes($id) {
+        try {
+            $stmt = $this->db->prepare("SELECT likes FROM reponse WHERE id = ?");
+            $stmt->execute([$id]);
+            $result = $stmt->fetch();
+            return $result ? ($result['likes'] ?? 0) : 0;
+        } catch (PDOException $e) {
+            return 0;
+        }
+>>>>>>> b2bb62a (first)
     }
     
     public function create($contenu, $sujet_id, $user_id = null) {

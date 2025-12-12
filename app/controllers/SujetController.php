@@ -44,7 +44,12 @@ class SujetController {
         
         require_once __DIR__ . '/../models/Reponse.php';
         $reponseModel = new Reponse();
+<<<<<<< HEAD
         $reponses = $reponseModel->getBySujet($id);
+=======
+        $sortBy = $_GET['sort'] ?? 'date'; // 'date' or 'likes'
+        $reponses = $reponseModel->getBySujet($id, $sortBy);
+>>>>>>> b2bb62a (first)
         
         require_once __DIR__ . '/../views/sujet/show.php';
     }

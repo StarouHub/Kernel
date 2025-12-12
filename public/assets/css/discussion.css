@@ -441,6 +441,138 @@ body {
   color: #6B7280;
 }
 
+<<<<<<< HEAD
 @media (max-width: 991px) {
   .navmenu { display: none; }
+=======
+/* === EMOJI PICKER & LIKES === */
+.emoji-like-container {
+  position: relative;
+}
+
+.emoji-picker-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.emoji-picker-btn:hover {
+  border-color: var(--primary-color);
+  background: #EFF6FF;
+}
+
+.emoji-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: var(--white);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 100;
+  min-width: 200px;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.emoji-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--light-bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 20px;
+  font-family: inherit;
+  padding: 0;
+}
+
+.emoji-option:hover {
+  border-color: var(--primary-color);
+  background: #EFF6FF;
+  transform: scale(1.1);
+}
+
+.likes-display {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.emoji-like-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.emoji-like-btn:hover {
+  border-color: var(--primary-color);
+  background: #EFF6FF;
+  transform: translateY(-1px);
+}
+
+/* === SORT BUTTONS === */
+.sort-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: 2px solid var(--border-color);
+  color: var(--text-muted);
+  background: var(--white);
+  display: inline-block;
+}
+
+.sort-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: #EFF6FF;
+}
+
+.sort-btn.active {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+}
+
+.sort-btn.active:hover {
+  background: #1D4ED8;
+  border-color: #1D4ED8;
+}
+
+@media (max-width: 991px) {
+  .navmenu { display: none; }
+  
+  .emoji-picker {
+    left: auto;
+    right: 0;
+  }
+>>>>>>> b2bb62a (first)
 }

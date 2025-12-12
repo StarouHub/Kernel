@@ -111,11 +111,34 @@ require_once __DIR__ . '/../layout/header.php';
         </div>
     </div>
 
+<<<<<<< HEAD
     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color: var(--primary-color);">
             <path d="M18 5v8a2 2 0 0 1-2 2h-5l-5 5v-5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <h2 class="section-title" style="margin: 0;">Réponses</h2>
+=======
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color: var(--primary-color);">
+                <path d="M18 5v8a2 2 0 0 1-2 2h-5l-5 5v-5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h2 class="section-title" style="margin: 0;">Réponses</h2>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-size: 14px; color: var(--text-muted);">Trier par:</span>
+            <a href="index.php?controller=sujet&action=show&id=<?php echo $sujet['id']; ?>&sort=date" 
+               class="sort-btn <?php echo (!isset($_GET['sort']) || $_GET['sort'] === 'date') ? 'active' : ''; ?>"
+               style="padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; border: 2px solid var(--border-color); color: var(--text-muted); background: var(--white);">
+                Date
+            </a>
+            <a href="index.php?controller=sujet&action=show&id=<?php echo $sujet['id']; ?>&sort=likes" 
+               class="sort-btn <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'likes') ? 'active' : ''; ?>"
+               style="padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; border: 2px solid var(--border-color); color: var(--text-muted); background: var(--white);">
+                👍 Likes
+            </a>
+        </div>
+>>>>>>> b2bb62a (first)
     </div>
 
     <?php if (empty($reponses)): ?>
@@ -139,6 +162,32 @@ require_once __DIR__ . '/../layout/header.php';
                 <div class="post-content" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
                     <?php echo nl2br(htmlspecialchars($reponse['contenu'])); ?>
                 </div>
+<<<<<<< HEAD
+=======
+                <div class="reponse-actions" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <div class="emoji-like-container" data-reponse-id="<?php echo $reponse['id']; ?>">
+                        <button type="button" class="emoji-picker-btn" data-reponse-id="<?php echo $reponse['id']; ?>" aria-label="Ajouter une réaction">
+                            <span style="font-size: 18px;">😊</span>
+                            <span style="font-size: 12px; margin-left: 4px; color: var(--text-muted);">Réagir</span>
+                        </button>
+                        <div class="emoji-picker" data-reponse-id="<?php echo $reponse['id']; ?>" style="display: none;">
+                            <div class="emoji-grid">
+                                <button type="button" class="emoji-option" data-emoji="👍" data-reponse-id="<?php echo $reponse['id']; ?>">👍</button>
+                                <button type="button" class="emoji-option" data-emoji="❤️" data-reponse-id="<?php echo $reponse['id']; ?>">❤️</button>
+                                <button type="button" class="emoji-option" data-emoji="😊" data-reponse-id="<?php echo $reponse['id']; ?>">😊</button>
+                                <button type="button" class="emoji-option" data-emoji="🎉" data-reponse-id="<?php echo $reponse['id']; ?>">🎉</button>
+                                <button type="button" class="emoji-option" data-emoji="🔥" data-reponse-id="<?php echo $reponse['id']; ?>">🔥</button>
+                                <button type="button" class="emoji-option" data-emoji="💡" data-reponse-id="<?php echo $reponse['id']; ?>">💡</button>
+                                <button type="button" class="emoji-option" data-emoji="👏" data-reponse-id="<?php echo $reponse['id']; ?>">👏</button>
+                                <button type="button" class="emoji-option" data-emoji="✅" data-reponse-id="<?php echo $reponse['id']; ?>">✅</button>
+                            </div>
+                        </div>
+                        <div class="likes-display" data-reponse-id="<?php echo $reponse['id']; ?>" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+                            <!-- Likes will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+>>>>>>> b2bb62a (first)
                 <?php if ($canEditReponse): ?>
                     <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 8px;">
                         <a href="index.php?controller=reponse&action=edit&id=<?php echo $reponse['id']; ?>" 
@@ -169,15 +218,24 @@ require_once __DIR__ . '/../layout/header.php';
             </svg>
             <h3 style="margin: 0;">Ajouter une réponse</h3>
         </div>
+<<<<<<< HEAD
         <form method="POST" action="index.php?controller=reponse&action=create&sujet_id=<?php echo $sujet['id']; ?>" onsubmit="return validateForm(this);">
+=======
+        <form method="POST" action="index.php?controller=reponse&action=create&sujet_id=<?php echo $sujet['id']; ?>" class="form-reponse-create" onsubmit="return validateReponseForm(this);">
+>>>>>>> b2bb62a (first)
             <input type="hidden" name="sujet_id" value="<?php echo $sujet['id']; ?>">
             <div style="margin-bottom: 24px;">
                 <textarea class="form-control" 
                           id="contenu" 
                           name="contenu" 
                           rows="6" 
+<<<<<<< HEAD
                           placeholder="Partagez votre réponse ou votre solution..."
                           required></textarea>
+=======
+                          placeholder="Partagez votre réponse ou votre solution..."></textarea>
+                <div class="field-error" style="display: none;"></div>
+>>>>>>> b2bb62a (first)
             </div>
             <button type="submit" class="btn-submit">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink: 0;">
@@ -190,6 +248,7 @@ require_once __DIR__ . '/../layout/header.php';
 </div>
 
 <script>
+<<<<<<< HEAD
 document.querySelectorAll('.like-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -200,6 +259,274 @@ document.querySelectorAll('.like-btn').forEach(btn => {
         }
     });
 });
+=======
+// Response Likes Management with Emoji Support
+(function() {
+    'use strict';
+    
+    // Initialize likes from localStorage
+    function initLikes() {
+        const reponses = document.querySelectorAll('[data-reponse-id]');
+        reponses.forEach(function(container) {
+            const reponseId = container.getAttribute('data-reponse-id');
+            const likesKey = 'reponse_likes_' + reponseId;
+            const storedLikes = localStorage.getItem(likesKey);
+            
+            if (storedLikes) {
+                try {
+                    const likes = JSON.parse(storedLikes);
+                    updateLikesDisplay(reponseId, likes);
+                } catch (e) {
+                    console.error('Error parsing likes:', e);
+                }
+            }
+        });
+    }
+    
+    // Save likes to localStorage
+    function saveLikes(reponseId, likes) {
+        const likesKey = 'reponse_likes_' + reponseId;
+        localStorage.setItem(likesKey, JSON.stringify(likes));
+    }
+    
+    // Get likes from localStorage
+    function getLikes(reponseId) {
+        const likesKey = 'reponse_likes_' + reponseId;
+        const storedLikes = localStorage.getItem(likesKey);
+        return storedLikes ? JSON.parse(storedLikes) : {};
+    }
+    
+    // Update likes display
+    function updateLikesDisplay(reponseId, likes) {
+        const display = document.querySelector('.likes-display[data-reponse-id="' + reponseId + '"]');
+        if (!display) return;
+        
+        display.innerHTML = '';
+        
+        const emojiCounts = {};
+        let totalLikes = 0;
+        
+        // Count emojis
+        Object.values(likes).forEach(function(emoji) {
+            emojiCounts[emoji] = (emojiCounts[emoji] || 0) + 1;
+            totalLikes++;
+        });
+        
+        // Display emoji buttons with counts
+        Object.keys(emojiCounts).sort().forEach(function(emoji) {
+            const count = emojiCounts[emoji];
+            if (count > 0) {
+                const likeBtn = document.createElement('button');
+                likeBtn.type = 'button';
+                likeBtn.className = 'emoji-like-btn';
+                likeBtn.setAttribute('data-emoji', emoji);
+                likeBtn.setAttribute('data-reponse-id', reponseId);
+                likeBtn.innerHTML = '<span style="font-size: 16px;">' + emoji + '</span> <span style="font-size: 12px; margin-left: 4px; font-weight: 600;">' + count + '</span>';
+                likeBtn.style.cssText = 'display: inline-flex; align-items: center; padding: 6px 12px; border: 2px solid var(--border-color); border-radius: 20px; background: var(--white); cursor: pointer; transition: all 0.2s; font-size: 14px;';
+                likeBtn.addEventListener('mouseenter', function() {
+                    this.style.borderColor = 'var(--primary-color)';
+                    this.style.background = '#EFF6FF';
+                });
+                likeBtn.addEventListener('mouseleave', function() {
+                    this.style.borderColor = 'var(--border-color)';
+                    this.style.background = 'var(--white)';
+                });
+                likeBtn.addEventListener('click', function() {
+                    removeLike(reponseId, emoji);
+                });
+                display.appendChild(likeBtn);
+            }
+        });
+        
+        // Update total likes count if needed
+        const totalDisplay = display.parentElement.querySelector('.total-likes-count');
+        if (totalLikes > 0) {
+            if (!totalDisplay) {
+                const totalSpan = document.createElement('span');
+                totalSpan.className = 'total-likes-count';
+                totalSpan.style.cssText = 'font-size: 12px; color: var(--text-muted); margin-left: 8px;';
+                totalSpan.textContent = totalLikes + ' réaction' + (totalLikes > 1 ? 's' : '');
+                display.parentElement.insertBefore(totalSpan, display);
+            } else {
+                totalDisplay.textContent = totalLikes + ' réaction' + (totalLikes > 1 ? 's' : '');
+            }
+        } else if (totalDisplay) {
+            totalDisplay.remove();
+        }
+    }
+    
+    // Add like
+    function addLike(reponseId, emoji) {
+        const likes = getLikes(reponseId);
+        const likeId = Date.now() + '_' + Math.random();
+        likes[likeId] = emoji;
+        saveLikes(reponseId, likes);
+        updateLikesDisplay(reponseId, likes);
+    }
+    
+    // Remove like
+    function removeLike(reponseId, emoji) {
+        const likes = getLikes(reponseId);
+        let removed = false;
+        Object.keys(likes).forEach(function(key) {
+            if (likes[key] === emoji) {
+                delete likes[key];
+                removed = true;
+            }
+        });
+        if (removed) {
+            saveLikes(reponseId, likes);
+            updateLikesDisplay(reponseId, likes);
+            
+            // Re-sort if sorting by likes
+            if (isSortingByLikes()) {
+                setTimeout(function() {
+                    sortResponsesByLikes();
+                }, 50);
+            }
+        }
+    }
+    
+    // Toggle emoji picker
+    function toggleEmojiPicker(reponseId) {
+        const picker = document.querySelector('.emoji-picker[data-reponse-id="' + reponseId + '"]');
+        const allPickers = document.querySelectorAll('.emoji-picker');
+        
+        // Close all other pickers
+        allPickers.forEach(function(p) {
+            if (p !== picker) {
+                p.style.display = 'none';
+            }
+        });
+        
+        // Toggle current picker
+        if (picker) {
+            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+    
+    // Get total likes count for a response
+    function getTotalLikes(reponseId) {
+        const likes = getLikes(reponseId);
+        return Object.keys(likes).length;
+    }
+    
+    // Sort responses by likes
+    function sortResponsesByLikes() {
+        // Find all reply cards
+        const replyCards = document.querySelectorAll('.reply-card');
+        if (replyCards.length === 0) return;
+        
+        // Get the first card's parent (should be the container for all replies)
+        const parent = replyCards[0].parentElement;
+        if (!parent) return;
+        
+        // Convert to array and sort
+        const cardsArray = Array.from(replyCards);
+        cardsArray.sort(function(a, b) {
+            // Find the reponse ID from the emoji-like-container
+            const containerA = a.querySelector('.emoji-like-container[data-reponse-id]');
+            const containerB = b.querySelector('.emoji-like-container[data-reponse-id]');
+            
+            if (!containerA || !containerB) return 0;
+            
+            const idA = containerA.getAttribute('data-reponse-id');
+            const idB = containerB.getAttribute('data-reponse-id');
+            
+            if (!idA || !idB) return 0;
+            
+            const likesA = getTotalLikes(idA);
+            const likesB = getTotalLikes(idB);
+            
+            // Sort by likes descending (most likes first)
+            if (likesA !== likesB) {
+                return likesB - likesA;
+            }
+            
+            // If likes are equal, maintain original order
+            return 0;
+        });
+        
+        // Re-append in sorted order (this will move them to the correct position)
+        cardsArray.forEach(function(card) {
+            parent.appendChild(card);
+        });
+    }
+    
+    // Check if we're currently sorting by likes
+    function isSortingByLikes() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('sort') === 'likes';
+    }
+    
+    // Initialize on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize likes first
+        initLikes();
+        
+        // Sort by likes if the sort parameter is set
+        if (isSortingByLikes()) {
+            // Delay to ensure likes are initialized and DOM is ready
+            setTimeout(function() {
+                sortResponsesByLikes();
+            }, 200);
+        }
+        
+        // Emoji picker button click
+        document.querySelectorAll('.emoji-picker-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const reponseId = this.getAttribute('data-reponse-id');
+                toggleEmojiPicker(reponseId);
+            });
+        });
+        
+        // Emoji option click
+        document.querySelectorAll('.emoji-option').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const reponseId = this.getAttribute('data-reponse-id');
+                const emoji = this.getAttribute('data-emoji');
+                addLike(reponseId, emoji);
+                
+                // Re-sort if sorting by likes
+                if (isSortingByLikes()) {
+                    setTimeout(function() {
+                        sortResponsesByLikes();
+                    }, 50);
+                }
+                
+                // Close picker
+                const picker = document.querySelector('.emoji-picker[data-reponse-id="' + reponseId + '"]');
+                if (picker) {
+                    picker.style.display = 'none';
+                }
+            });
+        });
+        
+        // Close picker when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.emoji-like-container')) {
+                document.querySelectorAll('.emoji-picker').forEach(function(picker) {
+                    picker.style.display = 'none';
+                });
+            }
+        });
+    });
+    
+    // Handle main post like button (keep existing functionality)
+    document.querySelectorAll('.like-btn[data-sujet-id]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (this.classList.contains('liked')) {
+                this.classList.remove('liked');
+            } else {
+                this.classList.add('liked');
+            }
+        });
+    });
+})();
+>>>>>>> b2bb62a (first)
 </script>
 
 <?php require_once __DIR__ . '/../layout/footer.php'; ?>
