@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajouter - Forum Kernel</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Ton CSS -->
+  <link href="../FrontOffice/css/ajout-sujet.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo">
+        <i class="bi bi-hexagon-fill"></i> Kernel
+      </a>
+      <nav class="navmenu">
+        <ul>
+          <li><a href="forum.html">Retour au Forum</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <h1><i class="bi bi-plus-circle"></i> Créer du contenu</h1>
+      <p>Ajoutez une catégorie ou un sujet au forum</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- === FORMULAIRE : AJOUTER UNE CATÉGORIE === -->
+      <div class="col-lg-6">
+        <div class="forum-sidebar p-4">
+          <h5 class="sidebar-title mb-4">
+            <i class="bi bi-folder-plus"></i> Nouvelle catégorie
+          </h5>
+          <form id="categoryForm">
+            <div class="mb-3">
+              <label class="form-label fw-600">Nom de la catégorie <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="catName" placeholder="Ex: Sécurité" maxlength="30" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-600">Couleur</label>
+              <input type="color" class="form-control form-control-color w-100" id="catColor" value="#10B981">
+            </div>
+            <button type="submit" class="btn btn-success w-100">
+              <i class="bi bi-check"></i> Ajouter la catégorie
+            </button>
+          </form>
+          <div id="catResult" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- === FORMULAIRE : AJOUTER UN SUJET === -->
+      <div class="col-lg-6">
+        <div class="forum-sidebar p-4">
+          <h5 class="sidebar-title mb-4">
+            <i class="bi bi-plus-circle"></i> Nouveau sujet
+          </h5>
+          <form id="topicForm">
+            <div class="mb-3">
+              <label class="form-label fw-600">Titre <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="topicTitle" placeholder="Ex: Problème avec API REST..." required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-600">Catégorie <span class="text-danger">*</span></label>
+              <select class="form-select" id="topicCategory" required>
+                <option value="">Choisir une catégorie</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-600">Description <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="topicContent" rows="4" placeholder="Décrivez votre question..." required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-600">Tags (optionnel)</label>
+              <input type="text" class="form-control" id="topicTags" placeholder="Ex: #bug #API">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="background: var(--accent-color); border: none;">
+              <i class="bi bi-send-fill"></i> Publier le sujet
+            </button>
+          </form>
+          <div id="topicResult" class="mt-3"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // === DONNÉES LOCALES ===
+    let categories = JSON.parse(localStorage.getItem('forumCategories')) || [
+      { name: "Intelligence Artificielle", color: "#2563EB" },
+      { name: "IoT & Robotique", color: "#7C3AED" },
+      { name: "Blockchain", color: "#F59E0B" },
+      { name: "Dev Web/Mobile", color: "#10B981" },
+      { name: "Financement", color: "#EF4444" },
+      { name: "Design & UX", color: "#8B5CF6" },
+      { name: "Questions Générales", color: "#06B6D4" }
+    ];
+
+    let topics = JSON.parse(localStorage.getItem('forumTopics')) || [];
+
+    // === MISE À JOUR DU SELECT ===
+    function updateCategorySelect() {
+      const select = document.getElementById('topicCategory');
+      select.innerHTML = '<option value="">Choisir une catégorie</option>';
+      categories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.name;
+        opt.textContent = cat.name;
+        select.appendChild(opt);
+      });
+    }
+
+    // === AJOUTER UNE CATÉGORIE ===
+    document.getElementById('categoryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('catName').value.trim();
+      const color = document.getElementById('catColor').value;
+
+      if (!name) return alert('Nom requis');
+      if (categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+        return alert('Cette catégorie existe déjà');
+      }
+
+      categories.push({ name, color });
+      localStorage.setItem('forumCategories', JSON.stringify(categories));
+      updateCategorySelect();
+
+      document.getElementById('catResult').innerHTML = `
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle"></i> Catégorie <strong>${name}</strong> ajoutée !
+        </div>
+      `;
+      this.reset();
+      setTimeout(() => document.getElementById('catResult').innerHTML = '', 3000);
+    });
+
+    // === AJOUTER UN SUJET ===
+    document.getElementById('topicForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const title = document.getElementById('topicTitle').value.trim();
+      const category = document.getElementById('topicCategory').value;
+      const content = document.getElementById('topicContent').value.trim();
+      const tagsInput = document.getElementById('topicTags').value.trim();
+      const tags = tagsInput ? tagsInput.split(/\s+/).map(t => t.startsWith('#') ? t : '#' + t) : [];
+
+      if (!title || !category || !content) return alert('Champs obligatoires manquants');
+
+      const newTopic = {
+        id: Date.now(),
+        title,
+        category,
+        description: content.substring(0, 150) + (content.length > 150 ? '...' : ''),
+        author: 'Vous',
+        time: 'à l\'instant',
+        tags,
+        replies: 0,
+        views: 1,
+        likes: 0
+      };
+
+      topics.unshift(newTopic);
+      localStorage.setItem('forumTopics', JSON.stringify(topics));
+
+      // Mettre à jour le compteur
+      const cat = categories.find(c => c.name === category);
+      if (cat) cat.count = (cat.count || 0) + 1;
+
+      document.getElementById('topicResult').innerHTML = `
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle"></i> Sujet <strong>${title}</strong> publié !
+        </div>
+      `;
+      this.reset();
+      setTimeout(() => document.getElementById('topicResult').innerHTML = '', 3000);
+    });
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', updateCategorySelect);
+  </script>
+</body>
+</html>

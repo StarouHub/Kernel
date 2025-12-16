@@ -1,0 +1,122 @@
+:root {
+  --primary: #2563fb;
+  --primary-light: #e8f0fe;
+  --bg: #f7f8fa;
+  --header: #17548c;
+  --card-bg: #fff;
+  --border-radius: 10px;
+  --shadow: 0 4px 14px 0 #0002;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  color: #222;
+}
+
+h1, h2 {
+  color: var(--header);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+nav {
+  margin: 20px 0 30px 0;
+  display: flex;
+  gap: 24px;
+}
+
+nav a {
+  color: var(--header);
+  background: var(--primary-light);
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  transition: .2s;
+}
+
+nav a:hover,
+nav a.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.container,
+#dashboard-content,
+#categories-list,
+#topics-list,
+#replies-list {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 28px 32px;
+  margin-bottom: 30px;
+}
+
+form input[type="text"] {
+  padding: 9px 14px;
+  border: 1px solid #dce2ec;
+  border-radius: var(--border-radius);
+  margin-right: 14px;
+  font-size: 15px;
+  outline: none;
+  transition: border .2s;
+}
+
+form input[type="text"]:focus {
+  border: 1.5px solid var(--primary);
+}
+
+button {
+  padding: 9px 18px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, box-shadow .2s;
+  box-shadow: 0 1px 3px #2a63ed15;
+}
+
+button:hover {
+  background: #1749c7;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0 0;
+}
+
+li {
+  padding: 14px 24px;
+  background: var(--primary-light);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 16px;
+}
+
+@media (max-width: 700px) {
+  .container,
+  #dashboard-content,
+  #categories-list,
+  #topics-list,
+  #replies-list {
+    padding: 16px 6px;
+  }
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+  li {
+    padding: 11px 8px;
+    font-size: 14px;
+  }
+}
