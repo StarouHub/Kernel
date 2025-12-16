@@ -1,0 +1,13 @@
+{
+    "name": "kernel/projet",
+    "description": "Système de gestion Kernel avec authentification",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "controller/"
+        }
+    }
+}
