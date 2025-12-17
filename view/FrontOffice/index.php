@@ -1,5 +1,6 @@
 <?php
 session_start();
+<<<<<<< HEAD
 require_once '../../config.php';
 
 // Si pas connecté → retour à connexion
@@ -9,6 +10,8 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+=======
+>>>>>>> origin/MohamedChaouachi
 include_once(__DIR__ . '/../../controller/projetcontroller.php');
 include_once(__DIR__ . '/../../controller/actualitecontroller.php');
 include_once(__DIR__ . '/../../controller/userController.php');
@@ -16,6 +19,7 @@ include_once(__DIR__ . '/../components/main-navigation.php');
 include_once(__DIR__ . '/../components/chatbot-widget.php');
 
 // Gestion de l'authentification
+<<<<<<< HEAD
 $userController = new userController();
 $currentUser = $userController->getCurrentUser();
 $isLoggedIn = $userController->isLoggedIn();
@@ -23,6 +27,12 @@ $isLoggedIn = $userController->isLoggedIn();
 // Vérifier si l'utilisateur est administrateur
 $isAdmin = $isLoggedIn && isset($currentUser['role']) && $currentUser['role'] === 'admin';
 
+=======
+$userController = new UserController();
+$currentUser = $userController->getCurrentUser();
+$isLoggedIn = $userController->isLoggedIn();
+
+>>>>>>> origin/MohamedChaouachi
 $projetController = new ProjetController();
 $actualiteController = new ActualiteController();
 
@@ -81,6 +91,7 @@ foreach ($projets as $projet) {
             line-height: 1.6;
             color: var(--dark-color);
         }
+<<<<<<< HEAD
 
         /* Header avec boutons sur la gauche */
         .left-header {
@@ -265,6 +276,8 @@ foreach ($projets as $projet) {
                 right: 10px;
             }
         }
+=======
+>>>>>>> origin/MohamedChaouachi
         
         .hero-section {
             background: linear-gradient(135deg, #0A4FFF 0%, #4AA8FF 100%);
@@ -622,6 +635,7 @@ foreach ($projets as $projet) {
             letter-spacing: 0.025em;
         }
         
+<<<<<<< HEAD
         .action-btn.admin {
             border-color: #DC2626;
         }
@@ -636,6 +650,9 @@ foreach ($projets as $projet) {
             color: #DC2626;
         }
         
+=======
+        /* 📱 Responsive Design Improvements */
+>>>>>>> origin/MohamedChaouachi
         @media (max-width: 992px) {
             .action-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -688,11 +705,24 @@ foreach ($projets as $projet) {
             }
         }
         
+<<<<<<< HEAD
+=======
+        /* 🎨 Enhanced Visual Effects */
+>>>>>>> origin/MohamedChaouachi
         .stats-card:nth-child(1) .stats-icon { color: var(--primary-color); }
         .stats-card:nth-child(2) .stats-icon { color: var(--secondary-color); }
         .stats-card:nth-child(3) .stats-icon { color: var(--accent-color); }
         .stats-card:nth-child(4) .stats-icon { color: var(--success-color); }
         
+<<<<<<< HEAD
+=======
+        .action-btn:nth-child(1):hover { border-color: var(--primary-color); background: linear-gradient(135deg, rgba(10, 79, 255, 0.05) 0%, rgba(10, 79, 255, 0.1) 100%); color: var(--primary-color); }
+        .action-btn:nth-child(2):hover { border-color: var(--secondary-color); background: linear-gradient(135deg, rgba(74, 168, 255, 0.05) 0%, rgba(74, 168, 255, 0.1) 100%); color: var(--secondary-color); }
+        .action-btn:nth-child(3):hover { border-color: var(--accent-color); background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.1) 100%); color: var(--accent-color); }
+        .action-btn:nth-child(4):hover { border-color: var(--success-color); background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.1) 100%); color: var(--success-color); }
+        
+        /* ✨ Accessibility Improvements */
+>>>>>>> origin/MohamedChaouachi
         .action-btn:focus,
         .btn-action:focus {
             outline: 3px solid rgba(10, 79, 255, 0.5);
@@ -707,6 +737,7 @@ foreach ($projets as $projet) {
             }
         }
     </style>
+<<<<<<< HEAD
     
 </head>
 
@@ -737,6 +768,13 @@ foreach ($projets as $projet) {
             <i class="bi bi-shield-lock"></i>
         </a>
     <?php endif; ?>
+=======
+</head>
+
+<body>
+    <?php echo renderMainNavigation('accueil'); ?>
+    <?php echo renderChatbotWidget(); ?>
+>>>>>>> origin/MohamedChaouachi
     
     <!-- Hero Section -->
     <section class="hero-section">
@@ -811,6 +849,7 @@ foreach ($projets as $projet) {
         <div class="quick-actions">
             <h4><i class="bi bi-lightning"></i> Actions Rapides</h4>
             <div class="action-grid">
+<<<<<<< HEAD
                 <?php if ($isAdmin): ?>
                     <a href="../BackOffice/admin.php" class="action-btn admin">
                         <i class="bi bi-shield-lock"></i>
@@ -818,6 +857,8 @@ foreach ($projets as $projet) {
                     </a>
                 <?php endif; ?>
                 
+=======
+>>>>>>> origin/MohamedChaouachi
                 <a href="ajoutprojet.php" class="action-btn">
                     <i class="bi bi-plus-circle"></i>
                     <span>Nouveau Projet</span>
@@ -826,7 +867,11 @@ foreach ($projets as $projet) {
                     <i class="bi bi-newspaper"></i>
                     <span>Publier Actualité</span>
                 </a>
+<<<<<<< HEAD
                 <a href="../../public/index.php" class="action-btn">
+=======
+                <a href="forum.php" class="action-btn">
+>>>>>>> origin/MohamedChaouachi
                     <i class="bi bi-chat-dots"></i>
                     <span>Rejoindre Forum</span>
                 </a>

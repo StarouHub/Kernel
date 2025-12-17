@@ -339,8 +339,23 @@ function renderMainNavigation($currentPage = '') {
                                 <div class="notification-dot"></div>
                             </a>
                             <ul class="dropdown-menu">
+<<<<<<< HEAD
                                 <li><a class="dropdown-item" href="../../index.php">
                                     <i class="bi bi-calendar3"></i> evenements page
+=======
+                                <li><a class="dropdown-item" href="evenements-list.php">
+                                    <i class="bi bi-calendar3"></i> Tous les événements
+                                </a></li>
+                                <li><a class="dropdown-item" href="evenement-creer.php">
+                                    <i class="bi bi-calendar-plus"></i> Créer un événement
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="mes-evenements.php">
+                                    <i class="bi bi-calendar-check"></i> Mes événements
+                                </a></li>
+                                <li><a class="dropdown-item" href="evenements-participes.php">
+                                    <i class="bi bi-people"></i> Événements participés
+>>>>>>> origin/MohamedChaouachi
                                 </a></li>
                             </ul>
                         </li>
@@ -351,10 +366,26 @@ function renderMainNavigation($currentPage = '') {
                                 <i class="bi bi-cash-coin"></i> Investissement
                             </a>
                             <ul class="dropdown-menu">
+<<<<<<< HEAD
                                 
                                 <li><a class="dropdown-item" href="../FrontOffice/investissement.php">
                                     <i class="bi bi-wallet2"></i> Mes investissements
                                 </a></li>
+=======
+                                <li><a class="dropdown-item" href="investissements.php">
+                                    <i class="bi bi-graph-up-arrow"></i> Opportunités d'investissement
+                                </a></li>
+                                <li><a class="dropdown-item" href="mes-investissements.php">
+                                    <i class="bi bi-wallet2"></i> Mes investissements
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="portefeuille.php">
+                                    <i class="bi bi-briefcase"></i> Mon portefeuille
+                                </a></li>
+                                <li><a class="dropdown-item" href="historique-transactions.php">
+                                    <i class="bi bi-clock-history"></i> Historique des transactions
+                                </a></li>
+>>>>>>> origin/MohamedChaouachi
                             </ul>
                         </li>
                         
@@ -364,10 +395,26 @@ function renderMainNavigation($currentPage = '') {
                                 <i class="bi bi-chat-square-dots"></i> Forum
                             </a>
                             <ul class="dropdown-menu">
+<<<<<<< HEAD
                                 <li><a class="dropdown-item" href="../../public/index.php">
                                     <i class="bi bi-chat-left-text"></i> forum page
                                 </a></li>
                                 
+=======
+                                <li><a class="dropdown-item" href="forum.php">
+                                    <i class="bi bi-chat-left-text"></i> Discussions générales
+                                </a></li>
+                                <li><a class="dropdown-item" href="forum-aide.php">
+                                    <i class="bi bi-question-circle"></i> Aide & Support
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="mes-discussions.php">
+                                    <i class="bi bi-person-lines-fill"></i> Mes discussions
+                                </a></li>
+                                <li><a class="dropdown-item" href="forum-creer.php">
+                                    <i class="bi bi-plus-circle"></i> Nouvelle discussion
+                                </a></li>
+>>>>>>> origin/MohamedChaouachi
                             </ul>
                         </li>
                         
@@ -377,8 +424,24 @@ function renderMainNavigation($currentPage = '') {
                                 <i class="bi bi-exclamation-triangle"></i> Réclamations
                             </a>
                             <ul class="dropdown-menu">
+<<<<<<< HEAD
                                 <li><a class="dropdown-item" href="../../indexx.php">
                                     <i class="bi bi-plus-circle"></i>  réclamation page
+=======
+                                <li><a class="dropdown-item" href="reclamation-creer.php">
+                                    <i class="bi bi-plus-circle"></i> Nouvelle réclamation
+                                </a></li>
+                                <li><a class="dropdown-item" href="mes-reclamations.php">
+                                    <i class="bi bi-list-check"></i> Mes réclamations
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="faq.php">
+                                    <i class="bi bi-question-circle"></i> FAQ
+                                </a></li>
+                                <li><a class="dropdown-item" href="contact.php">
+                                    <i class="bi bi-envelope"></i> Nous contacter
+                                </a></li>
+>>>>>>> origin/MohamedChaouachi
                             </ul>
                         </li>
                     </ul>

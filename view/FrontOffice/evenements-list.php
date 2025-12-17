@@ -1,5 +1,8 @@
 <?php
+<<<<<<< HEAD
 session_start();
+=======
+>>>>>>> origin/MohamedChaouachi
 include_once(__DIR__ . '/../components/main-navigation.php');
 include_once(__DIR__ . '/../components/chatbot-widget.php');
 ?>
@@ -93,6 +96,7 @@ include_once(__DIR__ . '/../components/chatbot-widget.php');
     
     <div class="page-header">
         <div class="container">
+<<<<<<< HEAD
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1><i class="bi bi-calendar-event"></i> Événements</h1>
@@ -104,6 +108,10 @@ include_once(__DIR__ . '/../components/chatbot-widget.php');
                 </a>
                 <?php endif; ?>
             </div>
+=======
+            <h1><i class="bi bi-calendar-event"></i> Événements</h1>
+            <p>Découvrez les événements tech et innovation</p>
+>>>>>>> origin/MohamedChaouachi
         </div>
     </div>
     

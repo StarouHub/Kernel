@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
 session_start();
 require_once '../../config.php';  // Pour avoir accès à la BDD
 require_once '../../controller/userController.php';  
@@ -21,3 +22,11 @@ session_destroy();
 // 4. Redirige vers la page de connexion
 header('Location: connexion.php');
 exit;
+=======
+require_once '../../controller/userController.php';
+
+$controller = new UserController();
+$controller->logout();
+// La redirection est gérée par le contrôleur
+?>
+>>>>>>> origin/MohamedChaouachi
