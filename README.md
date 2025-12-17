@@ -1,11 +1,10 @@
-<<<<<<< HEAD
 # 🚀 Kernel - Complete Innovation Platform
 
 ## 📖 Description
 
-Kernel is a comprehensive web platform that enables innovators to showcase their technological projects, seek funding, manage complaints, organize events, and connect with investors. Share your ideas, track project evolution, connect with the community, and manage your user base through an integrated administration system.
+Kernel is a comprehensive web platform that enables innovators to showcase their technological projects, seek funding, manage complaints, organize events, and connect with investors. Share your ideas, track project evolution, connect with the community, and manage your user base through an integrated administration sysem.
 
-## ✨ Key Features
+## ✨ Key Featurest
 
 ### 👥 Complete Authentication System
 - **Secure Registration**: Account creation with data validation
@@ -557,280 +556,267 @@ Developed by Team Webzz
 🌟 **Star this project** if you find it useful!  
 🐛 **Report issues** to help us improve  
 🤝 **Contribute** to make Kernel even better
-=======
-5. **Vérifier la configuration** dans `config.php` :
+5. **Verify Configuration** in `config.php`:
    ```php
    $dbname = "kernel";
    ```
 
-6. **Accéder à la plateforme** :
+6. **Access the Platform**:
    ```
-   http://localhost/votre-projet/view/FrontOffice/index.php
+   http://localhost/your-project/view/FrontOffice/index.php
    ```
 
-📖 **Guide détaillé** : Consultez [INSTALLATION.md](INSTALLATION.md)
+📖 **Detailed Guide**: Check [INSTALLATION.md](INSTALLATION.md)
 
-## 📁 Structure du Projet
+## 📁 Project Structure
 
 ```
 kernel/
-├── config.php                      # Configuration base de données
-├── kernel.sql                      # Base de données complète
-├── composer.json                   # Dépendances PHP
-├── vendor/                         # Librairies externes
+├── config.php                      # Database configuration
+├── kernel.sql                      # Complete database
+├── composer.json                   # PHP dependencies
+├── vendor/                         # External libraries
 │
-├── controller/                     # Logique métier (MVC)
-│   ├── projetcontroller.php        # Gestion des projets
-│   ├── categoriecontroller.php     # Gestion des catégories
-│   ├── actualitecontroller.php     # Gestion des actualités
-│   └── userController.php          # Gestion des utilisateurs
+├── controller/                     # Business logic (MVC)
+│   ├── projetcontroller.php        # Project management
+│   ├── categoriecontroller.php     # Category management
+│   ├── actualitecontroller.php     # News management
+│   └── userController.php          # User management
 │
-├── model/                          # Modèles de données
-│   ├── projet.php                  # Modèle Projet
-│   ├── categorie.php               # Modèle Catégorie
-│   ├── actualite.php               # Modèle Actualité
-│   ├── model.php                   # Modèles génériques
-│   └── user.php                    # Modèle Utilisateur
+├── model/                          # Data models
+│   ├── projet.php                  # Project model
+│   ├── categorie.php               # Category model
+│   ├── actualite.php               # News model
+│   ├── model.php                   # Generic models
+│   └── user.php                    # User model
 │
-├── view/FrontOffice/               # Interface utilisateur
-│   ├── index.php                   # Page d'accueil
-│   ├── connexion.php               # Connexion
-│   ├── inscription.php             # Inscription
-│   ├── logout.php                  # Déconnexion
-│   ├── profil-utilisateur.php      # Profil utilisateur
-│   ├── ajoutprojet.php             # Créer un projet
-│   ├── listeprojet.php             # Liste des projets
-│   ├── detailsprojet.php           # Détails d'un projet
-│   ├── modifierprojet.php          # Modifier un projet
-│   ├── ajouterActualite.php        # Publier une actualité
-│   └── listeActualite.php          # Toutes les actualités
+├── view/FrontOffice/               # User interface
+│   ├── index.php                   # Homepage
+│   ├── connexion.php               # Login
+│   ├── inscription.php             # Registration
+│   ├── logout.php                  # Logout
+│   ├── profil-utilisateur.php      # User profile
+│   ├── ajoutprojet.php             # Create project
+│   ├── listeprojet.php             # Project list
+│   ├── detailsprojet.php           # Project details
+│   ├── modifierprojet.php          # Edit project
+│   ├── ajouterActualite.php        # Publish news
+│   └── listeActualite.php          # All news
 │
-├── view/BackOffice/                # Interface d'administration
-│   ├── admin-users.php             # Gestion des utilisateurs
-│   └── modify-user.php             # Modification d'utilisateur
+├── view/BackOffice/                # Admin interface
+│   ├── admin-users.php             # User management
+│   └── modify-user.php             # User modification
 │
 ├── api/                            # API endpoints
-│   ├── chatbot.php                 # API Chatbot
-│   └── counts.php                  # API Statistiques
+│   ├── chatbot.php                 # Chatbot API
+│   └── counts.php                  # Statistics API
 │
-└── services/                       # Services métier
-    ├── ChatbotService.php          # Service Chatbot
-    └── MailingService.php          # Service Email
+└── services/                       # Business services
+    ├── ChatbotService.php          # Chatbot service
+    └── MailingService.php          # Email service
 ```
 
-## 🎯 Guide d'Utilisation
+## 🎯 User Guide
 
-### 🔐 Authentification
+### 🔐 Authentication
 
-#### 1. Créer un compte
-- Allez sur **"Inscription"**
-- Remplissez vos informations (nom, prénom, email, téléphone)
-- Choisissez un mot de passe sécurisé
-- Confirmez votre inscription
+#### 1. Create Account
+- Go to **"Sign Up"**
+- Fill in your information (name, first name, email, phone)
+- Choose a secure password
+- Confirm your registration
 
-#### 2. Se connecter
-- Utilisez votre email et mot de passe
-- Option "Rester connecté" disponible
-- Accès différencié selon votre rôle
+#### 2. Sign In
+- Use your email and password
+- "Remember me" option available
+- Different access based on your role
 
-#### 3. Gestion du profil
-- Modifiez vos informations personnelles
-- Changez votre mot de passe
-- Gérez vos préférences
+#### 3. Profile Management
+- Update your personal information
+- Change your password
+- Manage preferences
 
-### 💡 Pour les Innovateurs
+### 💡 For Innovators
 
-#### 1. Créer votre projet
-- Allez sur **"Nouveau Projet"**
-- Remplissez les informations (titre, description, budget)
-- Choisissez une catégorie
-- Publiez !
+#### 1. Create Your Project
+- Go to **"New Project"**
+- Fill in information (title, description, budget)
+- Choose a category
+- Publish!
 
-#### 2. Gérer votre projet
-- **Modifier** : Mettez à jour les informations
-- **Publier des actualités** : Tenez vos investisseurs informés
-- **Suivre le financement** : Visualisez la progression
+#### 2. Manage Your Project
+- **Edit**: Update information
+- **Publish News**: Keep your investors informed
+- **Track Funding**: Visualize progress
 
-### 💰 Pour les Investisseurs
+### 💰 For Investors
 
-#### 1. Découvrir les projets
-- Parcourez la **liste des projets**
-- Utilisez la **recherche** pour filtrer
-- Consultez les **détails** de chaque projet
+#### 1. Discover Projects
+- Browse the **project list**
+- Use **search** to filter
+- Check **details** of each project
 
-#### 2. Suivre l'évolution
-- Lisez les **actualités** des projets
-- Filtrez par projet pour voir son historique
-- Restez informé des **milestones** importants
+#### 2. Track Evolution
+- Read project **news**
+- Filter by project to see history
+- Stay informed of **milestones**
 
-### 🛡️ Pour les Administrateurs
+### 🛡️ For Administrators
 
-#### 1. Accéder au panneau d'administration
-- Connectez-vous avec un compte administrateur
-- Accédez au **"Panneau d'administration"**
-- Vue d'ensemble des statistiques
+#### 1. Access Admin Panel
+- Sign in with admin account
+- Access **"Admin Panel"**
+- Overview of statistics
 
-#### 2. Gérer les utilisateurs
-- **Voir tous les utilisateurs** : Liste complète avec recherche
-- **Modifier un utilisateur** : Changer rôle, informations
-- **Supprimer un utilisateur** : Suppression définitive
-- **Statistiques** : Nombre total, par rôle, etc.
+#### 2. Manage Users
+- **View All Users**: Complete list with search
+- **Edit User**: Change role, information
+- **Delete User**: Permanent deletion
+- **Statistics**: Total count, by role, etc.
 
-#### 3. Recherche avancée
-- Filtrer par nom, email, rôle
-- Recherche en temps réel
-- Export des données (à venir)
+#### 3. Advanced Search
+- Filter by name, email, role
+- Real-time search
+- Instant results
 
-### 🔍 Recherche
+### 🔍 Search
 
-**Dans la liste des projets :**
-- Tapez un mot-clé dans la barre de recherche
-- Les résultats s'affichent instantanément
-- Recherche dans : titre, description, catégorie
+**In project list:**
+- Type a keyword in search bar
+- Results display instantly
+- Search in: title, description, category
 
-**Dans les actualités :**
-- Sélectionnez un projet
-- Voir toutes ses actualités
-- Triées par date (plus récentes en premier)
+**In news:**
+- Select a project
+- View all its news
+- Sorted by date (most recent first)
 
-**Dans l'administration :**
-- Recherche d'utilisateurs par nom, prénom, email
-- Filtrage en temps réel
-- Résultats instantanés
+**In administration:**
+- Search users by name, first name, email
+- Real-time filtering
+- Instant results
 
 ## 🎨 Interface
 
-### Design Moderne
-- **Cartes interactives** : Effet hover, animations fluides
-- **Badges colorés** : Statut du projet (Idée, Prototype, MVP, Production)
-- **Barres de progression** : Visualisation du financement
-- **Responsive** : Adapté à tous les écrans (mobile, tablette, desktop)
+### Modern Design
+- **Interactive Cards**: Hover effects, smooth animations
+- **Colored Badges**: Project status (Idea, Prototype, MVP, Production)
+- **Progress Bars**: Funding visualization
+- **Responsive**: Adapted to all screens (mobile, tablet, desktop)
 
-### Navigation Intuitive
-- **Menu clair** : Accès rapide à toutes les fonctionnalités
-- **Boutons d'action** : Modifier, Supprimer, Publier
-- **Messages** : Confirmation des actions, erreurs explicites
-- **Recherche** : Barre de recherche toujours accessible
+### Intuitive Navigation
+- **Clear Menu**: Quick access to all features
+- **Action Buttons**: Edit, Delete, Publish
+- **Messages**: Action confirmations, clear errors
+- **Search**: Always accessible search bar
 
-## 🔐 Sécurité
+## 🔐 Security
 
-### Authentification
-- ✅ Hashage des mots de passe (bcrypt)
-- ✅ Gestion sécurisée des sessions PHP
-- ✅ Validation des données d'entrée
-- ✅ Protection contre les attaques par force brute
+### Authentication
+- ✅ Password hashing (bcrypt)
+- ✅ Secure PHP session management
+- ✅ Input data validation
+- ✅ Protection against brute force attacks
 
-### Protection des données
-- ✅ Validation des formulaires (JavaScript + PHP)
-- ✅ Protection contre les injections SQL (PDO)
-- ✅ Échappement des données affichées (htmlspecialchars)
-- ✅ Confirmation avant suppression
+### Data Protection
+- ✅ Form validation (JavaScript + PHP)
+- ✅ SQL injection protection (PDO)
+- ✅ Output data escaping (htmlspecialchars)
+- ✅ Confirmation before deletion
 
-### Contrôle d'accès
-- ✅ Système de rôles et permissions
-- ✅ Vérification des autorisations
-- ✅ Redirection automatique selon le rôle
-- ✅ Protection des pages d'administration
+### Access Control
+- ✅ Role and permission system
+- ✅ Authorization verification
+- ✅ Automatic role-based redirection
+- ✅ Admin page protection
 
-## 📊 Données Incluses
+## 📊 Sample Data Included
 
-### Projets de Démonstration
-- **Assistant IA** : Intelligence artificielle pour PME
-- **Maison Connectée** : Domotique écologique
-- **Plateforme NFT** : Marketplace pour artistes
-- **App Santé** : Téléconsultation médicale
-- **AgriTech** : Agriculture durable
+### Demo Projects
+- **AI Assistant**: Artificial intelligence for SMEs
+- **Smart Home**: Ecological home automation
+- **NFT Platform**: Marketplace for artists
+- **Health App**: Medical teleconsultation
+- **AgriTech**: Sustainable agriculture
 
-### Catégories
-- 🤖 **AI** : Intelligence Artificielle
-- 🔌 **IoT** : Internet des Objets
-- ⛓️ **Blockchain** : Technologies décentralisées
-- 💻 **Web** : Développement web et mobile
-- 📊 **Data** : Data Science et Big Data
-- 🔒 **Security** : Cybersécurité
+### Categories
+- 🤖 **AI**: Artificial Intelligence
+- 🔌 **IoT**: Internet of Things
+- ⛓️ **Blockchain**: Decentralized technologies
+- 💻 **Web**: Web and mobile development
+- 📊 **Data**: Data Science and Big Data
+- 🔒 **Security**: Cybersecurity
 
 ## 📚 Documentation
 
-### Pour les Utilisateurs
-- **README.md** : Ce fichier (guide utilisateur)
-- **INSTALLATION.md** : Installation détaillée
+### For Users
+- **README.md**: This file (user guide)
+- **INSTALLATION.md**: Detailed installation
 
-### Pour les Développeurs
-- **ENTITE_ACTUALITE_COMPLETE.md** : Documentation technique
-- **GUIDE_JURY_ACTUALITES.md** : Démonstration technique
-- **FONCTIONNALITE_RECHERCHE.md** : Système de recherche
+### For Developers
+- **ENTITE_ACTUALITE_COMPLETE.md**: Technical documentation
+- **GUIDE_JURY_ACTUALITES.md**: Technical demo
+- **FONCTIONNALITE_RECHERCHE.md**: Search system
 
-## 🧪 Test de la Plateforme
+## 🧪 Platform Testing
 
-### Comptes de test
-Après installation, vous pouvez créer des comptes ou utiliser :
+### Test Accounts
+After installation, you can create accounts or use:
 
-**Administrateur :**
-- Email : admin@kernel.tn
-- Mot de passe : admin123
-- Accès : Panneau d'administration complet
+**Administrator:**
+- Email: admin@kernel.tn
+- Password: admin123
+- Access: Complete admin panel
 
-**Utilisateur standard :**
-- Créez votre compte via l'inscription
-- Accès : Fonctionnalités utilisateur
+**Standard User:**
+- Create your account via registration
+- Access: User features
 
-### Pages de test
+### Test Pages
 ```
-http://localhost/votre-projet/view/FrontOffice/index.php        # Page d'accueil
-http://localhost/votre-projet/view/FrontOffice/connexion.php    # Connexion
-http://localhost/votre-projet/view/FrontOffice/inscription.php  # Inscription
-http://localhost/votre-projet/view/BackOffice/admin-users.php   # Administration
+http://localhost/your-project/view/FrontOffice/index.php        # Homepage
+http://localhost/your-project/view/FrontOffice/connexion.php    # Login
+http://localhost/your-project/view/FrontOffice/inscription.php  # Registration
+http://localhost/your-project/view/BackOffice/admin-users.php   # Administration
 ```
 
-### Vérifications automatiques
-Le système vérifie automatiquement :
-- ✅ Connexion à la base de données
-- ✅ Existence des tables utilisateurs
-- ✅ Chargement des contrôleurs
-- ✅ Fonctionnement de l'authentification
+### Automatic Checks
+The system automatically verifies:
+- ✅ Database connection
+- ✅ User tables existence
+- ✅ Controller loading
+- ✅ Authentication functionality
 
-## 🤝 Support
+## 📝 License
 
-Besoin d'aide ? Consultez :
-- 📖 [INSTALLATION.md](INSTALLATION.md) - Guide d'installation
-- � `Atest_connexion.php` - Diagnostic automatique
-- 📚 Documentation technique dans le dossier du projet
+Project developed for educational purposes.
 
-## 📝 Licence
+## 👥 Team
 
-Projet développé dans un cadre éducatif.
+**Kernel** - Technological Innovation Platform
+Developed by Team Webzz
 
-## 👥 Équipe
+## 🆕 New Features (v3.0)
 
-**Kernel** - Plateforme d'Innovation Technologique  
-Développé par l'équipe Webzz
+### ✨ Complete Authentication System
+- **Sign Up/Sign In**: Modern and secure interface
+- **Role Management**: 5 different access levels
+- **User Profiles**: Complete information management
+- **Secure Sessions**: Robust authentication
 
-## 🆕 Nouvelles Fonctionnalités (v3.0)
+### 🛡️ Admin Panel
+- **Dedicated Interface**: Modern design for administrators
+- **User Management**: Complete CRUD
+- **Real-time Statistics**: Data overview
+- **Advanced Search**: Intelligent user filtering
 
-### ✨ Système d'Authentification Complet
-- **Inscription/Connexion** : Interface moderne et sécurisée
-- **Gestion des rôles** : 5 niveaux d'accès différents
-- **Profils utilisateurs** : Gestion complète des informations
-- **Sessions sécurisées** : Authentification robuste
-
-### 🛡️ Panneau d'Administration
-- **Interface dédiée** : Design moderne pour les administrateurs
-- **Gestion des utilisateurs** : CRUD complet
-- **Statistiques en temps réel** : Vue d'ensemble des données
-- **Recherche avancée** : Filtrage intelligent des utilisateurs
-
-### 🔧 Améliorations Techniques
-- **Architecture MVC** : Code organisé et maintenable
-- **Sécurité renforcée** : Protection contre les attaques courantes
-- **Base de données optimisée** : Nouvelles tables pour l'authentification
-- **Code propre** : Respect des bonnes pratiques PHP
+### 🔧 Technical Improvements
+- **MVC Architecture**: Organized and maintainable code
+- **Enhanced Security**: Protection against common attacks
+- **Optimized Database**: New tables for authentication
+- **Clean Code**: PHP best practices
 
 ---
 
-**Version :** 3.0  
-**Dernière mise à jour :** Décembre 2025  
-**Statut :** ✅ Opérationnel avec Authentification Complète
-
-**Nouvelles fonctionnalités :** Système d'authentification, panneau d'administration, gestion des utilisateurs, sécurité renforcée
-
->>>>>>> origin/MohamedChaouachi
+**Version**: 3.0
+**Last Update**: December 2025
