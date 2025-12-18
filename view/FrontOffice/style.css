@@ -1,3 +1,6 @@
+/* C:\xampp\htdocs\projetweb\Kernel\view\Frontoffice\style.css */
+/* KEEP THIS FILE EXACTLY AS YOU HAD IT - NO CHANGES */
+
 :root {
   --primary-color: #2563EB;
   --secondary-color: #7C3AED;
@@ -443,6 +446,38 @@ body {
 
 .is-invalid + .invalid-feedback {
   display: block;
+}
+
+/* Modal styles */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-content {
+  width: 520px;
+  max-width: 95%;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content-large {
+  width: 700px;
+  max-width: 95%;
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @media (max-width: 991px) {

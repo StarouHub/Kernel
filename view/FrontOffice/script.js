@@ -1,207 +1,42 @@
-// Investment Platform Data Model
-const investmentPlatform = {
-    // User portfolio data
-    portfolio: {
-        totalInvested: 125500,
-        totalGains: 18750,
-        activeProjects: 12,
-        investorScore: 4.8,
-        monthlyChange: 12.5,
-        gainsChange: 8.3,
-        projectsChange: 3
-    },
+// C:\xampp\htdocs\projetweb\Kernel\view\Frontoffice\script.js
+
+class InvestmentPlatform {
+    constructor() {
+        this.currentTender = null;
+        this.init();
+    }
     
-    // User's active investments
-    userInvestments: [
-        {
-            id: "i1",
-            tenderId: "t1",
-            projectName: "Assistant IA Intelligent",
-            amount: 12500,
-            date: "2024-10-15",
-            roi: 15.2,
-            status: "active",
-            sector: "AI",
-            thumbnail: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80' viewBox='0 0 100 80'%3E%3Crect fill='%232563EB' width='100' height='80'/%3E%3Ctext x='50%25' y='50%25' font-size='12' fill='white' text-anchor='middle' dy='.3em'%3EIA%3C/text%3E%3C/svg%3E"
-        },
-        {
-            id: "i2",
-            tenderId: "t2",
-            projectName: "Maison Connectée Écologique",
-            amount: 20000,
-            date: "2024-10-08",
-            roi: 22.8,
-            status: "completed",
-            sector: "IoT",
-            thumbnail: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80' viewBox='0 0 100 80'%3E%3Crect fill='%237C3AED' width='100' height='80'/%3E%3Ctext x='50%25' y='50%25' font-size='12' fill='white' text-anchor='middle' dy='.3em'%3EIoT%3C/text%3E%3C/svg%3E"
-        },
-        {
-            id: "i3",
-            tenderId: "t3",
-            projectName: "Plateforme NFT Artistique",
-            amount: 15000,
-            date: "2024-09-25",
-            roi: 8.5,
-            status: "active",
-            sector: "Blockchain",
-            thumbnail: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80' viewBox='0 0 100 80'%3E%3Crect fill='%23F59E0B' width='100' height='80'/%3E%3Ctext x='50%25' y='50%25' font-size='12' fill='white' text-anchor='middle' dy='.3em'%3ENFT%3C/text%3E%3C/svg%3E"
-        },
-        {
-            id: "i4",
-            tenderId: "t4",
-            projectName: "Application de Santé Mobile",
-            amount: 8000,
-            date: "2024-09-12",
-            roi: 5.2,
-            status: "pending",
-            sector: "Health",
-            thumbnail: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80' viewBox='0 0 100 80'%3E%3Crect fill='%2310B981' width='100' height='80'/%3E%3Ctext x='50%25' y='50%25' font-size='10' fill='white' text-anchor='middle' dy='.3em'%3EHealth%3C/text%3E%3C/svg%3E"
-        }
-    ],
-    
-    // Available investment opportunities (tenders)
-    tenders: [
-        {
-            tenderId: "t1",
-            projectName: "Maison Connectée Écologique",
-            shortPitch: "IoT low-cost pour économies d'énergie",
-            sector: "IoT",
-            fundingTarget: 200000,
-            raised: 75000,
-            minInvestment: 1000,
-            maxInvestment: 50000,
-            offerType: "Equity",
-            expectedROI: "22.8%",
-            deadline: "2025-12-15T23:59:59Z",
-            status: "open"
-        },
-        {
-            tenderId: "t2",
-            projectName: "Assistant IA Intelligent",
-            shortPitch: "Agent IA pour PME",
-            sector: "AI",
-            fundingTarget: 150000,
-            raised: 125000,
-            minInvestment: 500,
-            maxInvestment: 30000,
-            offerType: "Convertible",
-            expectedROI: "15.2%",
-            deadline: "2025-11-30T23:59:59Z",
-            status: "open"
-        },
-        {
-            tenderId: "t3",
-            projectName: "Plateforme NFT Artistique",
-            shortPitch: "Marketplace pour artistes",
-            sector: "Blockchain",
-            fundingTarget: 100000,
-            raised: 100000,
-            minInvestment: 200,
-            maxInvestment: 10000,
-            offerType: "Reward",
-            expectedROI: "8.5%",
-            deadline: "2025-10-30T23:59:59Z",
-            status: "funded"
-        },
-        {
-            tenderId: "t4",
-            projectName: "Application de Santé Mobile",
-            shortPitch: "Suivi médical personnalisé",
-            sector: "Health",
-            fundingTarget: 120000,
-            raised: 45000,
-            minInvestment: 300,
-            maxInvestment: 15000,
-            offerType: "Equity",
-            expectedROI: "12.5%",
-            deadline: "2025-11-20T23:59:59Z",
-            status: "open"
-        }
-    ],
-    
-    // Transaction history
-    transactions: [
-        {
-            id: "tr1",
-            date: "2024-11-15",
-            type: "investment",
-            project: "Assistant IA Intelligent",
-            amount: -12500,
-            status: "confirmed"
-        },
-        {
-            id: "tr2",
-            date: "2024-11-10",
-            type: "return",
-            project: "Maison Connectée",
-            amount: 4560,
-            status: "received"
-        },
-        {
-            id: "tr3",
-            date: "2024-11-08",
-            type: "investment",
-            project: "Plateforme NFT",
-            amount: -15000,
-            status: "confirmed"
-        },
-        {
-            id: "tr4",
-            date: "2024-11-03",
-            type: "dividend",
-            project: "Assistant IA",
-            amount: 1200,
-            status: "received"
-        },
-        {
-            id: "tr5",
-            date: "2024-10-28",
-            type: "investment",
-            project: "App Santé Mobile",
-            amount: -8000,
-            status: "pending"
-        }
-    ],
-    
-    // Initialize the platform
     init() {
+        console.log('Initializing Investment Platform...');
         this.renderStats();
         this.renderActiveInvestments();
         this.renderTenders();
         this.renderTransactionHistory();
         this.renderTopPerformers();
+        this.renderPortfolioChart();  // <-- ADD THIS LINE
         this.setupEventListeners();
-        this.startRealTimeUpdates();
         this.setupFormValidation();
-    },
+    }
     
-    // Render portfolio statistics
     renderStats() {
-        document.getElementById('totalInvested').textContent = this.formatCurrency(this.portfolio.totalInvested);
-        document.getElementById('totalGains').textContent = this.formatCurrency(this.portfolio.totalGains);
-        document.getElementById('activeProjects').textContent = this.portfolio.activeProjects;
-        document.getElementById('investorScore').textContent = this.portfolio.investorScore;
-        document.getElementById('monthlyChange').textContent = `+${this.portfolio.monthlyChange}% ce mois`;
-        document.getElementById('gainsChange').textContent = `+${this.portfolio.gainsChange}%`;
-        document.getElementById('projectsChange').textContent = `+${this.portfolio.projectsChange} ce mois`;
-    },
+        console.log('Stats loaded from PHP backend');
+    }
     
-    // Render active investments
     renderActiveInvestments(filter = 'all') {
         const container = document.getElementById('activeInvestmentsList');
-        const countElement = document.getElementById('activeInvestmentsCount');
+        const investments = window.investmentsData || [];
         
-        let filteredInvestments = this.userInvestments;
+        let filteredInvestments = investments;
         
         if (filter === 'active') {
-            filteredInvestments = this.userInvestments.filter(inv => inv.status === 'active');
+            filteredInvestments = investments.filter(inv => inv.status === 'active');
         } else if (filter === 'completed') {
-            filteredInvestments = this.userInvestments.filter(inv => inv.status === 'completed');
+            filteredInvestments = investments.filter(inv => inv.status === 'completed');
         } else if (filter === 'profitable') {
-            filteredInvestments = this.userInvestments.filter(inv => inv.roi > 10);
+            filteredInvestments = investments.filter(inv => parseFloat(inv.roi) > 10);
         }
         
-        countElement.textContent = filteredInvestments.length;
+        document.getElementById('activeInvestmentsCount').textContent = filteredInvestments.length;
         
         if (filteredInvestments.length === 0) {
             container.innerHTML = '<div style="text-align:center; padding:20px; color:#6B7280;">Aucun investissement trouvé</div>';
@@ -210,143 +45,177 @@ const investmentPlatform = {
         
         container.innerHTML = filteredInvestments.map(investment => `
             <div class="investment-item">
-            <img src="${investment.thumbnail}" class="project-thumb" alt="${investment.projectName}">
-            <div class="investment-details">
-                <div class="project-name">${investment.projectName}</div>
-                <div class="investment-meta">
-                <span><i class="bi bi-calendar"></i> Investi le ${this.formatDate(investment.date)}</span>
-                <span><i class="bi bi-percent"></i> ROI: +${investment.roi}%</span>
+                <img src="${investment.thumbnail || this.generateThumbnail(investment.sector)}" class="project-thumb" alt="${investment.projectName || investment.project_name}">
+                <div class="investment-details">
+                    <div class="project-name">${investment.projectName || investment.project_name}</div>
+                    <div class="investment-meta">
+                        <span><i class="bi bi-calendar"></i> Investi le ${this.formatDate(investment.date || investment.investment_date)}</span>
+                        <span><i class="bi bi-percent"></i> ROI: +${investment.roi}%</span>
+                        <span><i class="bi bi-tag"></i> ${investment.sector}</span>
+                    </div>
+                    <span class="investment-status status-${investment.status}">${investment.statusText || this.getStatusText(investment.status)}</span>
                 </div>
-                <span class="investment-status status-${investment.status}">${this.getStatusText(investment.status)}</span>
-            </div>
-            <div class="investment-amount">${this.formatCurrency(investment.amount)}</div>
+                <div class="investment-amount">${this.formatCurrency(investment.amount)}</div>
             </div>
         `).join('');
-    },
+    }
     
-    // Render tenders (investment opportunities)
-    renderTenders(tendersList = this.tenders) {
+    renderTenders() {
         const container = document.getElementById('tendersList');
         const countElement = document.getElementById('tenderCount');
+        const tenders = window.tendersData || [];
         
         container.innerHTML = '';
-        countElement.textContent = tendersList.length;
+        countElement.textContent = tenders.length;
         
-        if (tendersList.length === 0) {
+        if (tenders.length === 0) {
             container.innerHTML = '<div style="text-align:center; padding:20px; color:#6B7280;">Aucun appel d\'offres trouvé</div>';
             return;
         }
         
-        tendersList.forEach(tender => {
-            const progress = Math.round((tender.raised / tender.fundingTarget) * 100);
-            const daysLeft = this.calculateDaysLeft(tender.deadline);
+        tenders.forEach(tender => {
+            const progress = tender.progress || this.calculateProgress(tender);
+            const daysLeft = tender.daysLeft || this.calculateDaysLeft(tender.deadline);
+            const projName = tender.projectName || tender.project_name;
+            const shortP = tender.shortPitch || tender.short_pitch;
+            const minInv = tender.minInvestment || tender.min_investment;
+            const fundTarget = tender.fundingTarget || tender.funding_target;
             
             const tenderElement = document.createElement('div');
             tenderElement.className = 'investment-item';
             tenderElement.style.justifyContent = 'space-between';
             tenderElement.innerHTML = `
-            <div style="display:flex; gap:12px; align-items:center;">
-                <div style="width:64px; height:48px; background:linear-gradient(135deg,#2563EB,#7C3AED); border-radius:8px; color:white; display:flex; align-items:center; justify-content:center; font-weight:700;">
-                ${tender.sector.slice(0,3).toUpperCase()}
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <div style="width:64px; height:48px; background:linear-gradient(135deg,#2563EB,#7C3AED); border-radius:8px; color:white; display:flex; align-items:center; justify-content:center; font-weight:700;">
+                        ${tender.sector ? tender.sector.slice(0,3).toUpperCase() : 'PRO'}
+                    </div>
+                    <div style="min-width:200px;">
+                        <div style="font-weight:600;">${projName}</div>
+                        <div style="font-size:13px; color:#6B7280;">${shortP || 'No description'}</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${progress}%"></div>
+                        </div>
+                        <div style="margin-top:6px; font-size:13px;">
+                            <span style="font-weight:700; color:#2563EB;">${this.formatCurrency(tender.raised || 0)}</span>
+                            <span style="color:#6B7280;"> / ${this.formatCurrency(fundTarget)} TND</span>
+                            <span style="margin-left:10px;" class="status-${tender.status || 'open'}">${tender.status === 'open' ? 'Ouvert' : 'Financé'}</span>
+                        </div>
+                    </div>
                 </div>
-                <div style="min-width:200px;">
-                <div style="font-weight:600;">${tender.projectName}</div>
-                <div style="font-size:13px; color:#6B7280;">${tender.shortPitch}</div>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: ${progress}%"></div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="text-align:right; font-weight:700;">Min ${this.formatCurrency(minInv)}</div>
+                    <div style="text-align:right; font-size:13px; color:#6B7280;">Clôture: ${daysLeft} j</div>
+                    <div>
+                        <button class="filter-tab" data-id="${tender.id}" onclick="investmentPlatform.showTenderDetails(${tender.id})">Voir</button>
+                        ${(tender.status === 'open' || !tender.status) ? `<button class="btn-invest-more" data-invest="${tender.id}" style="margin-left:8px;">Investir</button>` : ''}
+                    </div>
                 </div>
-                <div style="margin-top:6px; font-size:13px;">
-                    <span style="font-weight:700; color:#2563EB;">${this.formatCurrency(tender.raised)}</span>
-                    <span style="color:#6B7280;"> / ${this.formatCurrency(tender.fundingTarget)} TND</span>
-                    <span style="margin-left:10px;" class="status-${tender.status}">${tender.status === 'open' ? 'Ouvert' : 'Financé'}</span>
-                </div>
-                </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div style="text-align:right; font-weight:700;">Min ${this.formatCurrency(tender.minInvestment)}</div>
-                <div style="text-align:right; font-size:13px; color:#6B7280;">Clôture: ${daysLeft} j</div>
-                <div>
-                <button class="filter-tab" data-id="${tender.tenderId}">Voir</button>
-                ${tender.status === 'open' ? `<button class="btn-invest-more" data-invest="${tender.tenderId}" style="margin-left:8px;">Investir</button>` : ''}
-                </div>
-            </div>
             `;
             container.appendChild(tenderElement);
         });
-    },
+    }
     
-    // Render transaction history
+    // UPDATED: Better transaction history rendering
     renderTransactionHistory() {
         const container = document.getElementById('transactionHistoryBody');
         
-        container.innerHTML = this.transactions.map(transaction => `
-            <tr>
-            <td>${this.formatDate(transaction.date)}</td>
-            <td>
-                <span class="transaction-type type-${transaction.type}">
-                <i class="bi ${transaction.type === 'investment' ? 'bi-arrow-up-right' : 'bi-arrow-down-left'}"></i>
-                ${this.getTransactionTypeText(transaction.type)}
-                </span>
-            </td>
-            <td>${transaction.project}</td>
-            <td style="font-weight: 600; color: ${transaction.amount < 0 ? '#EF4444' : '#10B981'};">${transaction.amount < 0 ? '' : '+'}${this.formatCurrency(Math.abs(transaction.amount))}</td>
-            <td><span class="investment-status status-${transaction.status}">${this.getStatusText(transaction.status)}</span></td>
-            </tr>
-        `).join('');
-    },
+        // Null check - prevent crash if element doesn't exist
+        if (!container) {
+            console.warn('Transaction history container not found');
+            return;
+        }
+        
+        const transactions = window.transactionsData || [];
+        
+        console.log('Rendering transactions:', transactions.length); // Debug
+        
+        if (transactions.length === 0) {
+            container.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#6B7280;">Aucune transaction trouvée</td></tr>';
+            return;
+        }
+        
+        container.innerHTML = transactions.map(transaction => {
+            // Use formatted data if available from PHP
+            const date = transaction.formatted_date || this.formatDate(transaction.transaction_date);
+            const amountColor = transaction.amount_color || (transaction.amount < 0 ? '#EF4444' : '#10B981');
+            const amountSign = transaction.amount_sign || (transaction.amount < 0 ? '-' : '+');
+            const formattedAmount = transaction.formatted_amount || this.formatCurrency(Math.abs(transaction.amount));
+            const typeText = transaction.type_text || this.getTransactionTypeText(transaction.type);
+            const statusText = transaction.status_text || this.getStatusText(transaction.status);
+            
+            return `
+                <tr>
+                    <td>${date}</td>
+                    <td>
+                        <span class="transaction-type type-${transaction.type}">
+                            <i class="bi bi-${transaction.type === 'investment' ? 'arrow-up' : 'arrow-down'}"></i>
+                            ${typeText}
+                        </span>
+                    </td>
+                    <td>${transaction.project}</td>
+                    <td style="color: ${amountColor}; font-weight:600;">
+                        ${amountSign}${formattedAmount}
+                    </td>
+                    <td><span class="investment-status status-${transaction.status}">${statusText}</span></td>
+                </tr>
+            `;
+        }).join('');
+    }
     
-    // Render top performing projects
     renderTopPerformers() {
         const container = document.getElementById('topPerformersList');
+        const investments = window.investmentsData || [];
         
-        // Get top 3 investments by ROI
-        const topPerformers = [...this.userInvestments]
-            .sort((a, b) => b.roi - a.roi)
+        const topPerformers = investments
+            .filter(inv => inv.status === 'active')
+            .sort((a, b) => parseFloat(b.roi) - parseFloat(a.roi))
             .slice(0, 3);
         
+        if (topPerformers.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#6B7280;">Aucun investissement actif</div>';
+            return;
+        }
+        
         container.innerHTML = topPerformers.map(investment => `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #E5E7EB;">
-            <div>
-                <div style="font-weight: 600; font-size: 14px;">${investment.projectName}</div>
-                <div style="font-size: 12px; color: #6B7280;">${investment.sector}</div>
-            </div>
-            <div style="color: #10B981; font-weight: 700;">+${investment.roi}%</div>
+            <div style="background: var(--light-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h6 style="font-weight: 600; color: var(--dark-color); margin: 0; flex: 1;">${investment.projectName || investment.project_name}</h6>
+                    <span style="background: #10B981; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                        +${investment.roi}%
+                    </span>
+                </div>
+                <div style="font-size: 14px; color: #6B7280;">
+                    Investi: ${this.formatCurrency(investment.amount)}
+                </div>
+                <div style="font-size: 12px; color: #6B7280; margin-top: 5px;">
+                    ${investment.sector} • ${this.formatDate(investment.date || investment.investment_date)}
+                </div>
             </div>
         `).join('');
-        
-        // Add a message if no investments
-        if (topPerformers.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:20px; color:#6B7280;">Aucun investissement</div>';
-        }
-    },
+    }
     
-    // Setup event listeners
     setupEventListeners() {
-        // Tender list interactions
         document.getElementById('tendersList').addEventListener('click', (e) => {
-            const viewBtn = e.target.closest('button[data-id]');
-            if (viewBtn) {
-                const tenderId = viewBtn.getAttribute('data-id');
-                const tender = this.tenders.find(t => t.tenderId === tenderId);
-                this.showTenderDetails(tender);
-            }
-
             const investBtn = e.target.closest('button[data-invest]');
             if (investBtn) {
                 const tenderId = investBtn.getAttribute('data-invest');
-                const tender = this.tenders.find(t => t.tenderId === tenderId);
-                this.openInvestModal(tender);
+                const tender = window.tendersData.find(t => t.id == tenderId);
+                if (tender) {
+                    this.openInvestModal(tender);
+                }
             }
         });
         
-        // Investment modal interactions
         document.getElementById('cancelInvest').addEventListener('click', () => this.closeInvestModal());
         document.getElementById('confirmInvest').addEventListener('click', () => this.confirmInvestment());
         document.getElementById('investModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) this.closeInvestModal();
         });
         
-        // Filter tabs for investments
+        document.getElementById('investAmount').addEventListener('input', (e) => {
+            this.validateInvestmentAmountRealTime(e.target.value);
+        });
+        
         document.querySelectorAll('.filter-tabs .filter-tab').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 document.querySelectorAll('.filter-tabs .filter-tab').forEach(t => t.classList.remove('active'));
@@ -355,249 +224,225 @@ const investmentPlatform = {
             });
         });
         
-        // Tender filtering
         document.getElementById('tenderFilter').addEventListener('change', (e) => {
-            const sector = e.target.value;
-            const filtered = sector === 'all' ? this.tenders : this.tenders.filter(t => t.sector === sector);
-            this.renderTenders(filtered);
+            this.filterTendersBySector(e.target.value);
         });
 
-        // Sort by close soon
         document.getElementById('sortClose').addEventListener('click', () => {
-            const sorted = [...this.tenders].sort((a,b) => new Date(a.deadline) - new Date(b.deadline));
-            this.renderTenders(sorted);
-            this.showToast("Triers par date de clôture", "success");
+            this.sortTendersByDeadline();
         });
         
-        // Quick action buttons
+        // NEW: Refresh transactions button
+        document.getElementById('refreshTransactionsBtn').addEventListener('click', () => {
+            this.refreshTransactionHistory();
+        });
+        
+        document.getElementById('clearTransactionsBtn').addEventListener('click', () => {
+            this.clearTransactionHistory();
+        });
+        
         document.getElementById('exportReportBtn').addEventListener('click', () => this.exportPortfolioReport());
         document.getElementById('settingsBtn').addEventListener('click', () => {
             this.showToast("Paramètres ouverts", "success");
         });
         
-        // Create tender button
         document.getElementById('createTenderBtn').addEventListener('click', () => this.openCreateTenderModal());
-        
-        // Create tender modal interactions
         document.getElementById('cancelCreateTender').addEventListener('click', () => this.closeCreateTenderModal());
         document.getElementById('cancelTenderForm').addEventListener('click', () => this.closeCreateTenderModal());
         document.getElementById('createTenderModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) this.closeCreateTenderModal();
         });
-    },
-    
-    // Setup form validation
-    setupFormValidation() {
-        const tenderForm = document.getElementById('tenderForm');
         
-        tenderForm.addEventListener('submit', (e) => {
+        document.getElementById('tenderForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            
             if (this.validateTenderForm()) {
                 this.createNewTender();
             }
         });
-        
-        // Real-time validation
-        const formInputs = tenderForm.querySelectorAll('input, textarea, select');
-        formInputs.forEach(input => {
-            input.addEventListener('blur', () => {
-                this.validateField(input);
-            });
-        });
-    },
+    }
     
-    // Validate tender form
+    setupFormValidation() {
+        const formInputs = document.querySelectorAll('#tenderForm input, #tenderForm textarea, #tenderForm select');
+        formInputs.forEach(input => {
+            input.addEventListener('blur', () => this.validateField(input));
+            input.addEventListener('input', () => this.clearFieldError(input));
+        });
+    }
+    
+    // NEW: Refresh transaction history from server
+    refreshTransactionHistory() {
+        this.showToast("Actualisation de l'historique...", "warning");
+        
+        fetch('../../controller/controller.php?ajax=get_transactions')
+            .then(response => response.json())
+            .then(transactions => {
+                window.transactionsData = transactions;
+                this.renderTransactionHistory();
+                this.showToast("Historique actualisé", "success");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                this.showToast("Erreur d'actualisation", "error");
+            });
+    }
+    
+    clearTransactionHistory() {
+        if (!confirm('Êtes-vous sûr de vouloir effacer tout l\'historique des transactions ?')) {
+            return;
+        }
+        
+        this.showToast("Suppression en cours...", "warning");
+        
+        fetch('../../controller/controller.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'action=clear_transactions'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                window.transactionsData = [];
+                this.renderTransactionHistory();
+                this.showToast("Historique effacé avec succès", "success");
+            } else {
+                this.showToast("Erreur: " + result.error, "error");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.showToast("Erreur de connexion", "error");
+        });
+    }
+    
+    filterTendersBySector(sector) {
+        fetch(`../../controller/controller.php?ajax=get_tenders&sector=${sector}`)
+            .then(response => response.json())
+            .then(tenders => {
+                window.tendersData = tenders;
+                this.renderTenders();
+                this.showToast(`Filtré par secteur: ${sector}`, "success");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                this.showToast("Erreur de filtrage", "error");
+            });
+    }
+    
+    sortTendersByDeadline() {
+        fetch('../../controller/controller.php?ajax=get_tenders&sort=deadline')
+            .then(response => response.json())
+            .then(tenders => {
+                window.tendersData = tenders;
+                this.renderTenders();
+                this.showToast("Triés par date de clôture", "success");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                this.showToast("Erreur de tri", "error");
+            });
+    }
+    
     validateTenderForm() {
         let isValid = true;
+        const fields = [
+            { id: 'projectName', minLength: 5, message: 'Le nom du projet doit contenir au moins 5 caractères' },
+            { id: 'shortPitch', minLength: 10, message: 'Le pitch court doit contenir au moins 10 caractères' },
+            { id: 'projectSector', required: true, message: 'Veuillez sélectionner un secteur' },
+            { id: 'offerType', required: true, message: 'Veuillez sélectionner un type d\'offre' },
+            { id: 'fundingTarget', minValue: 1000, message: 'Le montant cible doit être d\'au moins 1,000 TND' },
+            { id: 'expectedROI', minValue: 1, maxValue: 100, message: 'Le ROI doit être entre 1% et 100%' },
+            { id: 'minInvestment', minValue: 100, message: 'L\'investissement minimum doit être d\'au moins 100 TND' },
+            { id: 'deadline', futureDate: true, message: 'La date de clôture doit être dans le futur' }
+        ];
         
-        // Project name validation
-        const projectName = document.getElementById('projectName');
-        if (!projectName.value.trim()) {
-            this.showFieldError(projectName, 'Le nom du projet est requis');
-            isValid = false;
-        } else if (projectName.value.trim().length < 5) {
-            this.showFieldError(projectName, 'Le nom doit contenir au moins 5 caractères');
-            isValid = false;
-        } else {
-            this.clearFieldError(projectName);
-        }
+        fields.forEach(field => {
+            const element = document.getElementById(field.id);
+            const value = element.value.trim();
+            
+            if (field.required && !value) {
+                this.showFieldError(element, field.message);
+                isValid = false;
+            } else if (field.minLength && value.length < field.minLength) {
+                this.showFieldError(element, field.message);
+                isValid = false;
+            } else if (field.minValue && parseFloat(value) < field.minValue) {
+                this.showFieldError(element, field.message);
+                isValid = false;
+            } else if (field.maxValue && parseFloat(value) > field.maxValue) {
+                this.showFieldError(element, field.message);
+                isValid = false;
+            } else if (field.futureDate) {
+                const selectedDate = new Date(value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (selectedDate <= today) {
+                    this.showFieldError(element, field.message);
+                    isValid = false;
+                } else {
+                    this.clearFieldError(element);
+                }
+            } else {
+                this.clearFieldError(element);
+            }
+        });
         
-        // Short pitch validation
-        const shortPitch = document.getElementById('shortPitch');
-        if (!shortPitch.value.trim()) {
-            this.showFieldError(shortPitch, 'Le pitch court est requis');
-            isValid = false;
-        } else if (shortPitch.value.trim().length < 10) {
-            this.showFieldError(shortPitch, 'Le pitch doit contenir au moins 10 caractères');
-            isValid = false;
-        } else {
-            this.clearFieldError(shortPitch);
-        }
-        
-        // Description validation
-        const projectDescription = document.getElementById('projectDescription');
-        if (!projectDescription.value.trim()) {
-            this.showFieldError(projectDescription, 'La description est requise');
-            isValid = false;
-        } else if (projectDescription.value.trim().length < 50) {
-            this.showFieldError(projectDescription, 'La description doit contenir au moins 50 caractères');
-            isValid = false;
-        } else {
-            this.clearFieldError(projectDescription);
-        }
-        
-        // Sector validation
-        const projectSector = document.getElementById('projectSector');
-        if (!projectSector.value) {
-            this.showFieldError(projectSector, 'Veuillez sélectionner un secteur');
-            isValid = false;
-        } else {
-            this.clearFieldError(projectSector);
-        }
-        
-        // Offer type validation
-        const offerType = document.getElementById('offerType');
-        if (!offerType.value) {
-            this.showFieldError(offerType, 'Veuillez sélectionner un type d\'offre');
-            isValid = false;
-        } else {
-            this.clearFieldError(offerType);
-        }
-        
-        // Funding target validation
-        const fundingTarget = document.getElementById('fundingTarget');
-        if (!fundingTarget.value || fundingTarget.value < 1000) {
-            this.showFieldError(fundingTarget, 'Le montant cible doit être d\'au moins 1,000 TND');
-            isValid = false;
-        } else {
-            this.clearFieldError(fundingTarget);
-        }
-        
-        // ROI validation
-        const expectedROI = document.getElementById('expectedROI');
-        if (!expectedROI.value || expectedROI.value < 1 || expectedROI.value > 100) {
-            this.showFieldError(expectedROI, 'Le ROI estimé doit être entre 1% et 100%');
-            isValid = false;
-        } else {
-            this.clearFieldError(expectedROI);
-        }
-        
-        // Minimum investment validation
-        const minInvestment = document.getElementById('minInvestment');
-        if (!minInvestment.value || minInvestment.value < 100) {
-            this.showFieldError(minInvestment, 'L\'investissement minimum doit être d\'au moins 100 TND');
-            isValid = false;
-        } else {
-            this.clearFieldError(minInvestment);
-        }
-        
-        // Maximum investment validation (if provided)
         const maxInvestment = document.getElementById('maxInvestment');
-        if (maxInvestment.value && maxInvestment.value < minInvestment.value) {
+        const minInvestment = document.getElementById('minInvestment');
+        if (maxInvestment.value && parseFloat(maxInvestment.value) < parseFloat(minInvestment.value)) {
             this.showFieldError(maxInvestment, 'L\'investissement maximum ne peut pas être inférieur au minimum');
             isValid = false;
-        } else {
-            this.clearFieldError(maxInvestment);
-        }
-        
-        // Deadline validation
-        const deadline = document.getElementById('deadline');
-        if (!deadline.value) {
-            this.showFieldError(deadline, 'La date de clôture est requise');
-            isValid = false;
-        } else {
-            const deadlineDate = new Date(deadline.value);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            if (deadlineDate <= today) {
-                this.showFieldError(deadline, 'La date de clôture doit être dans le futur');
-                isValid = false;
-            } else {
-                this.clearFieldError(deadline);
-            }
         }
         
         return isValid;
-    },
+    }
     
-    // Validate individual field
     validateField(field) {
         const fieldId = field.id;
+        const value = field.value.trim();
         
         switch(fieldId) {
             case 'projectName':
-                if (!field.value.trim()) {
-                    this.showFieldError(field, 'Le nom du projet est requis');
-                } else if (field.value.trim().length < 5) {
+                if (!value || value.length < 5) {
                     this.showFieldError(field, 'Le nom doit contenir au moins 5 caractères');
                 } else {
                     this.clearFieldError(field);
                 }
                 break;
-                
             case 'shortPitch':
-                if (!field.value.trim()) {
-                    this.showFieldError(field, 'Le pitch court est requis');
-                } else if (field.value.trim().length < 10) {
+                if (!value || value.length < 10) {
                     this.showFieldError(field, 'Le pitch doit contenir au moins 10 caractères');
                 } else {
                     this.clearFieldError(field);
                 }
                 break;
-                
-            case 'projectDescription':
-                if (!field.value.trim()) {
-                    this.showFieldError(field, 'La description est requise');
-                } else if (field.value.trim().length < 50) {
-                    this.showFieldError(field, 'La description doit contenir au moins 50 caractères');
-                } else {
-                    this.clearFieldError(field);
-                }
-                break;
-                
             case 'fundingTarget':
-                if (!field.value || field.value < 1000) {
+                if (!value || parseFloat(value) < 1000) {
                     this.showFieldError(field, 'Le montant cible doit être d\'au moins 1,000 TND');
                 } else {
                     this.clearFieldError(field);
                 }
                 break;
-                
             case 'expectedROI':
-                if (!field.value || field.value < 1 || field.value > 100) {
+                if (!value || parseFloat(value) < 1 || parseFloat(value) > 100) {
                     this.showFieldError(field, 'Le ROI estimé doit être entre 1% et 100%');
                 } else {
                     this.clearFieldError(field);
                 }
                 break;
-                
             case 'minInvestment':
-                if (!field.value || field.value < 100) {
+                if (!value || parseFloat(value) < 100) {
                     this.showFieldError(field, 'L\'investissement minimum doit être d\'au moins 100 TND');
                 } else {
                     this.clearFieldError(field);
                 }
                 break;
-                
-            case 'maxInvestment':
-                const minInvestment = document.getElementById('minInvestment');
-                if (field.value && field.value < minInvestment.value) {
-                    this.showFieldError(field, 'L\'investissement maximum ne peut pas être inférieur au minimum');
-                } else {
-                    this.clearFieldError(field);
-                }
-                break;
-                
             case 'deadline':
-                if (!field.value) {
+                if (!value) {
                     this.showFieldError(field, 'La date de clôture est requise');
                 } else {
-                    const deadlineDate = new Date(field.value);
+                    const deadlineDate = new Date(value);
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
-                    
                     if (deadlineDate <= today) {
                         this.showFieldError(field, 'La date de clôture doit être dans le futur');
                     } else {
@@ -606,33 +451,28 @@ const investmentPlatform = {
                 }
                 break;
         }
-    },
+    }
     
-    // Show field error
     showFieldError(field, message) {
         field.classList.add('is-invalid');
-        
         let errorElement = field.parentNode.querySelector('.invalid-feedback');
         if (!errorElement) {
             errorElement = document.createElement('div');
             errorElement.className = 'invalid-feedback';
             field.parentNode.appendChild(errorElement);
         }
-        
         errorElement.textContent = message;
-    },
+        errorElement.style.display = 'block';
+    }
     
-    // Clear field error
     clearFieldError(field) {
         field.classList.remove('is-invalid');
-        
         const errorElement = field.parentNode.querySelector('.invalid-feedback');
         if (errorElement) {
-            errorElement.textContent = '';
+            errorElement.style.display = 'none';
         }
-    },
+    }
     
-    // Open investment modal
     openInvestModal(tender) {
         const modal = document.getElementById('investModal');
         const title = document.getElementById('modalTitle');
@@ -640,113 +480,197 @@ const investmentPlatform = {
         const amountInput = document.getElementById('investAmount');
         const hint = document.getElementById('investHint');
         
-        // Set modal content
-        title.textContent = `Investir — ${tender.projectName}`;
-        meta.innerHTML = `Min ${this.formatCurrency(tender.minInvestment)} • Max ${tender.maxInvestment ? this.formatCurrency(tender.maxInvestment) : '—'} • ${tender.offerType} • Clôture: ${this.formatDate(tender.deadline)}`;
-        amountInput.value = tender.minInvestment;
+        const projName = tender.projectName || tender.project_name;
+        const minInv = tender.minInvestment || tender.min_investment;
+        const maxInv = tender.maxInvestment || tender.max_investment;
+        const fundTarget = tender.fundingTarget || tender.funding_target;
+        const offerT = tender.offerType || tender.offer_type;
+        
+        title.textContent = `Investir — ${projName}`;
+        meta.innerHTML = `Min ${this.formatCurrency(minInv)} • Max ${maxInv ? this.formatCurrency(maxInv) : '—'} • ${offerT} • Clôture: ${this.formatDate(tender.deadline)}`;
+        amountInput.value = minInv;
+        amountInput.min = minInv;
+        amountInput.max = maxInv || fundTarget - (tender.raised || 0);
         hint.style.display = 'none';
         
-        // Store current tender
-        modal.currentTender = tender;
+        this.currentTender = {
+            id: tender.id,
+            projectName: projName,
+            minInvestment: minInv,
+            maxInvestment: maxInv,
+            fundingTarget: fundTarget,
+            raised: tender.raised || 0,
+            expectedROI: tender.expectedROI || tender.expected_roi,
+            sector: tender.sector,
+            deadline: tender.deadline
+        };
         
-        // Show modal
         modal.style.display = 'flex';
-    },
+    }
     
-    // Close investment modal
     closeInvestModal() {
         document.getElementById('investModal').style.display = 'none';
-    },
+        this.currentTender = null;
+    }
     
-    // Confirm investment
-    confirmInvestment() {
-        const modal = document.getElementById('investModal');
-        const amountInput = document.getElementById('investAmount');
+    validateInvestmentAmountRealTime(amount) {
         const hint = document.getElementById('investHint');
-        const tender = modal.currentTender;
+        if (!this.currentTender) return;
         
-        if (!tender) return;
-        
-        const amount = Number(amountInput.value || 0);
-        const errors = this.validateInvestment(amount, tender);
+        const errors = this.validateInvestment(Number(amount), this.currentTender);
         
         if (errors.length > 0) {
             hint.textContent = errors[0];
             hint.style.display = 'block';
+        } else {
+            hint.style.display = 'none';
+        }
+    }
+        confirmInvestment() {
+        const amountInput = document.getElementById('investAmount');
+        const amount = parseFloat(amountInput.value);
+        
+        if (!amount || amount <= 0) {
+            this.showToast("Veuillez entrer un montant valide", "error");
             return;
         }
         
-        // Process the investment
-        this.processInvestment(tender, amount);
-        this.closeInvestModal();
-    },
-    
-    // Process investment - update all data
-    processInvestment(tender, amount) {
-        // Update tender raised amount
-        tender.raised += amount;
-        
-        // Check if investment already exists for this user
-        const existingInvestment = this.userInvestments.find(inv => inv.tenderId === tender.tenderId);
-        
-        if (existingInvestment) {
-            // Update existing investment
-            existingInvestment.amount += amount;
-        } else {
-            // Create new investment
-            const newInvestment = {
-                id: 'i' + (this.userInvestments.length + 1),
-                tenderId: tender.tenderId,
-                projectName: tender.projectName,
-                amount: amount,
-                date: new Date().toISOString().split('T')[0],
-                roi: parseFloat(tender.expectedROI),
-                status: 'active',
-                sector: tender.sector,
-                thumbnail: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80' viewBox='0 0 100 80'%3E%3Crect fill='%232563EB' width='100' height='80'/%3E%3Ctext x='50%25' y='50%25' font-size='12' fill='white' text-anchor='middle' dy='.3em'%3E${tender.sector.slice(0,3)}%3C/text%3E%3C/svg%3E`
-            };
-            this.userInvestments.push(newInvestment);
+        const tender = this.currentTender;
+        if (!tender) {
+            this.showToast("Erreur: Aucun projet sélectionné", "error");
+            return;
         }
         
-        // Add transaction to history
-        const newTransaction = {
-            id: 'tr' + (this.transactions.length + 1),
-            date: new Date().toISOString().split('T')[0],
-            type: 'investment',
-            project: tender.projectName,
-            amount: -amount,
-            status: 'confirmed'
-        };
-        this.transactions.unshift(newTransaction); // Add to beginning
+        // Validate investment
+        const errors = this.validateInvestment(amount, tender);
+        if (errors.length > 0) {
+            document.getElementById('investHint').style.display = 'block';
+            document.getElementById('investHint').textContent = errors[0];
+            return;
+        }
         
-        // Update portfolio stats
-        this.updatePortfolioStats(amount);
+        // Close modal and redirect to payment page
+        this.closeInvestModal();
         
-        // Re-render all components
-        this.renderStats();
-        this.renderActiveInvestments();
-        this.renderTenders();
+        const projectName = tender.project_name || tender.projectName || 'Projet';
+        const tenderId = tender.id;
+        
+        window.location.href = `payment.php?tender_id=${tenderId}&amount=${amount}&project=${encodeURIComponent(projectName)}`;
+    }
+    
+    
+    // UPDATED: Better investment processing with transaction update
+    processInvestment(tender, amount) {
+        const formData = new FormData();
+        formData.append('action', 'create_investment');
+        formData.append('tenderId', tender.id);
+        formData.append('projectName', tender.projectName);
+        formData.append('amount', amount);
+        formData.append('roi', tender.expectedROI);
+        formData.append('sector', tender.sector);
+        
+        this.showToast("Traitement de l'investissement...", "warning");
+        
+        fetch('../../controller/controller.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                this.showToast(`✓ ${result.message} (${this.formatCurrency(amount)})`, "success");
+                
+                // Update local data immediately
+                this.addTransactionToHistory({
+                    transaction_date: new Date().toISOString().split('T')[0],
+                    type: 'investment',
+                    project: result.projectName || tender.projectName,
+                    amount: -amount,
+                    status: 'confirmed',
+                    formatted_date: 'Aujourd\'hui',
+                    formatted_amount: this.formatCurrency(amount),
+                    amount_color: '#EF4444',
+                    amount_sign: '-',
+                    type_text: 'Investissement',
+                    status_text: 'Confirmé'
+                });
+                
+                // Also update tenders data
+                this.updateTenderAfterInvestment(tender.id, amount);
+                
+                // Update investments data
+                this.refreshAllData();
+                
+                // Show success message
+                setTimeout(() => {
+                    this.showToast("Transaction ajoutée à l'historique", "success");
+                }, 1000);
+                
+            } else {
+                const errorMsg = result.errors ? result.errors.join(', ') : result.error;
+                this.showToast("✗ " + errorMsg, "error");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.showToast("✗ Erreur de connexion au serveur", "error");
+        });
+    }
+    
+    // NEW: Add transaction to history immediately
+    addTransactionToHistory(transaction) {
+        if (!window.transactionsData) window.transactionsData = [];
+        
+        // Add to beginning of array (most recent first)
+        window.transactionsData.unshift(transaction);
+        
+        // Keep only last 20 transactions
+        if (window.transactionsData.length > 20) {
+            window.transactionsData = window.transactionsData.slice(0, 20);
+        }
+        
+        // Re-render transaction history
         this.renderTransactionHistory();
-        this.renderTopPerformers();
-        
-        // Show success message
-        this.showToast(`Investissement réussi: ${this.formatCurrency(amount)} pour ${tender.projectName}`, "success");
-    },
+    }
     
-    // Update portfolio statistics after investment
-    updatePortfolioStats(amount) {
-        this.portfolio.totalInvested += amount;
-        this.portfolio.activeProjects = this.userInvestments.filter(inv => inv.status === 'active').length;
-        
-        // Simulate gains increase (in reality this would come from actual returns)
-        this.portfolio.totalGains += amount * 0.15;
-        
-        // Update change percentages (simulate small random changes)
-        this.portfolio.monthlyChange = (10 + Math.random() * 5).toFixed(1);
-        this.portfolio.gainsChange = (5 + Math.random() * 5).toFixed(1);
-    },
+    // NEW: Update tender data after investment
+    updateTenderAfterInvestment(tenderId, amount) {
+        const tenderIndex = window.tendersData.findIndex(t => t.id == tenderId);
+        if (tenderIndex !== -1) {
+            window.tendersData[tenderIndex].raised += amount;
+            
+            // Update progress
+            const progress = this.calculateProgress(window.tendersData[tenderIndex]);
+            window.tendersData[tenderIndex].progress = progress;
+            
+            // Re-render tenders
+            this.renderTenders();
+        }
+    }
     
-    // Validate investment
+    // NEW: Refresh all data from server
+    refreshAllData() {
+        // Refresh transactions
+        this.refreshTransactionHistory();
+        
+        // Refresh tenders
+        fetch('../../controller/controller.php?ajax=get_tenders')
+            .then(response => response.json())
+            .then(tenders => {
+                window.tendersData = tenders;
+                this.renderTenders();
+            });
+        
+        // Refresh investments
+        fetch('../../controller/controller.php?ajax=get_investments')
+            .then(response => response.json())
+            .then(investments => {
+                window.investmentsData = investments;
+                this.renderActiveInvestments();
+                this.renderTopPerformers();
+            });
+    }
+    
     validateInvestment(amount, tender) {
         const errors = [];
         
@@ -758,67 +682,60 @@ const investmentPlatform = {
             errors.push(`Le montant dépasse le maximum (${this.formatCurrency(tender.maxInvestment)}).`);
         }
         
-        if (amount > (tender.fundingTarget - tender.raised)) {
-            errors.push(`Attention: ce montant dépasse l'objectif restant (${this.formatCurrency(tender.fundingTarget - tender.raised)}).`);
+        const remaining = tender.fundingTarget - (tender.raised || 0);
+        if (amount > remaining) {
+            errors.push(`Ce montant dépasse l'objectif restant (${this.formatCurrency(remaining)}).`);
+        }
+        
+        if (amount <= 0) {
+            errors.push(`Le montant doit être positif.`);
         }
         
         return errors;
-    },
+    }
     
-    // Show tender details
-    showTenderDetails(tender) {
-        const daysLeft = this.calculateDaysLeft(tender.deadline);
-        const progress = Math.round((tender.raised / tender.fundingTarget) * 100);
+    showTenderDetails(tenderId) {
+        const tender = window.tendersData.find(t => t.id == tenderId);
+        if (!tender) {
+            this.showToast("Détails du projet non disponibles", "error");
+            return;
+        }
         
-        const details = `
-            <strong>Projet:</strong> ${tender.projectName}<br>
-            <strong>Pitch:</strong> ${tender.shortPitch}<br>
-            <strong>Secteur:</strong> ${tender.sector}<br>
-            <strong>Type d'offre:</strong> ${tender.offerType}<br>
-            <strong>Montant cible:</strong> ${this.formatCurrency(tender.fundingTarget)}<br>
-            <strong>Montant levé:</strong> ${this.formatCurrency(tender.raised)} (${progress}%)<br>
-            <strong>Investissement:</strong> Min ${this.formatCurrency(tender.minInvestment)} • Max ${tender.maxInvestment ? this.formatCurrency(tender.maxInvestment) : '—'}<br>
-            <strong>ROI estimé:</strong> ${tender.expectedROI}<br>
-            <strong>Clôture:</strong> ${this.formatDate(tender.deadline)} (${daysLeft} jours restants)
-        `;
+        const daysLeft = tender.daysLeft || this.calculateDaysLeft(tender.deadline);
+        const progress = tender.progress || this.calculateProgress(tender);
+        const projName = tender.projectName || tender.project_name;
+        const shortP = tender.shortPitch || tender.short_pitch;
+        const minInv = tender.minInvestment || tender.min_investment;
+        const maxInv = tender.maxInvestment || tender.max_investment;
+        const fundTarget = tender.fundingTarget || tender.funding_target;
+        const expROI = tender.expectedROI || tender.expected_roi;
+        const offerT = tender.offerType || tender.offer_type;
         
-        // Create a modal for details (simplified version)
-        alert(details);
-    },
+        const details = `Projet: ${projName}\nPitch: ${shortP || 'Non spécifié'}\nSecteur: ${tender.sector}\nType d'offre: ${offerT}\nMontant cible: ${this.formatCurrency(fundTarget)}\nMontant levé: ${this.formatCurrency(tender.raised || 0)} (${progress}%)\nInvestissement: Min ${this.formatCurrency(minInv)} • Max ${maxInv ? this.formatCurrency(maxInv) : '—'}\nROI estimé: ${expROI}%\nClôture: ${this.formatDate(tender.deadline)} (${daysLeft} jours restants)`;
+        
+        alert("Détails du Projet:\n\n" + details);
+    }
     
-    // Open create tender modal
     openCreateTenderModal() {
         const modal = document.getElementById('createTenderModal');
-        
-        // Set default deadline to 30 days from now
         const deadline = new Date();
         deadline.setDate(deadline.getDate() + 30);
         document.getElementById('deadline').valueAsDate = deadline;
-        
-        // Reset form
         document.getElementById('tenderForm').reset();
         
-        // Clear any validation errors
         const formInputs = document.querySelectorAll('#tenderForm input, #tenderForm textarea, #tenderForm select');
-        formInputs.forEach(input => {
-            this.clearFieldError(input);
-        });
+        formInputs.forEach(input => this.clearFieldError(input));
         
-        // Show modal
         modal.style.display = 'flex';
-    },
+    }
     
-    // Close create tender modal
     closeCreateTenderModal() {
         document.getElementById('createTenderModal').style.display = 'none';
-    },
+    }
     
-    // Create new tender
     createNewTender() {
-        // Get form values
         const projectName = document.getElementById('projectName').value;
         const shortPitch = document.getElementById('shortPitch').value;
-        const projectDescription = document.getElementById('projectDescription').value;
         const projectSector = document.getElementById('projectSector').value;
         const offerType = document.getElementById('offerType').value;
         const fundingTarget = parseInt(document.getElementById('fundingTarget').value);
@@ -826,86 +743,64 @@ const investmentPlatform = {
         const minInvestment = parseInt(document.getElementById('minInvestment').value);
         const maxInvestment = document.getElementById('maxInvestment').value ? parseInt(document.getElementById('maxInvestment').value) : null;
         const deadline = document.getElementById('deadline').value;
-        const projectLogo = document.getElementById('projectLogo').value;
         
-        // Create new tender object
-        const newTender = {
-            tenderId: 't' + (this.tenders.length + 1),
-            projectName: projectName,
-            shortPitch: shortPitch,
-            projectDescription: projectDescription,
-            sector: projectSector,
-            fundingTarget: fundingTarget,
-            raised: 0,
-            minInvestment: minInvestment,
-            maxInvestment: maxInvestment,
-            offerType: offerType,
-            expectedROI: expectedROI.toFixed(1) + '%',
-            deadline: deadline + 'T23:59:59Z',
-            status: 'open',
-            projectLogo: projectLogo || null
-        };
+        this.showToast("Création de l'appel d'offres...", "warning");
         
-        // Add to tenders array
-        this.tenders.push(newTender);
+        const formData = new FormData();
+        formData.append('action', 'create_tender');
+        formData.append('projectName', projectName);
+        formData.append('shortPitch', shortPitch);
+        formData.append('sector', projectSector);
+        formData.append('fundingTarget', fundingTarget);
+        formData.append('minInvestment', minInvestment);
+        formData.append('maxInvestment', maxInvestment || '');
+        formData.append('offerType', offerType);
+        formData.append('expectedROI', expectedROI);
+        formData.append('deadline', deadline);
         
-        // Close modal
-        this.closeCreateTenderModal();
-        
-        // Re-render tenders
-        this.renderTenders();
-        
-        // Show success message
-        this.showToast(`Appel d'offres "${projectName}" créé avec succès!`, "success");
-    },
+        fetch('../../controller/controller.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                this.showToast(`✓ ${result.message}`, "success");
+                this.closeCreateTenderModal();
+                
+                // Add transaction for creating tender
+                this.addTransactionToHistory({
+                    transaction_date: new Date().toISOString().split('T')[0],
+                    type: 'investment',
+                    project: projectName,
+                    amount: 0,
+                    status: 'confirmed',
+                    formatted_date: 'Aujourd\'hui',
+                    formatted_amount: '0 TND',
+                    amount_color: '#6B7280',
+                    amount_sign: '',
+                    type_text: 'Création',
+                    status_text: 'Confirmé'
+                });
+                
+                // Refresh data
+                this.refreshAllData();
+                
+            } else {
+                const errorMsg = result.errors ? Object.values(result.errors).join(', ') : result.error;
+                this.showToast("✗ " + errorMsg, "error");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.showToast("✗ Erreur de connexion au serveur", "error");
+        });
+    }
     
-    // Start real-time updates for stats
-    startRealTimeUpdates() {
-        // Update stats every 30 seconds to simulate real-time changes
-        setInterval(() => {
-            // Simulate small random changes in portfolio value
-            const randomChange = (Math.random() - 0.4) * 0.5; // -0.2% to +0.3%
-            this.portfolio.totalInvested = Math.max(0, this.portfolio.totalInvested * (1 + randomChange/100));
-            
-            // Simulate gains changes
-            const gainsChange = (Math.random() - 0.3) * 0.8; // -0.24% to +0.56%
-            this.portfolio.totalGains = Math.max(0, this.portfolio.totalGains * (1 + gainsChange/100));
-            
-            // Update change percentages
-            this.portfolio.monthlyChange = (10 + Math.random() * 5).toFixed(1);
-            this.portfolio.gainsChange = (5 + Math.random() * 5).toFixed(1);
-            
-            // Update the displayed stats
-            this.renderStats();
-        }, 30000);
-    },
-    
-    // Export portfolio report
     exportPortfolioReport() {
-        const data = {
-            totalInvested: this.portfolio.totalInvested,
-            totalGains: this.portfolio.totalGains,
-            activeProjects: this.portfolio.activeProjects,
-            investorScore: this.portfolio.investorScore,
-            exportDate: new Date().toLocaleDateString(),
-            investments: this.userInvestments,
-            transactions: this.transactions.slice(0, 10) // Last 10 transactions
-        };
-        
-        const dataStr = JSON.stringify(data, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(dataBlob);
-        link.download = 'portfolio-kernel.json';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
         this.showToast("Rapport exporté avec succès", "success");
-    },
+    }
     
-    // Show toast notification
     showToast(message, type = "success") {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
@@ -917,28 +812,57 @@ const investmentPlatform = {
         
         container.appendChild(toast);
         
-        // Remove toast after 3 seconds
         setTimeout(() => {
-            toast.remove();
+            if (toast.parentNode) {
+                toast.remove();
+            }
         }, 3000);
-    },
+    }
     
-    // Utility functions
     formatCurrency(amount) {
-        return new Intl.NumberFormat('fr-TN', { style: 'currency', currency: 'TND' }).format(amount);
-    },
+        return new Intl.NumberFormat('fr-TN', { 
+            style: 'currency', 
+            currency: 'TND',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(amount);
+    }
     
     formatDate(dateString) {
-        const options = { day: 'numeric', month: 'short', year: 'numeric' };
-        return new Date(dateString).toLocaleDateString('fr-FR', options);
-    },
+        if (!dateString) return 'Date inconnue';
+        
+        // If already formatted by PHP, return as is
+        if (dateString.includes('/')) return dateString;
+        
+        const date = new Date(dateString);
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        if (date.toDateString() === today.toDateString()) {
+            return 'Aujourd\'hui';
+        } else if (date.toDateString() === yesterday.toDateString()) {
+            return 'Hier';
+        } else {
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('fr-FR', options);
+        }
+    }
     
     calculateDaysLeft(deadline) {
+        if (!deadline) return 0;
         const deadlineDate = new Date(deadline);
         const now = new Date();
         const timeDiff = deadlineDate - now;
         return Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
-    },
+    }
+    
+    calculateProgress(tender) {
+        const fundTarget = tender.fundingTarget || tender.funding_target;
+        if (!fundTarget || fundTarget === 0) return 0;
+        const raised = tender.raised || 0;
+        return Math.min(100, Math.round((raised / fundTarget) * 100));
+    }
     
     getStatusText(status) {
         const statusMap = {
@@ -946,22 +870,142 @@ const investmentPlatform = {
             'completed': 'Financé',
             'pending': 'En attente',
             'confirmed': 'Confirmé',
-            'received': 'Reçu'
+            'received': 'Reçu',
+            'open': 'Ouvert',
+            'closed': 'Fermé'
         };
         return statusMap[status] || status;
-    },
+    }
     
     getTransactionTypeText(type) {
         const typeMap = {
             'investment': 'Investissement',
             'return': 'Retour',
-            'dividend': 'Dividende'
+            'withdrawal': 'Retrait'
         };
         return typeMap[type] || type;
     }
-};
+    
+    generateThumbnail(sector) {
+        const sectorCode = sector ? sector.slice(0,3).toUpperCase() : 'PRO';
+        return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='80' viewBox='0 0 100 80'%3E%3Crect fill='%232563EB' width='100' height='80'/%3E%3Ctext x='50%25' y='50%25' font-size='12' fill='white' text-anchor='middle' dy='.3em'%3E${sectorCode}%3C/text%3E%3C/svg%3E`;
+    }
+    
+    renderPortfolioChart() {
+        const canvas = document.getElementById('portfolioChart');
+        if (!canvas) {
+            console.warn('Portfolio chart canvas not found');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        const investments = window.investmentsData || [];
+        
+        // Group investments by month
+        const monthlyData = {};
+        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+        
+        // Initialize last 6 months with 0
+        const now = new Date();
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const key = `${months[date.getMonth()]} ${date.getFullYear()}`;
+            monthlyData[key] = 0;
+        }
+        
+        // Sum investments by month
+        investments.forEach(inv => {
+            const date = new Date(inv.investment_date || inv.date);
+            const key = `${months[date.getMonth()]} ${date.getFullYear()}`;
+            if (monthlyData.hasOwnProperty(key)) {
+                monthlyData[key] += parseFloat(inv.amount) || 0;
+            }
+        });
+        
+        // Calculate cumulative totals
+        const labels = Object.keys(monthlyData);
+        const rawData = Object.values(monthlyData);
+        let cumulative = 0;
+        const cumulativeData = rawData.map(val => {
+            cumulative += val;
+            return cumulative;
+        });
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(37, 99, 235, 0.3)');
+        gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Investi (TND)',
+                    data: cumulativeData,
+                    borderColor: '#2563EB',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#2563EB',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1F2937',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return new Intl.NumberFormat('fr-TN', {
+                                    style: 'currency',
+                                    currency: 'TND',
+                                    minimumFractionDigits: 0
+                                }).format(context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#6B7280'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#E5E7EB'
+                        },
+                        ticks: {
+                            color: '#6B7280',
+                            callback: function(value) {
+                                return value.toLocaleString('fr-TN') + ' TND';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
 
-// Initialize the platform when the page loads
+let investmentPlatform;
 document.addEventListener('DOMContentLoaded', function() {
-    investmentPlatform.init();
+    investmentPlatform = new InvestmentPlatform();
 });
